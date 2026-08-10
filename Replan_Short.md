@@ -37,7 +37,7 @@
 搜索关联论文，为 PaperSource 标注置信来源（`papersource`：high / linkauthor / low / missing）
 
 1. 先用项目编号查 Europe PMC（最准，指名道姓: high quality；只留发表年最早 1–2 篇）
-2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上但无宏基因组关键词 → `linkauthor`（质量同 low，不进全文）
+2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上但（无宏基因组关键词 或 论文是 Review：标题含 review 词/摘要含 "in this review"）→ `linkauthor`（质量同 low，不进全文）
 
 爬取论文的 标题+摘要/[全文:默认不爬]+paper的其它信息，比如：paper_title / paper_authors / paper_year /journal/pmid/pmcid/doi 
 

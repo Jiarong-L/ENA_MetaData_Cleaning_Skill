@@ -153,6 +153,18 @@ def has_metagenome_kw(paper):
     return any(k in text for k in META_KW)
 
 
+def is_review(paper):
+    """Review 类文章降级为 linkauthor (不进 §2.3 全文): 标题含 review 词, 或摘要含 'in this review'。
+    即便其摘要含 metagenome 关键词 (原本会被判 high), 综述也不是本项目的具体样本研究, 故降为 linkauthor。"""
+    title = (paper.get("title") or "").lower()
+    abstract = re.sub(r"<[^>]+>", " ", paper.get("abstractText") or "").lower()
+    if re.search(r"\breview\b", title):
+        return True
+    if "in this review" in abstract:
+        return True
+    return False
+
+
 def log(*a):
     print("[%s] %s" % (time.strftime("%H:%M:%S"), " ".join(str(x) for x in a)), flush=True)
 
@@ -412,6 +424,7 @@ def process_one(acc, meta, freetext_n):
     strong = strong_center_tokens(center)
     desc_ph = desc_inst_entities(desc)
     high = low = missing = linkauthor = 0
+    review_demoted = 0
     for p in candidates:
         pid = p.get("pmid") or p.get("id") or json.dumps(p, sort_keys=True)[:60]
         affils = get_affils(p)
@@ -420,11 +433,15 @@ def process_one(acc, meta, freetext_n):
         linked = ok or (tag_of.get(pid) == "author")
         mk = has_metagenome_kw(p)
         if linked:
-            # 关联(单位或作者) 且 摘要含 metagenome 关键词 → 真·宏基因组论文, high
-            # 关联 但 摘要无 metagenome 关键词        → 同一批作者/机构但非宏基因组论文, linkauthor(低质量)
-            if mk:
+            # 关联(单位或作者) 且 摘要含 metagenome 关键词 且 非综述 → 真·宏基因组论文, high
+            # 关联 但 (无 metagenome 关键词 | 是 Review 综述)        → 降 linkauthor(低质量):
+            #   · 无关键词 = 同一批作者/机构但论文本身非宏基因组研究
+            #   · Review   = 综述非本项目具体样本研究, 即便摘要带 metagenome 词也不作可信源
+            if mk and not is_review(p):
                 ps = "high"; high += 1
             else:
+                if is_review(p) and mk:
+                    review_demoted += 1
                 ps = "linkauthor"; linkauthor += 1
         elif affils:
             ps = "missing"; missing += 1      # 有单位但完全对不上 → 噪声, 丢弃
@@ -432,7 +449,7 @@ def process_one(acc, meta, freetext_n):
             ps = "low"; low += 1              # 无单位信息 → 无法验证, 交人工
         rec["papers"].append(paper_record(p, ps, matched=(tok if ok else None), aff=affils))
     rec["_counts"] = {"high": high, "low": low, "missing": missing,
-                      "linkauthor": linkauthor, "used": used}
+                      "linkauthor": linkauthor, "review_demoted": review_demoted, "used": used}
     return rec
 
 
