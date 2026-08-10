@@ -510,6 +510,13 @@ def fetch_url(url):
     return None, last
 
 
+def _looks_jats(data):
+    """EPMC JATS XML 可能因文章而异: 以 <?xml 声明开头, 或以 <!DOCTYPE article ... 或 <article 开头 (无 <?xml 声明)。"""
+    head = data.lstrip().lower()[:20]
+    return (head.startswith(b"<?xml") or head.startswith(b"<!doc")
+            or head.startswith(b"<article"))
+
+
 def fulltext_content(p, free):
     """返回 (data, kind, note, neterr)。
     kind ∈ {None, 'xml', 'pdf'}; neterr=True 表示发生过真实网络层错误(用于区分 failed vs no_free)。
@@ -524,7 +531,8 @@ def fulltext_content(p, free):
         # EPMC 全文端点要求 source+id 连写: /rest/PMC{id}/fullTextXML (斜杠拆分 PMC/{id} 会 404)
         url = "https://www.ebi.ac.uk/europepmc/webservices/rest/%s/fullTextXML" % pmcid.upper()
         data, err = fetch_url(url)
-        if data and b"<?xml" in data[:200] and len(data) > 500:
+        # JATS 可能以 <?xml 声明或 <!DOCTYPE article ... / <article 开头 (后者无 <?xml 声明)
+        if data and len(data) > 500 and _looks_jats(data):
             return data, "xml", None, False
         if err == "net":
             neterr = True
