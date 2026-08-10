@@ -1,0 +1,189 @@
+[
+  {
+    "project_accession": "PRJDB4115",
+    "field": "country",
+    "value": ["Japan"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Public info: saliva from healthy individuals at Kashiwa (University of Tokyo); GOLD project name 'Japan - sub1-04-04' => sampling country Japan."
+  },
+  {
+    "project_accession": "PRJDB42230",
+    "field": "country",
+    "value": ["Ethiopia", "India"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Samples Collected By USAID Feed the Future Innovation Lab for Climate Resilient Chickpea; lab research-focus regions are Ethiopia (largest chickpea producer in Africa, >1M households) and India (largest global producer/consumer); field collection in focus regions => multi-country sampling [Ethiopia, India]."
+  },
+  {
+    "project_accession": "PRJEB1198",
+    "field": "country",
+    "value": ["Croatia"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "DNA extracted from 'Vindija Neandertal Vi33.16' fossil from Vindija Cave, Croatia (notable Neanderthal site) => sampling country Croatia."
+  },
+  {
+    "project_accession": "PRJEB22007",
+    "field": "country",
+    "value": ["Korea"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "medium",
+    "evidence_basis": "institution_inferred",
+    "note": "ENA study description suggests laboratory dietary-intervention study (induced prophages); no explicit sampling site; inferred from submitter institution country = South Korea. Institution-based inference, weaker than direct-site evidence."
+  },
+  {
+    "project_accession": "PRJEB28671",
+    "field": "country",
+    "value": ["Gambia"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "ENA study_title contains IHAT; linked ClinicalTrials.gov NCT02941081 = single-country Phase II trial in Gambia => sampling country Gambia."
+  },
+  {
+    "project_accession": "PRJEB29511",
+    "field": "country",
+    "value": ["Brazil"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "ENA study description references 'hydroelectric lake of Tucurui'; Tucuruí reservoir is in Pará state, Brazil => sampling country Brazil."
+  },
+  {
+    "project_accession": "PRJEB30587",
+    "field": "country",
+    "value": ["Indonesia", "Fiji"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "ENA project name 'Revitalising_Informal_Settlements..._RISE_'; RISE program (rise-program.org) explicitly samples Makassar/Indonesia and Suva/Fiji => true multi-site [Indonesia, Fiji]."
+  },
+  {
+    "project_accession": "PRJEB33440",
+    "field": "country",
+    "value": ["China"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Linked Nature article s41598-020-72620-4: samples purchased from '6 local supermarkets in southern China' => sampling country China."
+  },
+  {
+    "project_accession": "PRJEB34406",
+    "field": "country",
+    "value": ["Germany"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "BioSample under project labels sampling location 'Nordstrand, Germany' => sampling country Germany."
+  },
+  {
+    "project_accession": "PRJNA239147",
+    "field": "country",
+    "value": ["United Kingdom"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Project description: teeth from Black Death (c. AD 1348) victims at East Smithfield cemetery, London, UK => sampling country United Kingdom."
+  },
+  {
+    "project_accession": "PRJNA239173",
+    "field": "country",
+    "value": ["United States"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "BioProject description: intestinal specimens from 1849 Philadelphia, PA, USA cholera victims => sampling country United States."
+  },
+  {
+    "project_accession": "PRJNA256007",
+    "field": "country",
+    "value": ["New Zealand"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "medium",
+    "evidence_basis": "institution_inferred",
+    "note": "Synthetic microbial community project; source material from AgResearch (NZ Crown Research Institute), Palmerston North, New Zealand; institution-based inference of sampling country = New Zealand (analogous to PRJEB22007)."
+  },
+  {
+    "project_accession": "PRJNA348753",
+    "field": "country",
+    "value": ["Australia", "Kenya"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Primary sampling country Australia; large-scale study includes global sites, confirmed Australia (primary) + Kenya. Possible SE Asia/ASEAN samples uncertain => excluded from value."
+  },
+  {
+    "project_accession": "PRJNA464847",
+    "field": "country",
+    "value": ["United States"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Project samples from Ohio, USA => sampling country United States."
+  },
+  {
+    "project_accession": "PRJNA482503",
+    "field": "country",
+    "value": ["Italy"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Linked BioSample labels geographic location Italy; coordinates 44.80 N 10.31 E point to Parma region => sampling country Italy."
+  },
+  {
+    "project_accession": "PRJNA530708",
+    "field": "country",
+    "value": ["China"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Jiulongjiang River microbiome; Jiulongjiang River basin is in Fujian province, China => sampling country China."
+  },
+  {
+    "project_accession": "PRJNA88155",
+    "field": "country",
+    "value": ["Iceland"],
+    "confidence": "high",
+    "source": "manual",
+    "method": "manual",
+    "content_reliability": "high",
+    "evidence_basis": "direct",
+    "note": "Microbial communities of East Skaftarketill subglacial lake beneath Vatnajökull ice cap, Iceland => sampling country Iceland."
+  }
+]
