@@ -40,7 +40,7 @@
 
 ## 红线 / 原则（不可违背）
 
-- **papersource=high 的论文文本为可信源**（与 ENA 自述同等），可直接用于 high 推断；papersource=low 进人工队列、missing 丢弃，二者不参与自动推断。后续分析不再有弱源。
+- **papersource=high 的论文文本为可信源**（与 ENA 自述同等），可直接用于 high 推断；papersource=linkauthor 质量等同 low、不进 §2.3 全文下载、不参与自动推断；papersource=low 进人工队列、missing 丢弃，二者不参与自动推断。后续分析不再有弱源。
 - `llm_infer_*` 仅由 `agent_write` 写（神圣性）；禁止任何 resolver/transform 写。
 - 默认**不爬全文**（title/abstract 足够；全文实测无推断增量）。
 - `location` 字段**取消**（样本级经纬度已由合并表覆盖）。
@@ -100,10 +100,7 @@
     |---|---|---|
     | `type` | 宏基因组类型子层 | `* metagenomes` 最具体层（`organismal metagenomes` / `ecological metagenomes` / `engineered metagenomes`）；非 metagenome 或裸 `metagenome` 节点 → 空（`NA`） |
     | `scientific_name` | `tax_id` 在 NCBI 的科学名 | 如 `human gut metagenome`、`Homo sapiens`、`Shewanella putrefaciens` 等 |
-- **数据现实（已核查·实测）**：主表 1,308,350 行中非空 `tax_id` 1,228,571 行，**unique = 8,289**。其中 **317 个** unique 属 metagenome（科学名含 `metagenome` 或 lineage 含 `metagenomes`），**311 个**有精确 `* metagenomes` 子层（可得 `type`）。行级：
-  - `is_metagenome` 覆盖 **1,043,044 行 (79.7%)**（TOP tax_id 几乎全是 metagenome：human gut 32.7万、metagenome 11.7万、gut 6.9万、soil 6.7万…）。
-  - `type` 列填充 **918,632 行 (70.2%)**（差额 = 伞节点 `metagenome` 256318 的 11.7 万行——它无 `* metagenomes` 子层，按规则 `type` 留空，但仍是 metagenome，归 `is_metagenome=1`）。
-  - 非 metagenome 的 ~23.7% 行（*Homo sapiens*、*Bacteria*、各菌属等）`type` 留空，符合预期。
+
 
 
 ---
@@ -125,8 +122,8 @@
 
 - **目标**：为每个 project 找到**真正属于它**的发表文献，给 `PaperSource` 标置信：`high` / `linkauthor` / `low` / `missing`。
 - **方法（两步，越靠前越准）**：
-  1. **先用项目编号查 Europe PMC**（最准，指名道姓）：`PROJECT_ID:` / `BIOPROJECT:` / `ACCESSION:` 查询，命中即真关联 → `high`。
-     - 实测坑：DDBJ 来源（`PRJDB*`）在 EPMC 按上述字段**常 0 命中**，须直接走第 2 步。
+1. **先用项目编号查 Europe PMC**（最准，指名道姓）：`PROJECT_ID:` / `BIOPROJECT:` / `ACCESSION_ID:` 查询，命中即真关联 → `high`；**只保留按发表年（pubYear）升序最早 1–2 篇**（后续关联可能只是引用、不详细描述本项目，且可滤掉晚于项目的疑似假阳性）。
+     - 实测坑：DDBJ 来源（`PRJDB*`）在 EPMC 按上述字段**常 0 命中**（连 `ACCESSION_ID` 也多为 0），须直接走第 2 步。
   2. **查不到才用项目描述搜 Europe PMC**（free-text，四策略回退）：以 `study_title` / `description` / `center_name` 构造查询，会带出大量"话题相关"论文（不一定是本项目发的）→ 必须过**作者单位过滤 + metagenome 关键词判定**后才定型：
      - **四策略**（按序回退、`exact` 命中即短路）：`exact`（引号包完整标题短语）→ `loose`（标题实词去停用词/通用词）→ `loose_desc`（描述实词）→ `author`（`AUTHOR:"姓" 主题词`，姓取自 center 里的作者姓氏）。合并去重成候选池，并记录每篇由哪个策略命中（`tag_of`）。
      - **单位匹配**：候选论文抽作者单位，与项目"强机构 token"（≥4 字母、排除地理州名如 Japan/China 与**学科词**如 Medicine/Anatomy/Biology，避免假阳性）比对；`center_name` 提取的强机构 token 在 paper 作者单位里命中 → 视为关联(linked)。
@@ -158,7 +155,7 @@
 
 | `strategy` | 含义 |
 |---|---|
-| `accession` | 编号在 EPMC 直连命中（≥1 篇）—— "指名道姓"权威关联，`papers[]` 全 `high`，不经单位过滤、不产生 `linkauthor` |
+| `accession` | 编号在 EPMC 直连命中（按 pubYear 升序取最早 1–2 篇）—— "指名道姓"权威关联，`papers[]` 全 `high`，不经单位过滤、不产生 `linkauthor` |
 | `freetext` | 编号未命中改用描述搜，返回"话题相关"候选，**须经单位过滤 + metagenome 关键词判定**后才定型：`high` / `linkauthor` / `low` / `missing` |
 | `ERR` | 处理该项目时网络/解析异常，需重跑（断点续跑自动补） |
 
@@ -184,14 +181,14 @@
   - `--phase fulltext`（默认 `scope=high`：仅 `papersource=high`；`--fulltext-limit N` 默认 5）
   - `--phase fulltext --fulltext-scope any --fulltext-limit N`（测试/演示：任何有 free 全文的候选都下）
   - 起初只爬标题+摘要+其它信息（§2.2 已得）；按需求再对部分项目做全文爬取（`project_fulltext.jsonl`）——**注意部分文章非 openAccess，不一定能下载**。
-- **EPMC 全文现状（实测 2026-08，重要）**：JATS XML 与 HTML 端点均返 **JS SPA 空壳**（无正文）；实际可得的只有出版商 `Open access` **PDF**（`fullTextUrlList` 里 `style=pdf`）→ 脚本优先下此 PDF（真实全文，二进制）。要变可用文本需下游 PDF 抽取（pdfminer/pypdf，**超出本脚本范围**）。与红线"默认不爬全文"一致。
+- **EPMC 全文现状（实测 2026-08，重要）**：EPMC **REST API 直接返回 JATS XML 全文**——`GET /rest/PMC{pmcid}/fullTextXML` 对开放获取（PMC OA）论文返回 `application/xml` 的完整 `<article>`（含正文、方法、结果） 纯文本。非 PMC / 非 OA 的论文无 JATS XML（404），此时回退到出版商 `Open access` **PDF**（`fullTextUrlList` 里 `style=pdf`）或仅用标题+摘要。脚本优先下 XML，PDF 作兜底。与红线"默认不爬全文"一致。
 
 #### 2.3 输出 schema
 
 > **产物文件 / 模式**：
 > - `project_literature.jsonl`（§2.2 同文件，`papers[]` 内每篇论文记录，见 ①）
 > - `project_fulltext.jsonl`（仅 `--phase fulltext` 产出；glob `project_fulltext.jsonl`，唯一）
-> - `<out>/fulltext/<pmid>.pdf`（下载的真实 PDF；glob `fulltext/*.pdf`）
+> - `<out>/fulltext/<pmcid>.xml`（优先：JATS 全文，纯文本）/ `<pmid>.pdf`（兜底：仅当无 XML 时）
 > - `fulltext_stats.json`（全文下载统计；glob `fulltext_stats.json`，唯一）
 
 **① 每篇论文记录（内嵌于 `project_literature.jsonl` 的 `papers[]`，§2.2 已落地）**
@@ -215,12 +212,12 @@
 | 字段 | 含义 |
 |---|---|
 | `pmid` / `pmcid` | 论文标识 |
-| `file` | 下载到 `<out>/fulltext/<pmid>.pdf` 的路径 |
+| `file` | 下载到 `<out>/fulltext/<pmcid>.xml`（JATS 全文，优先）或 `<pmid>.pdf`（兜底）的路径 |
 | `size` | 字节数 |
-| `status` | `ok`（真实 PDF）/ `no_free`（有 URL 但非 OA）/ `failed`（SPA 壳或网络错） |
-| `note` | 失败原因（如 "SPA shell skipped"） |
+| `status` | `ok_xml`（JATS XML 全文）/ `ok_pdf`（兜底 PDF）/ `no_free`（无 OA 全文）/ `failed`（网络错） |
+| `note` | 失败原因 |
 
-- **易错点**：全文仅 PDF 可得且需额外抽取，默认关；papersource=low/missing 论文不参与自动推断。
+- **易错点**：全文优先取 JATS XML（文本，免抽取）；仅非 PMC/非 OA 才回退 PDF；默认关；papersource=low/missing 论文不参与自动推断。
 
 
 ---
@@ -232,7 +229,7 @@
 ### 3.0 核心：每条推断带两个互相独立的质控标签 + evidence
 
 - **标签 A — 匹配内容本身的可信度**（`content_reliability`）：被匹配到的文本片段本身可不可信（明确采样声明 vs 模糊提及）。
-- **标签 B — 文本来源**（`source`）：`study_meta`（ENA 自述，权威可信）/ `literature`（关联论文文本，仅 `papersource=high` 才采用，与 ENA 自述**同等可信**）。`papersource=low` 进人工、`missing` 丢弃，不参与自动推断（沿用 §2.2 关联置信分档）。
+- **标签 B — 文本来源**（`source`）：`study_meta`（ENA 自述，权威可信）/ `literature`（关联论文文本，仅 `papersource=high` 才采用，与 ENA 自述**同等可信**）。`papersource=linkauthor`（质量等同 low）、`low` 进人工、`missing` 丢弃，不参与自动推断（沿用 §2.2 关联置信分档）。
 - 两轴**互不影响**：来源强不代表内容模糊就升可信。本项目已无弱源，故实务上两轴在来源侧一致，但 `content_reliability` 仍独立刻画"片段本身的明确度"。
 - 每条推断**记录相关上下文**作为 `evidence`（谁、哪段原文、怎么匹配），供复核与 §3.2/§3.3 使用。
 
@@ -424,7 +421,7 @@
 ## 开放问题
 
 - 小批验证正例偏少（仅 PRJEB11419 触发单位过滤）。建议换大批次再跑一轮，更全面地检验 accession 命中 + 单位匹配。
-- 全文目前仅落到 PDF，未做文本抽取；如确需全文文本用于推断，须追加 PDF 抽取步骤（pdfminer/pypdf）。
+- 全文经 EPMC REST `/fullTextXML` 已可得 **JATS XML 纯文本**（无需 PDF 抽取）；脚本 `--phase fulltext` 优先下 XML、PDF 兜底。如后续确需更强解析，可在 XML 上做 xpath/正文抽取。
 
 ---
 

@@ -18,8 +18,9 @@ ENA 项目 → 关联论文 采集 + PaperSource 标注 + 全文下载  (Replan.
            linkauthor 仅由 free-text 分支产生, 质量视作 low, 不进入 §2.3 全文下载(high-only)
          · 每篇论文同时捕获 fullTextUrlList -> full_text_urls / full_text_available (供 §2.3)
   §2.3  全文下载 (可选, **默认关**)
-         · 从 project_literature.jsonl 取 high 论文, 下载 EPMC free 全文 (优先 JATS XML)
-         · 落 --out/fulltext/<pmid>.<xml|html>
+         · 从 project_literature.jsonl 取 high 论文, 下载 EPMC free 全文
+         · 优先 EPMC REST JATS XML (/rest/PMC{pmcid}/fullTextXML, 纯文本免抽取); 无则回退出版商 OA PDF
+         · 落 --out/fulltext/<pmcid>.xml (优先) 或 <pmid>.pdf (兜底); 写 project_fulltext.jsonl + fulltext_stats.json
 
 用法
 ----
@@ -89,6 +90,11 @@ def _replan_log(msg):
 ENA_API = "https://www.ebi.ac.uk/ena/portal/api/search"
 EPMC    = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 UA = {"User-Agent": "ena-associate-papers/1.0"}
+
+# accession 强源分支: 取发表日期最早的 1-2 篇。
+# 理由: 项目编号关联到的论文里, 最早发表的才是真正描述本项目的研究;
+#       后续关联往往只是引用/提及, 不会详细描述本项目。
+ACCESSION_TOP_N = 2
 
 # ---------------------------------------------------------------- 词典
 STOP = {"study","studies","metagenome","metagenomic","metagenomes","genome",
@@ -377,14 +383,21 @@ def process_one(acc, meta, freetext_n):
            "query": "", "hitCount": 0, "papers": []}
     # ---- 1) accession-first (最准, 指名道姓) ----
     #    该分支命中即 high 强源, 与 free-text 的 linkauthor 无关。
-    for fld in ("PROJECT_ID", "BIOPROJECT", "ACCESSION"):
-        h, res = epmc_search("%s:%s" % (fld, acc), 5)
+    for fld in ("PROJECT_ID", "BIOPROJECT", "ACCESSION_ID"):
+        # ACCESSION_ID 才是 ENA/DDBJ project 编号在 EPMC 里的正确字段
+        # (旧代码误用 ACCESSION, 对本区间项目一律 0 命中)
+        h, res = epmc_search("%s:%s" % (fld, acc), 25)
         if h and h > 0:
+            # 取发表日期最早的 ACCESSION_TOP_N 篇:
+            # 后续关联可能只是引用、不详细描述本项目
+            res_sorted = sorted(
+                res, key=lambda p: int((p.get("pubYear") or "0") or 0)
+            )[:ACCESSION_TOP_N]
             rec["accession_hit"] = True
             rec["strategy"] = "accession"
             rec["query"] = "%s:%s" % (fld, acc)
             rec["hitCount"] = len(res)
-            for p in res[:5]:
+            for p in res_sorted:
                 rec["papers"].append(paper_record(p, "high", matched="(accession-linked)"))
             return rec
     # ---- 2) free-text (多策略检索 + 单位过滤 + linkauthor) ----
@@ -483,90 +496,122 @@ def phase_lit(meta, out_dir, limit=None, freetext_n=20):
 
 # ================================================================ §2.3 全文下载 (可选, 默认关)
 def fetch_url(url):
+    """GET 二进制内容。返回 (data, err): data=字节或 None; err=None / 'http'(404/403 等) / 'net'(超时/DNS)。"""
+    last = None
     for _ in range(3):
         try:
             req = urllib.request.Request(url, headers=UA)
             with urllib.request.urlopen(req, timeout=90) as r:
-                return r.read()
+                return r.read(), None
+        except urllib.error.HTTPError:
+            last = "http"; time.sleep(0.5)
         except Exception as e:
-            log("    dl err: %s" % e); time.sleep(1.0)
-    return None
-
-
-def _is_spa_shell(data):
-    """EPMC 文章页现在是 JS 单页应用: 返回 <title>Europe PMC</title> 的空壳, 无正文。
-    这种 HTML 无提取价值, 须跳过。"""
-    head = data[:3000].lower()
-    return b"<title>europe pmc" in head and b"<article" not in head and b"<?xml" not in head
+            last = "net"; log("    dl err: %s" % e); time.sleep(1.0)
+    return None, last
 
 
 def fulltext_content(p, free):
-    """返回 (bytes, ext)。优先级: EPMC REST JATS XML > 出版商 PDF(真实全文) > HTML(若为SPA则弃)。
-    注: EPMC 现已不再暴露 JATS XML (REST 404 / ?report=xml 返回SPA壳), 实际可得的只有出版商 PDF。"""
-    # 1) EPMC REST JATS XML (若文章在全文子集内)
+    """返回 (data, kind, note, neterr)。
+    kind ∈ {None, 'xml', 'pdf'}; neterr=True 表示发生过真实网络层错误(用于区分 failed vs no_free)。
+    优先级: EPMC REST JATS XML > 出版商 OA PDF。
+      · 有 pmcid 先 GET /rest/PMC{num}/fullTextXML; 200 + 真实 JATS(<?xml) → ('xml', None)
+      · XML 不可得(404/非PMC/非OA/网络错) → 回退 free PDF(style=pdf); 真实 %PDF → ('pdf', None)
+      · 两者皆无 → (None, None, note, neterr)
+    注: EPMC **REST API 直接返回 JATS XML 全文**(纯文本, 免抽取); 仅非 PMC / 非 OA 才回退 PDF。"""
+    neterr = False
     pmcid = p.get("pmcid")
     if pmcid and pmcid.upper().startswith("PMC"):
-        num = pmcid[3:]
-        url = "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC/%s/fullTextXML" % num
-        data = fetch_url(url)
-        if data and len(data) > 500 and not _is_spa_shell(data):
-            return data, "xml"
-    # 2) fullTextUrlList: 优先 pdf (真实全文, 二制), 其次 html(但若SPA则弃)
+        # EPMC 全文端点要求 source+id 连写: /rest/PMC{id}/fullTextXML (斜杠拆分 PMC/{id} 会 404)
+        url = "https://www.ebi.ac.uk/europepmc/webservices/rest/%s/fullTextXML" % pmcid.upper()
+        data, err = fetch_url(url)
+        if data and b"<?xml" in data[:200] and len(data) > 500:
+            return data, "xml", None, False
+        if err == "net":
+            neterr = True
+        xml_note = ("XML 404/非OA 无 JATS" if err == "http"
+                    else "XML 网络错" if err == "net" else "XML 无响应")
+    else:
+        xml_note = "无 pmcid, 跳过 XML"
+    # PDF 兜底
     pdf = next((u for u in free if u.get("style") == "pdf"), None)
     if pdf:
-        data = fetch_url(pdf.get("url"))
-        if data and len(data) > 500 and not _is_spa_shell(data):
-            return data, "pdf"
-    html = next((u for u in free if u.get("style") == "html"), None)
-    if html:
-        data = fetch_url(html.get("url"))
-        if data and len(data) > 500 and not _is_spa_shell(data):
-            return data, "html"
-    return None, None
+        data, err = fetch_url(pdf.get("url"))
+        if data and data[:4] == b"%PDF" and len(data) > 500:
+            return data, "pdf", None, False
+        if err == "net":
+            neterr = True
+        pdf_note = ("PDF 非PDF内容" if err == "http"
+                    else "PDF 网络错" if err == "net" else "PDF 无响应")
+    else:
+        pdf_note = "无 free PDF URL"
+    notes = [xml_note]
+    if pdf is not None:
+        notes.append(pdf_note)
+    return None, None, "; ".join(notes), neterr
 
 
 def phase_fulltext(out_dir, scope="high", limit=5):
     """§2.3 全文下载: 从 project_literature.jsonl 取候选, 下载 free 全文到 fulltext/。
-    scope=high 仅 high 论文 (符合 §2.3 口径, linkauthor 视作低质量不进入); scope=any 用于测试/演示。"""
+    scope=high 仅 high 论文 (linkauthor 视作低质量不进入); scope=any 用于测试/演示。
+    写 project_fulltext.jsonl (每篇下载记录: pmid/pmcid/file/size/status/note) + fulltext_stats.json。"""
     lit_path = os.path.join(out_dir, "project_literature.jsonl")
     if not os.path.exists(lit_path):
         sys.exit("缺少 project_literature.jsonl, 先跑 --phase lit")
     ft_dir = os.path.join(out_dir, "fulltext")
     os.makedirs(ft_dir, exist_ok=True)
-    # EPMC fullTextUrlList 的 availability 可能是 "free" / "Open access" (都可下载)
-    FREE_AVAIL = {"free", "open access"}
-    stats = {"scanned_projects": 0, "candidates": 0, "attempted": 0,
-             "ok": 0, "no_free": 0, "failed": 0, "skipped_scope": 0, "skipped_limit": 0}
+    FREE_AVAIL = {"free", "open access"}   # EPMC fullTextUrlList availability 两种皆可下载
+    stats = {"scanned_projects": 0, "candidates": 0, "ok_xml": 0, "ok_pdf": 0,
+             "no_free": 0, "failed": 0, "skipped_scope": 0, "skipped_limit": 0}
     downloaded = 0
-    with open(lit_path, encoding="utf-8") as f:
+    ft_path = os.path.join(out_dir, "project_fulltext.jsonl")
+    with open(lit_path, encoding="utf-8") as f, \
+         open(ft_path, "w", encoding="utf-8") as fo:
         for line in f:
             rec = json.loads(line)
+            pa = rec.get("project_accession")
             stats["scanned_projects"] += 1
             for p in rec.get("papers", []):
                 ps = p.get("papersource")
                 if scope == "high" and ps != "high":
                     stats["skipped_scope"] += 1
                     continue
+                pmcid = p.get("pmcid")
                 free = [u for u in (p.get("full_text_urls") or [])
                         if (u.get("avail") or "").strip().lower() in FREE_AVAIL]
-                if not free:
+                # 无 pmcid 且无 free PDF → 确实无 OA 全文, 记 no_free (不尝试网络)
+                if not pmcid and not free:
                     stats["no_free"] += 1
+                    fo.write(json.dumps({
+                        "project_accession": pa, "pmid": p.get("pmid"), "pmcid": pmcid,
+                        "file": None, "size": 0, "status": "no_free",
+                        "note": "无 pmcid 且无 free PDF URL"
+                    }, ensure_ascii=False) + "\n")
                     continue
                 stats["candidates"] += 1
                 if downloaded >= limit:
                     stats["skipped_limit"] += 1
                     continue
-                stats["attempted"] += 1
-                content, ext = fulltext_content(p, free)
+                content, kind, note, neterr = fulltext_content(p, free)
                 if not content:
-                    stats["failed"] += 1
+                    status = "failed" if neterr else "no_free"
+                    stats[status] += 1
+                    fo.write(json.dumps({
+                        "project_accession": pa, "pmid": p.get("pmid"), "pmcid": pmcid,
+                        "file": None, "size": 0, "status": status, "note": note
+                    }, ensure_ascii=False) + "\n")
                     continue
-                name = (p.get("pmid") or p.get("pmcid") or "art").replace("/", "_")
+                name = (pmcid if kind == "xml" else (p.get("pmid") or "art")).replace("/", "_")
+                ext = "xml" if kind == "xml" else "pdf"
                 fp = os.path.join(ft_dir, "%s.%s" % (name, ext))
                 with open(fp, "wb") as o:
                     o.write(content)
-                stats["ok"] += 1
+                rel = "fulltext/%s.%s" % (name, ext)
+                stats["ok_%s" % kind] += 1
                 downloaded += 1
+                fo.write(json.dumps({
+                    "project_accession": pa, "pmid": p.get("pmid"), "pmcid": pmcid,
+                    "file": rel, "size": len(content), "status": "ok_%s" % kind, "note": None
+                }, ensure_ascii=False) + "\n")
                 log("    dl %s -> %s (%d bytes)" % (name, ext, len(content)))
                 time.sleep(0.2)
     sp = os.path.join(out_dir, "fulltext_stats.json")
