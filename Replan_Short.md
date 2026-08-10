@@ -37,10 +37,7 @@
 搜索关联论文，为 PaperSource 标注置信来源（`papersource`：high/low/missing）
 
 1. 先用项目编号查 Europe PMC（最准，指名道姓: high quality）
-2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位过滤，如果候选论文里单位跟项目单位：
-    - 对上&有关键字 → freetext(high quality)
-    - 对上&无关键字 → linkauthor(low quality)
-    - 对不上 → missing(low quality)
+2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位&宏基因组关键词过滤
 
 爬取论文的 标题+摘要/[全文:默认不爬]+paper的其它信息，比如：paper_title / paper_authors / paper_year /journal/pmid/pmcid/doi 
 
