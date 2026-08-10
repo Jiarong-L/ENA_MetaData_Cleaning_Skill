@@ -3,19 +3,19 @@
 > **数据范围**：`library_source=METAGENOMIC` & `library_strategy=WGS` 的 run。
 > **本项目示例**：`ENA_cleaning`，区间 `yyyy-mm-dd ~ yyyy-mm-dd`。
 > **适用范围**：任何从 ENA 拉取并补全样本元数据（`country` / `date` / `host`）的任务，仅改筛选/区间即可套用。
-> **配套代码**：§2.1+§2.2+§2.3 通用脚本 **`.script/ena_associate_papers.py`**（已小批验证，断点续跑、路径参数化，只读 `--src` 不改动 `.replan` 外文件）；§3.1 规则基线 **`.script/ena_infer_31.py`**；§1.2 类型解析 **`.script/ena_taxid_type.py`**。
+> **配套代码**：§2.1+§2.2+§2.3 通用脚本 **`.script/ena_associate_papers.py`**（已小批验证，断点续跑、路径参数化，只读 `--src` 不改动 `./` 外文件）；§3.1 规则基线 **`.script/ena_infer_31.py`**；§1.2 类型解析 **`.script/ena_taxid_type.py`**。
 
 ---
 
-## 目录结构（`.replan/` 为根）
+## 目录结构（`./` 为根）
 
-本流程以 `.replan/` 作为自洽根目录，所有脚本与中间产物均在其内部，不依赖 `.replan` 之外的其它项目文件/缓存（可直接作为可复用模板拷贝到任意项目）。布局如下：
+本流程以 `./` 作为自洽根目录，所有脚本与中间产物均在其内部，不依赖 `.` 之外的其它项目文件/缓存（可直接作为可复用模板拷贝到任意项目）。布局如下：
 
 ```
-.replan/
+./
 ├── Replan.md                 # 完整方法论（本文件）
 ├── Replan_Short.md           # 精简版说明
-├── .script/                  # 所有可复用脚本（根目录 .replan 下的 ena_*.py / 测试脚本等）
+├── .script/                  # 所有可复用脚本（根目录 . 下的 ena_*.py / 测试脚本等）
 │   ├── ena_fetch_runs.py     # 步骤 1：ENA 数据拉取
 │   ├── ena_taxid_type.py     # 步骤 1.2：tax_id → type/scientific_name 解析
 │   ├── ena_associate_papers.py  # 步骤 2：关联论文（study_meta / literature / fulltext）
@@ -34,7 +34,7 @@
 └── .tmp/                     # 其它一切中间流程产物（断点续跑、可重建）
 ```
 
-**路径约定**：脚本均位于 `.script/`，通过 `ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))`（即 `.replan/`）解析其余目录；`.manual/`→`MANUAL_DIR`、`.reuse/`→`REUSE_DIR`、`.log/`→`LOG_DIR`、`.tmp/`→`TMP_DIR`。运行日志统一走 `_replan_log(msg)` 追加到 `.log/run_YYYY-MM-DD.log`。
+**路径约定**：脚本均位于 `.script/`，通过 `ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))`（即 `./`）解析其余目录；`.manual/`→`MANUAL_DIR`、`.reuse/`→`REUSE_DIR`、`.log/`→`LOG_DIR`、`.tmp/`→`TMP_DIR`。运行日志统一走 `_replan_log(msg)` 追加到 `.log/run_YYYY-MM-DD.log`。
 
 ---
 
@@ -52,7 +52,7 @@
 
 - **目标**：确认从 ENA 查询某 run 能否提取指定字段，再拉取区间 `yyyy-mm-dd ~ yyyy-mm-dd`、`METAGENOMIC`+`WGS` 的 run，汇总存本地。
 - **输入**：ENA Portal `read_run`；筛选 `library_source="METAGENOMIC" AND library_strategy="WGS"`；`first_public ∈ [yyyy-mm-dd, yyyy-mm-dd]`。
-- **脚本**：`.script/ena_fetch_runs.py`（`python ena_fetch_runs.py` 全量｜`yyyy` 单年｜`yyyy,yyyy` 多年｜`--force yyyy` 重抓）。
+- **脚本**：`.script/ena_fetch_runs.py`（`python ena_fetch_runs.py` yyyy-mm-dd  yyyy-mm-dd）。
 - **输出**：`raw.metagenomic_wgs.csv` —— 从 ENA 爬取的原始元数据，是**待清洗的对象**。
 
 ### 1.1 输出 schema（14 列，read_run 直接返回）
@@ -430,7 +430,7 @@
 
 ## 复现脚本总表（输入 / 输出 / 状态）
 
-> 按步骤列出「复现本流程所需的脚本」。`.script/` 内脚本均只读输入、不改动 `.replan` 外文件、支持断点续跑；`first_public` 批次等测试产物落 `.tmp/`（仅 replan 内部，不依赖其它项目文件/缓存）。
+> 按步骤列出「复现本流程所需的脚本」。`.script/` 内脚本均只读输入、不改动 `./` 外文件、支持断点续跑；`first_public` 批次等测试产物落 `.tmp/`（仅本项目内部，不依赖其它项目文件/缓存）。
 
 | 步骤 | 脚本 | 位置 | 输入 | 输出（文件名 / glob） | 状态 |
 |---|---|---|---|---|---|

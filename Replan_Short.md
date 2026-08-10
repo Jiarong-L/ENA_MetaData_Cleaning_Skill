@@ -5,7 +5,7 @@
 
 ## 路径设置 
 
-先约定，本流程以 `.replan/` 为根目录：脚本放在 `.script/` 中，用户补判资源（manual_check_*.json）放在 `.manual/`，稳定复用资源（taxid_type.tsv）放在 `.reuse/`，运行日志放在 `.log/`，其它一切中间流程产物放在 `.tmp/`。脚本通过 `ROOT = 父目录/.replan` 解析这些目录，不依赖 `.replan` 之外的文件。 
+先约定，本流程以 `./` 为根目录：脚本放在 `.script/` 中，用户补判资源（manual_check_*.json）放在 `.manual/`，稳定复用资源（taxid_type.tsv）放在 `.reuse/`，运行日志放在 `.log/`，其它一切中间流程产物放在 `.tmp/`。脚本通过 `ROOT = 父目录/.` 解析这些目录，不依赖 `.` 之外的文件。 
 
 ## 步骤 1 
 

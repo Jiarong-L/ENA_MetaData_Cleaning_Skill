@@ -29,14 +29,17 @@
 说明:
   - continent 不在 read_run 字段中, 需后续由 country 推导 (本脚本不处理)
   - location 为经纬度坐标 (latlon), 非地名文本
-  - 年份末段 2026 只到 2026-08-01
+  - 年份/默认模式: 末段 2026 只到 2026-08-01; 显式日期区间模式 (START END) 以给定 END 为准 (精确到日, 最自由)
   - 各年 first_public 区间互不重叠, 二分切分边界也严格不重叠, 故合并无需去重
 
 用法:
-  python ena_fetch_runs.py                  # 全量 2020..2026
-  python ena_fetch_runs.py 2020             # 只跑 2020
-  python ena_fetch_runs.py 2020,2021        # 指定年份
-  python ena_fetch_runs.py --force 2020     # 强制重抓已存在的年份
+  python ena_fetch_runs.py                                # 默认 2020..2026 (末段 2026 到 2026-08-01)
+  python ena_fetch_runs.py 2020                           # 只跑 2020 年
+  python ena_fetch_runs.py 2020 2021                      # 指定若干年份 (空格分隔)
+  python ena_fetch_runs.py 2020,2021                      # 指定若干年份 (逗号分隔, 兼容旧式)
+  python ena_fetch_runs.py 2020-01-01 2026-08-10          # ★日期区间模式: 起 止 (最自由, 末段精确到给定日)
+  python ena_fetch_runs.py 2020-01-01,2026-08-10          # 日期区间也可逗号连写 (兼容旧式)
+  python ena_fetch_runs.py --force 2020                   # 强制重抓已存在的年份
 """
 import urllib.request
 import urllib.parse
@@ -73,6 +76,25 @@ def year_ranges(start_year, end_year, final_end="2026-08-01"):
         end = final_end if y == 2026 else f"{y}-12-31"
         ranges.append((y, f"{y}-01-01", end))
     return ranges
+
+
+def range_to_year_chunks(start_date, end_date):
+    """把任意日期区间 [start_date, end_date] 拆成按年切片 (每片仍可二分)。
+
+    返回 [(year, y_start, y_end), ...]: 首年从 start_date 起, 末年到 end_date 止,
+    中间整年均为 01-01..12-31。这样既保留"逐年一个 .jsonl + 断点续跑"的结构,
+    又能表达任意起止日 (精确到日), 不必再硬编码末段日期。
+    """
+    d0 = datetime.strptime(start_date, DATE_FMT)
+    d1 = datetime.strptime(end_date, DATE_FMT)
+    if d1 < d0:
+        raise ValueError("结束日期早于开始日期: %s > %s" % (start_date, end_date))
+    chunks = []
+    for y in range(d0.year, d1.year + 1):
+        ys = start_date if y == d0.year else f"{y}-01-01"
+        ye = end_date if y == d1.year else f"{y}-12-31"
+        chunks.append((y, ys, ye))
+    return chunks
 
 
 def make_query(start, end):
@@ -166,11 +188,28 @@ def merge_all(log):
 
 
 def main():
-    args = sys.argv[1:]
-    force = "--force" in args
-    pos = [a for a in args if a != "--force"]
-    # 显式日期区间模式: 2020-01-01,2020-08-01
-    dm = re.match(r"^(\d{4}-\d{2}-\d{2}),(\d{4}-\d{2}-\d{2})$", pos[0]) if pos else None
+    raw = sys.argv[1:]
+    force = "--force" in raw
+    pos = [a for a in raw if a != "--force"]
+
+    # 把逗号连写的参数拆开, 统一成 token 列表 (兼容旧式 "2020,2021" / "2020-01-01,2026-08-10")
+    tokens = []
+    for a in pos:
+        tokens.extend(a.split(","))
+
+    DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+    YEAR_RE = re.compile(r"^\d{4}$")
+
+    # 判定调用模式 (优先级: 日期区间 > 年份列表 > 默认)
+    if len(tokens) == 2 and DATE_RE.match(tokens[0]) and DATE_RE.match(tokens[1]):
+        mode, start_date, end_date = "range", tokens[0], tokens[1]
+    elif len(tokens) == 1 and DATE_RE.match(tokens[0]):
+        mode, start_date, end_date = "range", tokens[0], tokens[0]   # 单日区间
+    elif tokens and all(YEAR_RE.match(t) for t in tokens):
+        year_list = [int(t) for t in tokens]
+        mode = "years"
+    else:
+        mode, year_list = "default", list(range(2020, 2027))
 
     os.makedirs(TMP_DIR, exist_ok=True)
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -194,22 +233,14 @@ def main():
         logf.flush()
 
     t0 = time.time()
-    if dm:
-        start_s, end_s = dm.group(1), dm.group(2)
-        name = f"{start_s}_{end_s}"
-        final = os.path.join(TMP_DIR, f"ena_runs_{name}.jsonl")
-        tmp = final + ".tmp"
-        log(f"=== START (range={start_s}..{end_s}, date_field={DATE_FIELD}, force={force}) ===")
-        if not force and os.path.exists(final) and os.path.getsize(final) > 2:
-            log(f"  区间 {start_s}..{end_s}: 已存在 {final}, 跳过")
-        else:
+    if mode == "range":
+        log(f"=== START (range={start_date}..{end_date}, date_field={DATE_FIELD}, force={force}) ===")
+        for (y, s, e) in range_to_year_chunks(start_date, end_date):
+            log(f"--- year {y}: {s} .. {e} ---")
             t1 = time.time()
-            with open(tmp, "w", encoding="utf-8") as f:
-                total = collect_range(start_s, end_s, f, log)
-            os.replace(tmp, final)
-            log(f"  区间 {start_s}..{end_s}: 共 {total} runs, 用时 {time.time()-t1:.1f}s")
-    else:
-        year_list = [int(x) for x in pos[0].split(",")] if pos else list(range(2020, 2027))
+            fetch_year(y, s, e, log, force=force)
+            log(f"--- year {y} 完成, 用时 {time.time()-t1:.1f}s ---")
+    else:  # years / default: 沿用 year_ranges (末段 2026 到 2026-08-01)
         start_year, end_year = min(year_list), max(year_list)
         log(f"=== START (years={year_list}, date_field={DATE_FIELD}, force={force}) ===")
         for (y, s, e) in year_ranges(start_year, end_year):

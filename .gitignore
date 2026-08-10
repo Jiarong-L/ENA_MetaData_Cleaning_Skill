@@ -1,3 +1,4 @@
 .workbuddy/
 .script/*/
 .tmp/
+.log/
