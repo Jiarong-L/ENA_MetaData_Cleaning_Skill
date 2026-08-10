@@ -112,7 +112,7 @@
 
 对每个 `project_accession`（= 步骤 1 已统一表头的 `study_accession`）：
 
-### 2.1 爬取 ENA 自述（强源）— 目前方法合理
+### 2.1 爬取 ENA 自述（强源）
 
 - **目标**：取 `study_title` / `center_name` / `study_description`。
 - **输入**：ENA portal `result=study`，按 `study_accession`（即 `project_accession`）批量（每批 ≤80）。
@@ -121,17 +121,24 @@
 - **易错点**：这是**强源**（ENA 自述，权威），优先于任何论文信号；`center_name` 很多项目为空，勿因空误判。
 
 
-### 2.2 搜索关联论文 + 标注 PaperSource 置信 — 方法已定
+### 2.2 搜索关联论文 + 标注 PaperSource 置信 
 
-- **目标**：为每个 project 找到**真正属于它**的发表文献，给 `PaperSource` 标置信：`high` / `low` / `missing`。
+- **目标**：为每个 project 找到**真正属于它**的发表文献，给 `PaperSource` 标置信：`high` / `linkauthor` / `low` / `missing`。
 - **方法（两步，越靠前越准）**：
   1. **先用项目编号查 Europe PMC**（最准，指名道姓）：`PROJECT_ID:` / `BIOPROJECT:` / `ACCESSION:` 查询，命中即真关联 → `high`。
      - 实测坑：DDBJ 来源（`PRJDB*`）在 EPMC 按上述字段**常 0 命中**，须直接走第 2 步。
-  2. **查不到才用项目描述搜 Europe PMC**（free-text）：以 `study_title` / `description` 当关键词，会带出大量"话题相关"论文（不一定是本项目发的）→ 必须过**作者单位过滤**：候选论文抽作者单位，**与项目独特机构/城市 token 对上 → 采纳(high)**；**对不上 → 丢弃(missing)**；**无单位信息 → low（进人工）**。
-- **脚本**：`.script/ena_associate_papers.py --phase lit`（accession 优先 + free-text + affiliation 过滤；`--phase all` 一次跑完 §2.1+§2.2）。
+  2. **查不到才用项目描述搜 Europe PMC**（free-text，四策略回退）：以 `study_title` / `description` / `center_name` 构造查询，会带出大量"话题相关"论文（不一定是本项目发的）→ 必须过**作者单位过滤 + metagenome 关键词判定**后才定型：
+     - **四策略**（按序回退、`exact` 命中即短路）：`exact`（引号包完整标题短语）→ `loose`（标题实词去停用词/通用词）→ `loose_desc`（描述实词）→ `author`（`AUTHOR:"姓" 主题词`，姓取自 center 里的作者姓氏）。合并去重成候选池，并记录每篇由哪个策略命中（`tag_of`）。
+     - **单位匹配**：候选论文抽作者单位，与项目"强机构 token"（≥4 字母、排除地理州名如 Japan/China 与**学科词**如 Medicine/Anatomy/Biology，避免假阳性）比对；`center_name` 提取的强机构 token 在 paper 作者单位里命中 → 视为关联(linked)。
+     - **定型（仅 free-text 分支）**：
+       - 单位对上 **或** `author` 策略命中（linked）**且** 标题/摘要含 `metagenome/metagenomic/metagenomes/metagenomics/metatranscriptome/metatranscriptomic/metaproteome/metaproteomic` → **`high`**（确属本项目的真·宏基因组论文，自动采纳）；
+       - linked 但**摘要无 metagenome 关键词** → **`linkauthor`**（低质量：同一批作者/机构、但论文本身并非宏基因组研究，很可能他们对同一样本做了别的研究、宏基因组论文尚未发布）；
+       - 有单位信息但与项目期望单位**完全无重叠** → **`missing`**（噪声，丢弃）；
+       - 无单位信息 → **`low`**（进人工）。
+- **脚本**：`.script/ena_associate_papers.py --phase lit`（accession 优先 + free-text 四策略 + 单位过滤 + metagenome 关键词判定；`--phase all` 一次跑完 §2.1+§2.2）。
 - **输出**：`project_literature.jsonl`（每行一个项目记录，`papers[]` 含 `papersource`）。
 
-#### 2.2 输出 schema（逐字段解释）
+### 2.2 输出 schema（逐字段解释）
 
 > **产物文件 / 模式**：`project_literature.jsonl`（每项目一行；glob 匹配 `project_literature.jsonl`，唯一）。
 
@@ -151,21 +158,22 @@
 
 | `strategy` | 含义 |
 |---|---|
-| `accession` | 编号在 EPMC 直连命中（≥1 篇）—— "指名道姓"权威关联，`papers[]` 全 `high`，不经单位过滤 |
-| `freetext` | 编号未命中改用描述搜，返回的只是"话题相关"候选，**须经单位过滤**后才会出现 `high`，否则 `low`/`missing` |
+| `accession` | 编号在 EPMC 直连命中（≥1 篇）—— "指名道姓"权威关联，`papers[]` 全 `high`，不经单位过滤、不产生 `linkauthor` |
+| `freetext` | 编号未命中改用描述搜，返回"话题相关"候选，**须经单位过滤 + metagenome 关键词判定**后才定型：`high` / `linkauthor` / `low` / `missing` |
 | `ERR` | 处理该项目时网络/解析异常，需重跑（断点续跑自动补） |
 
-**每篇候选论文 `papers[]` 的 `papersource` 三档**
+**每篇候选论文 `papers[]` 的 `papersource` 四档**
 
 | `papersource` | 含义 | 处置 |
 |---|---|---|
-| `high` | 论文**确属该项目发表**：accession 直连命中，或 free-text 中作者单位与项目独特机构/城市 token 对上 | 自动采纳为关联文献 |
+| `high` | 论文**确属该项目发表**：accession 直连命中，或 free-text 中"单位/作者关联"且标题/摘要含 metagenome 关键词（真·宏基因组论文） | 自动采纳为关联文献，文本可直接用于 high 推断 |
+| `linkauthor` | free-text 中"单位/作者关联"但**标题/摘要无 metagenome 关键词**（同一批作者/机构对同一样本做了非宏基因组研究，宏基因组论文可能尚未发布）；**仅 free-text 分支产生，质量视作 low** | 不进入 §2.3 全文下载；作为"关联但待确认"的弱信号，可辅助人工判断，不参与自动推断 |
 | `low` | free-text 候选，论文**无作者单位信息**（无法验证是否真属本项目） | 进人工队列，不自动采纳 |
 | `missing` | free-text 候选，论文**有单位但与项目期望单位完全无重叠** → 噪声 | 丢弃，不进入后续推断 |
 
-> **关联置信即推断源强度**：`PaperSource=high` 表示"这篇论文确属该项目发表"，且其文本**可直接用于 high 推断**（与 ENA 自述同等）；`low`/`missing` 论文不参与自动推断。
+> **关联置信即推断源强度**：`papersource=high` 表示"这篇论文确属该项目发表"，其文本**可直接用于 high 推断**（与 ENA 自述同等）；`linkauthor`/`low`/`missing` 不参与自动推断（其中 `linkauthor` 质量等同 `low`，不进入 §2.3 全文下载）。
 
-- **易错点**：accession 直连 ≠ free-text 关联（后者是关键词重叠，关联≠真相关）；单位覆盖不全时退化为标题/摘要相似度，不强行用单位；只命中国家级（如 "Japan"）不算强，须至少 1 个独特机构名/城市名；Bing 学术不可用（无结构化字段），free-text 分支只用 EPMC。
+- **易错点**：accession 直连 ≠ free-text 关联（后者是关键词重叠，关联≠真相关）；单位匹配排除**学科词**（Medicine/Anatomy/Biology 等）与国家级地名（Japan/China），只认独特机构名/城市名，避免把同行评审/方法学论文误判为 `high`；`exact` 标题短语策略命中即短路，不强求四策略都跑；Bing 学术不可用（无结构化字段），free-text 分支只用 EPMC。
 
 
 ### 2.3 关联论文元数据 + 全文下载（可选，默认关）
@@ -198,7 +206,7 @@
 | `abstract` | 摘要（已去 HTML 标签） |
 | `paper_affiliations` | 作者单位列表 |
 | `matched_token` | 命中的项目单位 token（free-text 过滤用） |
-| `papersource` | high/low/missing（关联置信；high = 可信推断源） |
+| `papersource` | high / linkauthor / low / missing（关联置信；high = 可信推断源，linkauthor 等同 low、不进自动推断） |
 | `full_text_urls` | EPMC 全文 URL 列表（含 `style`/`source`/`avail`） |
 | `full_text_available` | bool |
 

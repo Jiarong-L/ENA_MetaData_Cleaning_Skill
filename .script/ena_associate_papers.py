@@ -5,10 +5,17 @@ ENA 项目 → 关联论文 采集 + PaperSource 标注 + 全文下载  (Replan.
 =====================================================================================
 通用脚本, 实现 Replan.md 步骤 2 的三小节:
   §2.1  爬取 ENA study 自述 (study_title / center_name / study_description) —— 强源
-  §2.2  搜索关联论文 + 标注 PaperSource (high / low / missing)
-         · 先用项目编号查 Europe PMC (指名道姓, 命中即 high)
+  §2.2  搜索关联论文 + 标注 PaperSource (high / linkauthor / low / missing)
+         · 先用项目编号查 Europe PMC (指名道姓, 命中即 high, 仅此分支产生 high 强源)
          · 查不到才用 study_title/description 做 free-text 搜 EPMC
-         · free-text 候选过"作者单位过滤": 对上=high / 有单位但不对=missing(丢弃) / 无单位=low(人工)
+           (精确短语 → 关键词 → 描述关键词 → 作者名 四策略顺序回退, 首个有命中即合并候选)
+         · free-text 候选过"作者单位过滤":
+             对上 且 摘要含 metagenome 关键词              = high      (真·宏基因组论文)
+             对上/作者策略命中 但 摘要无 metagenome 关键词 = linkauthor (低质量: 同一批作者/机构但非宏基因组论文)
+             有单位但不对                                  = missing   (丢弃)
+             无单位信息                                    = low       (交人工)
+           (强 token 已排除学科/院系通用词, 避免 Medicine/Anatomy 等造成 high 假阳性)
+           linkauthor 仅由 free-text 分支产生, 质量视作 low, 不进入 §2.3 全文下载(high-only)
          · 每篇论文同时捕获 fullTextUrlList -> full_text_urls / full_text_available (供 §2.3)
   §2.3  全文下载 (可选, **默认关**)
          · 从 project_literature.jsonl 取 high 论文, 下载 EPMC free 全文 (优先 JATS XML)
@@ -98,17 +105,46 @@ STOP = {"study","studies","metagenome","metagenomic","metagenomes","genome",
 GEN = {"institute","university","center","centre","college","school","hospital",
        "laboratory","national","research","science","sciences","health","medical",
        "department","division","institut","univ","of","the","and","for",
-       "initiative","project","consortium","foundation","program","microbiome"}
+       "initiative","project","consortium","foundation","program","microbiome","group"}
 
 # 国家 / 州级 token 过弱, 不计入"强匹配"; 独特城市 (diego 等) 放行
 GEO_STATE = {"california","san","texas","florida","new","york","china","japan",
              "united","states","germany","france","uk","britain","canada","australia",
              "spain","italy","india","brazil","korea","russia"}
 
+# 学科/院系通用名词: 大量机构单位中都出现 (School of Medicine, Dept of Anatomy...),
+# 若当作强 token 会造成 high 假阳性; free-text 的单位过滤须排除它们。
+DISCIPLINE = {"medicine","medical","anatomy","anthropology","anthropological","biology",
+              "biological","genetic","genetics","genomic","genomics","molecular","microbiology",
+              "biochemistry","bioinformatics","ecology","evolutionary","biomedical","clinical",
+              "health","pathology","physiology","pharmacology","pharmaceutical","zoology",
+              "botany","chemistry","physics","mathematics","statistical","statistics",
+              "computational","technology","engineering","science","sciences"}
+
+# 标题/描述里过于宽泛、不适合做作者检索主题词的词
+GENERIC_TOPIC = {"genome","genomes","genomic","genomics","sequencing","sequence","sequences",
+                 "gene","genes","dna","rna","individual","individuals","sample","samples",
+                 "data","analysis","study","metagenome","metagenomic","project","survey",
+                 "profile","profiling","characterization","characterisation"}
+
 # 仅保留"硬机构类型"关键词; 去掉 initiative/consortium/foundation/project 等过泛词
 # (否则 DESCRIPTION 里的 "XX Initiative" 会与海量论文单位中的同词误匹配 -> 假 high)
 INST_KW = ("university","institute","college","hospital","center","centre",
            "laboratory","academy","school","department")
+
+# metagenome 关键词: 用于 free-text 候选的"是否真·宏基因组论文"判别。
+# 仅在 free-text 分支使用 (与 accession 强源无关): 关联(单位/作者)且含这些词 → 保留 high,
+# 关联但无这些词 → linkauthor (低质量, 同一批作者/机构但论文本身并非宏基因组研究)。
+META_KW = ("metagenome", "metagenomic", "metagenomes", "metagenomics",
+           "metatranscriptome", "metatranscriptomic",
+           "metaproteome", "metaproteomic")
+
+
+def has_metagenome_kw(paper):
+    """标题或摘要是否含 metagenome/metagenomic 等宏基因组关键词 (大小写不敏感)。"""
+    text = "%s %s" % (paper.get("title") or "", paper.get("abstractText") or "")
+    text = re.sub(r"<[^>]+>", " ", text).lower()
+    return any(k in text for k in META_KW)
 
 
 def log(*a):
@@ -223,8 +259,70 @@ def center_tokens(center):
 
 
 def strong_center_tokens(center):
-    """center_name 中的独特机构/城市 token (排除通用学术词 + 国家/州级)。"""
-    return {t for t in center_tokens(center) if t.lower() not in GEO_STATE and len(t) >= 4}
+    """center_name 中的独特机构/城市 token (排除通用学术词 + 国家/州级 + 学科词)。"""
+    return {t for t in center_tokens(center)
+            if t.lower() not in GEO_STATE and t.lower() not in DISCIPLINE and len(t) >= 4}
+
+
+def author_surnames(center):
+    """从 center_name 抽取疑似作者姓氏 (大写开头、非通用词、长度 3-10)。
+    仅用于 fallback 的作者检索策略, 不作为机构强 token, 以免与单位误匹配。"""
+    out = []
+    for t in re.findall(r"[A-Za-z]{3,}", center or ""):
+        tl = t.lower()
+        if tl in GEN or tl in STOP or tl in GEO_STATE or tl in DISCIPLINE:
+            continue
+        if t[0].isupper() and 3 <= len(t) <= 10:
+            out.append(t)
+    return out
+
+
+def build_freetext_queries(title, desc, center):
+    """多策略 free-text 检索式 (精确短语→关键词→作者名 顺序回退):
+      1) exact      : 标题(或长描述)整句加引号精确短语 (高精度)
+      2) loose      : 标题去停用词后的关键词 (EPMC 默认 AND)
+      3) loose_desc : 描述去停用词后的关键词 (标题太泛时补漏)
+      4) author     : AUTHOR:\"姓氏\" + 标题主题词 (仅作兜底)
+    返回 [(tag, query), ...]。"""
+    qs = []
+    primary = title if len(title) >= 12 else (desc or title)
+    if len(primary) >= 12:
+        qs.append(("exact", '"%s"' % primary))
+    toks = [t for t in re.findall(r"[A-Za-z]{4,}", primary) if t.lower() not in STOP]
+    if toks:
+        qs.append(("loose", " ".join(toks[:8])))
+    if desc and desc.strip() != primary.strip():
+        dtoks = [t for t in re.findall(r"[A-Za-z]{4,}", desc) if t.lower() not in STOP]
+        if dtoks:
+            qs.append(("loose_desc", " ".join(dtoks[:8])))
+    # 作者兜底: 取首个疑似姓氏 + 最具区分度的主题词
+    sur = author_surnames(center)
+    topic_cands = [t for t in toks if t.lower() not in GENERIC_TOPIC]
+    topic = topic_cands[0] if topic_cands else (toks[0] if toks else "")
+    if not topic and desc:
+        d2 = [t for t in re.findall(r"[A-Za-z]{4,}", desc)
+              if t.lower() not in STOP and t.lower() not in GENERIC_TOPIC]
+        topic = d2[0] if d2 else ""
+    if sur and topic:
+        qs.append(("author", 'AUTHOR:"%s" %s' % (sur[0], topic)))
+    return qs
+
+
+def gather_candidates(queries, freetext_n):
+    """依次执行检索式, 合并去重候选 (精确短语命中即采信并停止)。
+    返回 (pooled, used, tag_of): tag_of 记录每篇候选由哪个策略(tag)命中, 供 linkauthor 判定。"""
+    pooled, seen, used, tag_of = [], set(), [], {}
+    for tag, q in queries:
+        h, res = epmc_search(q, freetext_n)
+        if h and h > 0:
+            for p in res:
+                pid = p.get("pmid") or p.get("id") or json.dumps(p, sort_keys=True)[:60]
+                if pid not in seen:
+                    pooled.append(p); seen.add(pid); tag_of[pid] = tag
+            used.append(tag)
+            if tag == "exact":
+                break
+    return pooled, used, tag_of
 
 
 def desc_inst_entities(desc):
@@ -278,6 +376,7 @@ def process_one(acc, meta, freetext_n):
     rec = {"project_accession": acc, "strategy": "", "accession_hit": False,
            "query": "", "hitCount": 0, "papers": []}
     # ---- 1) accession-first (最准, 指名道姓) ----
+    #    该分支命中即 high 强源, 与 free-text 的 linkauthor 无关。
     for fld in ("PROJECT_ID", "BIOPROJECT", "ACCESSION"):
         h, res = epmc_search("%s:%s" % (fld, acc), 5)
         if h and h > 0:
@@ -288,36 +387,39 @@ def process_one(acc, meta, freetext_n):
             for p in res[:5]:
                 rec["papers"].append(paper_record(p, "high", matched="(accession-linked)"))
             return rec
-    # ---- 2) free-text (描述搜索, 需单位过滤) ----
+    # ---- 2) free-text (多策略检索 + 单位过滤 + linkauthor) ----
     title = meta.get("study_title", "")
     desc  = meta.get("study_description", "")
     center= meta.get("center_name", "")
-    if len(title) >= 12:
-        q = '"' + title + '"'
-    elif desc:
-        q = desc[:140]
-    elif center:
-        q = center
-    else:
-        q = title
-    rec["query"] = q
+    queries = build_freetext_queries(title, desc, center)
     rec["strategy"] = "freetext"
-    h, res = epmc_search(q, freetext_n)
-    rec["hitCount"] = h if h > 0 else 0
+    rec["query"] = " || ".join("%s:%s" % (t, q) for t, q in queries)
+    candidates, used, tag_of = gather_candidates(queries, freetext_n)
+    rec["hitCount"] = len(candidates)
     strong = strong_center_tokens(center)
     desc_ph = desc_inst_entities(desc)
-    high = low = missing = 0
-    for p in res:
+    high = low = missing = linkauthor = 0
+    for p in candidates:
+        pid = p.get("pmid") or p.get("id") or json.dumps(p, sort_keys=True)[:60]
         affils = get_affils(p)
         ok, tok = match_affil(affils, strong, desc_ph)
-        if ok:
-            ps = "high"; high += 1
+        # 关联信号: 单位强匹配, 或该候选由 author 策略召回
+        linked = ok or (tag_of.get(pid) == "author")
+        mk = has_metagenome_kw(p)
+        if linked:
+            # 关联(单位或作者) 且 摘要含 metagenome 关键词 → 真·宏基因组论文, high
+            # 关联 但 摘要无 metagenome 关键词        → 同一批作者/机构但非宏基因组论文, linkauthor(低质量)
+            if mk:
+                ps = "high"; high += 1
+            else:
+                ps = "linkauthor"; linkauthor += 1
         elif affils:
             ps = "missing"; missing += 1      # 有单位但完全对不上 → 噪声, 丢弃
         else:
             ps = "low"; low += 1              # 无单位信息 → 无法验证, 交人工
         rec["papers"].append(paper_record(p, ps, matched=(tok if ok else None), aff=affils))
-    rec["_counts"] = {"high": high, "low": low, "missing": missing}
+    rec["_counts"] = {"high": high, "low": low, "missing": missing,
+                      "linkauthor": linkauthor, "used": used}
     return rec
 
 
@@ -337,7 +439,8 @@ def phase_lit(meta, out_dir, limit=None, freetext_n=20):
     if limit:
         accs = accs[:limit]
     stats = {"projects": 0, "accession_hit": 0, "freetext": 0, "with_hits": 0,
-             "high_total": 0, "low_total": 0, "missing_total": 0, "errs": 0}
+             "high_total": 0, "low_total": 0, "missing_total": 0,
+             "linkauthor_total": 0, "errs": 0}
     if not accs:
         log("  全部已处理, 无需重跑")
         return stats
@@ -360,13 +463,14 @@ def phase_lit(meta, out_dir, limit=None, freetext_n=20):
                 stats["high_total"] += c["high"]
                 stats["low_total"] += c["low"]
                 stats["missing_total"] += c["missing"]
+                stats["linkauthor_total"] += c.get("linkauthor", 0)
             if rec.get("strategy") == "ERR":
                 stats["errs"] += 1
             cc = c or {}
-            log("  %s strat=%s hit=%s papers=%d high=%s low=%s missing=%s" % (
+            log("  %s strat=%s hit=%s papers=%d high=%s low=%s missing=%s linkauthor=%s" % (
                 acc, rec.get("strategy"), rec.get("hitCount"),
                 len(rec.get("papers", [])), cc.get("high", "-"),
-                cc.get("low", "-"), cc.get("missing", "-")))
+                cc.get("low", "-"), cc.get("missing", "-"), cc.get("linkauthor", "-")))
             rec.pop("_counts", None)   # 内部计数, 不写入交付 schema
             fo.write(json.dumps(rec, ensure_ascii=False) + "\n")
             time.sleep(0.3)
@@ -423,7 +527,7 @@ def fulltext_content(p, free):
 
 def phase_fulltext(out_dir, scope="high", limit=5):
     """§2.3 全文下载: 从 project_literature.jsonl 取候选, 下载 free 全文到 fulltext/。
-    scope=high 仅 high 论文 (符合 §2.3 口径); scope=any 用于测试/演示 (含 low/missing 中可用的)。"""
+    scope=high 仅 high 论文 (符合 §2.3 口径, linkauthor 视作低质量不进入); scope=any 用于测试/演示。"""
     lit_path = os.path.join(out_dir, "project_literature.jsonl")
     if not os.path.exists(lit_path):
         sys.exit("缺少 project_literature.jsonl, 先跑 --phase lit")
@@ -484,7 +588,7 @@ def main():
     ap.add_argument("--force-study", action="store_true", help="强制重拉 study (忽略缓存)")
     ap.add_argument("--freetext-n", type=int, default=20, help="free-text 候选池大小")
     ap.add_argument("--fulltext-scope", choices=["high", "any"], default="high",
-                    help="§2.3 全文下载范围: high=仅 high 论文(默认); any=含 low/missing 中可用的(测试用)")
+                    help="§2.3 全文下载范围: high=仅 high 论文(默认, linkauthor 视作低质量不进入); any=含 low/missing 中可用的(测试用)")
     ap.add_argument("--fulltext-limit", type=int, default=5, help="§2.3 全文下载上限 (测试用)")
     args = ap.parse_args()
     _replan_log("ena_associate_papers --phase %s --src %s --out %s"

@@ -144,11 +144,13 @@ def fetch_year(year, start, end, log, force=False):
 def merge_all(log):
     """读取所有 .jsonl 中间文件, 流式写出合并 CSV (各区间不重叠, 无需去重)。"""
     n = 0
+    # 输出表头：ENA 返回的 study_accession 实为 project_accession，按指南重命名
+    out_fields = [("project_accession" if f == "study_accession" else f) for f in FIELDS]
     with open(MERGED_CSV, "w", newline="", encoding="utf-8") as cf:
-        w = csv.DictWriter(cf, fieldnames=FIELDS)
+        w = csv.DictWriter(cf, fieldnames=out_fields)
         w.writeheader()
         for fn in sorted(os.listdir(TMP_DIR)):
-            if not re.match(r"ena_runs_\d{4}\.jsonl$", fn):
+            if not re.match(r"ena_runs_.*\.jsonl$", fn):
                 continue
             with open(os.path.join(TMP_DIR, fn), encoding="utf-8") as f:
                 for line in f:
@@ -156,7 +158,8 @@ def merge_all(log):
                     if not line:
                         continue
                     r = json.loads(line)
-                    w.writerow({k: r.get(k, "") for k in FIELDS})
+                    row = {("project_accession" if k == "study_accession" else k): r.get(k, "") for k in FIELDS}
+                    w.writerow(row)
                     n += 1
     log(f"合并后总行数 (run 数): {n}")
     log(f"已写出合并文件: {MERGED_CSV}")
@@ -165,9 +168,9 @@ def merge_all(log):
 def main():
     args = sys.argv[1:]
     force = "--force" in args
-    years_arg = [a for a in args if a != "--force"]
-    year_list = [int(x) for x in years_arg[0].split(",")] if years_arg else list(range(2020, 2027))
-    start_year, end_year = min(year_list), max(year_list)
+    pos = [a for a in args if a != "--force"]
+    # 显式日期区间模式: 2020-01-01,2020-08-01
+    dm = re.match(r"^(\d{4}-\d{2}-\d{2}),(\d{4}-\d{2}-\d{2})$", pos[0]) if pos else None
 
     os.makedirs(TMP_DIR, exist_ok=True)
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -190,15 +193,32 @@ def main():
         logf.write(line + "\n")
         logf.flush()
 
-    log(f"=== START (years={year_list}, date_field={DATE_FIELD}, force={force}) ===")
     t0 = time.time()
-    for (y, s, e) in year_ranges(start_year, end_year):
-        if y not in year_list:
-            continue
-        log(f"--- year {y}: {s} .. {e} ---")
-        t1 = time.time()
-        fetch_year(y, s, e, log, force=force)
-        log(f"--- year {y} 完成, 用时 {time.time()-t1:.1f}s ---")
+    if dm:
+        start_s, end_s = dm.group(1), dm.group(2)
+        name = f"{start_s}_{end_s}"
+        final = os.path.join(TMP_DIR, f"ena_runs_{name}.jsonl")
+        tmp = final + ".tmp"
+        log(f"=== START (range={start_s}..{end_s}, date_field={DATE_FIELD}, force={force}) ===")
+        if not force and os.path.exists(final) and os.path.getsize(final) > 2:
+            log(f"  区间 {start_s}..{end_s}: 已存在 {final}, 跳过")
+        else:
+            t1 = time.time()
+            with open(tmp, "w", encoding="utf-8") as f:
+                total = collect_range(start_s, end_s, f, log)
+            os.replace(tmp, final)
+            log(f"  区间 {start_s}..{end_s}: 共 {total} runs, 用时 {time.time()-t1:.1f}s")
+    else:
+        year_list = [int(x) for x in pos[0].split(",")] if pos else list(range(2020, 2027))
+        start_year, end_year = min(year_list), max(year_list)
+        log(f"=== START (years={year_list}, date_field={DATE_FIELD}, force={force}) ===")
+        for (y, s, e) in year_ranges(start_year, end_year):
+            if y not in year_list:
+                continue
+            log(f"--- year {y}: {s} .. {e} ---")
+            t1 = time.time()
+            fetch_year(y, s, e, log, force=force)
+            log(f"--- year {y} 完成, 用时 {time.time()-t1:.1f}s ---")
     merge_all(log)
     log(f"=== DONE 总用时 {time.time()-t0:.1f}s ===")
     logf.close()
