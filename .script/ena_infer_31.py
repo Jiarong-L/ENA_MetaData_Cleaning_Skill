@@ -247,6 +247,13 @@ ANIMAL_GUT_NAME = {
     "mouse": "mouse gut metagenome", "mus musculus": "mouse gut metagenome",
     "rat": "rat gut metagenome", "rattus norvegicus": "rat gut metagenome",
 }
+# 规范首词 -> 触发词集合（俗名/学名均可触发），供 is_high_evidence 规则1
+# 识别动物俗名（如 porcine / cattle / calf / sus scrofa / bos taurus 等），
+# 使「<动物俗名> <部位> metagenome」在 evidence 内也能标 high。
+ANIMAL_TRIGGERS_FOR_CANON = {}
+for _w, _v in ANIMAL_GUT_NAME.items():
+    _canon = _v.split()[0]
+    ANIMAL_TRIGGERS_FOR_CANON.setdefault(_canon, set()).add(_w)
 
 # 轻量补充：昆虫/灵长/爬行/两栖/甲壳/软体/其它哺乳/鸟/植物/真菌等常见俗名。
 # 这些词多为常见英文词，误匹配风险高，故：
@@ -488,6 +495,12 @@ def is_high_evidence(value, method, evidence):
     if len(toks) == 3 and toks[-1] == "metagenome":
         host_word, site_word = toks[0], toks[1]
         host_ok = (host_word in ev) or (host_word == "human" and "homo sapiens" in ev)
+        if not host_ok:
+            # 动物：规范首词之外，也接受对应俗名/学名触发词（porcine/cattle/sus scrofa…）
+            for trig in ANIMAL_TRIGGERS_FOR_CANON.get(host_word, ()):
+                if trig in ev:
+                    host_ok = True
+                    break
         if not host_ok:
             return False
         if site_word in ev:

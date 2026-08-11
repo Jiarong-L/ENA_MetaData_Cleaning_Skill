@@ -244,11 +244,11 @@
 - **置信度判定标准（对齐 mARG/ENA）**：
   - **country**：出现在**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；提及国 > 6 → `low`（综述噪）；公海/深海无主权国 → `NotCountry`（high，否定判定）；无国名 → `unknown`。多国实测 → `high` 多值全列；含大区词（Indo-Pacific）→ `medium` 多值。
   - **date**：年份出现在**采集上下文** → `high`；否则 → `low`（基线不产生 medium）；无年份 → `unknown`。**务必区分采集年 vs 出版/检索年**。
-  - **host**：默认 `medium`（仅关键字命中，无上下文精判）；但 §3.1 现已支持**证据窗口 high** —— 当 `evidence`（匹配词 ±30 字）内能直接证明 host 值时即标 `high` 并跳过 §3.2（见下方「host High 规则」）。环境型（soil/plant/algae）命中生境字典即 value，多为 medium，仅标题直写「X metagenome」者走高窗口 high。其余由 §3.2 判定后决定是否升 high。
+  - **host**：默认 `medium`（仅关键字命中，无上下文精判）；但 §3.1 现已支持**证据窗口 high** —— 当 `evidence`（匹配词 ±30 字）内能直接证明 host 值时即标 `high` 并跳过 §3.2（见下方「host High 规则」）。环境型（soil/plant/sediment）命中生境字典即 value，多为 medium；当 `soil/marine/...` 与 `metagenome` 在  evidence 窗口内同窗共现（常见于标题或摘要直写「X metagenome」短语）时走高窗口 high。其余由 §3.2 判定后决定是否升 high。
   - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`（英文 canon，主权归一不可省，HK/TW/MO 不得写为独立国家）；Korea → `Korea`；Turkey 独立真实国，仅当研究确在土耳其才写 `Turkey`，**勿与 Korea 混淆**。
 - **host 语义**：ENA 侧 = 宿主生物；描述/论文里的 soil/gut/marine 等生境词本身是合法 host 信号，勿当"无宿主"砍（脚本已对复数 lambs/ewes 等做 `s?` 容错）；正则把研究微生物当"物种"混入时，需下游净化。
 - **host High 规则（证据窗口，§3.1 直接产出 high 不进 §3.2）**：`is_high_evidence()` 只看单条 `evidence`（匹配词 ±30 字片段），满足以下之一即标 `confidence=high`、置 `needs_review=False` 跳过 §3.2：
-  - **规则1（三字科学名 `<host> <site> metagenome`）**：host 指示词（human / homo sapiens，或 HOST_ANIMAL 对应俗名）**与** 中间部位词**同时**出现 —— 部位词允许 `HOST_SITE` 同义词（gut ↔ feces/faeces/fecal/faecal/stool/intestinal/intestine/colorectal/colon…）。例：`human gut metagenome` 可由 "human" + "feces" 同在 evidence 命中。
+  - **规则1（三字科学名 `<host> <site> metagenome` 或 `<A> <B> metagenome`）**：host 指示词（human / homo sapiens，或 HOST_ANIMAL 对应俗名）**与** 中间部位词**同时**出现 —— 部位词允许 `HOST_SITE` 同义词（gut ↔ feces/faeces/fecal/faecal/stool/intestinal/intestine/colorectal/colon…）。例：`human gut metagenome` 可由 "human" + "feces" 同在 evidence 命中。
   - **规则2（仅限二字生境科学名 `<env_word> metagenome`）**：如 `soil metagenome` / `sludge metagenome` / `marine metagenome` —— 两词都出现在 evidence 中。**拉丁二名法（`Bos taurus` / `Homo sapiens` / `Mus musculus` 等，不以 metagenome 收尾）不适用规则2，也不适用规则1（无 site 中间词），故永不经证据窗口标 high，保持 medium 交 §3.2。**
   - `rule_host_soft`（昆虫/灵长/爬行/植物等轻量俗名）**永不标 high**，恒交 §3.2。
 - **输出 schema**（每字段一个 jsonl，每行一项目记录）：
