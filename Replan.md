@@ -240,7 +240,7 @@
   - 用法：`python ena_infer_31.py`（默认读 `.tmp/` 下两输入）｜`--fields country,host`｜`--limit N`｜`--only PRJEBxxx`。
   - 输入：§2.1 `project_study_meta.json`（study_title/description/**center_name**）+ §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
   - 文本源拼接：`center_name` 属 `study_meta`（中心未必等于采样国，故其 `content_reliability` 默认 medium）。
-- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
+- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 USA/UK/China 等直写国名，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
 - **置信度判定标准（对齐 mARG/ENA）**：
   - **country**：出现在**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；提及国 > 6 → `low`（综述噪）；公海/深海无主权国 → `NotCountry`（high，否定判定）；无国名 → `unknown`。多国实测 → `high` 多值全列；含大区词（Indo-Pacific）→ `medium` 多值。
   - **date**：提取到年份或年份区间  → `high`；无年份 → `unknown`。
@@ -419,7 +419,6 @@
 - 一次性全拉 ENA → 超时/截断，必须分页+续跑（1）
 - EPMC 关键词检索当权威绑定 → 误关联（2.2）
 - 把机构/试剂/署名产地（Qiagen Germany、PacBio USA）当采样国 → 误判（3.1 坑清单）
-- 出版/检索年当采集年 → date 误升 high（3.1 坑清单）
 - LLM 凭空标 high（无 evidence 编造值）→ 违反神圣性（3.2）
 
 ## 开放问题

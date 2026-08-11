@@ -112,6 +112,71 @@ PLACE = {
     "capetown": "South Africa", "buenos aires": "Argentina", "sao paulo": "Brazil",
     "rio de janeiro": "Brazil", "mexico city": "Mexico", "istanbul": "Turkey",
     "ankara": "Turkey", "athens": "Greece", "evian": "France",
+    # ---- 国家全名 / 缩写（city-name 之上补充，解决标题直写国名漏检）----
+    # 美洲
+    "united states of america": "United States", "united states": "United States",
+    "usa": "United States", "america": "United States",
+    "canada": "Canada", "mexico": "Mexico", "brazil": "Brazil",
+    "argentina": "Argentina", "chile": "Chile", "colombia": "Colombia",
+    "peru": "Peru", "venezuela": "Venezuela", "ecuador": "Ecuador",
+    "bolivia": "Bolivia", "paraguay": "Paraguay", "uruguay": "Uruguay",
+    "panama": "Panama", "costa rica": "Costa Rica", "guatemala": "Guatemala",
+    "honduras": "Honduras", "nicaragua": "Nicaragua", "el salvador": "El Salvador",
+    "cuba": "Cuba", "haiti": "Haiti", "jamaica": "Jamaica",
+    "dominican republic": "Dominican Republic", "bahamas": "Bahamas",
+    "barbados": "Barbados", "trinidad and tobago": "Trinidad and Tobago",
+    # 欧洲
+    "united kingdom": "United Kingdom", "uk": "United Kingdom",
+    "england": "United Kingdom", "scotland": "United Kingdom", "wales": "United Kingdom",
+    "netherlands": "Netherlands", "germany": "Germany", "france": "France",
+    "spain": "Spain", "italy": "Italy", "portugal": "Portugal",
+    "sweden": "Sweden", "norway": "Norway", "finland": "Finland",
+    "denmark": "Denmark", "poland": "Poland", "belgium": "Belgium",
+    "switzerland": "Switzerland", "austria": "Austria", "ireland": "Ireland",
+    "greece": "Greece", "turkey": "Turkey", "russia": "Russia",
+    "czech republic": "Czechia", "czechia": "Czechia",
+    "hungary": "Hungary", "romania": "Romania", "bulgaria": "Bulgaria",
+    "croatia": "Croatia", "serbia": "Serbia", "slovakia": "Slovakia",
+    "slovenia": "Slovenia", "ukraine": "Ukraine", "lithuania": "Lithuania",
+    "latvia": "Latvia", "estonia": "Estonia", "iceland": "Iceland",
+    "luxembourg": "Luxembourg", "malta": "Malta", "belarus": "Belarus",
+    "moldova": "Moldova", "albania": "Albania",
+    "bosnia and herzegovina": "Bosnia and Herzegovina", "bosnia": "Bosnia and Herzegovina",
+    "montenegro": "Montenegro", "north macedonia": "North Macedonia",
+    "macedonia": "North Macedonia", "cyprus": "Cyprus",
+    # 亚洲
+    "china": "China", "japan": "Japan", "south korea": "Korea", "korea": "Korea",
+    "india": "India", "thailand": "Thailand", "vietnam": "Vietnam",
+    "malaysia": "Malaysia", "indonesia": "Indonesia", "philippines": "Philippines",
+    "bangladesh": "Bangladesh", "pakistan": "Pakistan", "iran": "Iran",
+    "iraq": "Iraq", "israel": "Israel", "saudi arabia": "Saudi Arabia",
+    "afghanistan": "Afghanistan", "nepal": "Nepal", "sri lanka": "Sri Lanka",
+    "cambodia": "Cambodia", "laos": "Laos", "mongolia": "Mongolia",
+    "kazakhstan": "Kazakhstan", "uzbekistan": "Uzbekistan",
+    "georgia": "Georgia", "armenia": "Armenia", "azerbaijan": "Azerbaijan",
+    "jordan": "Jordan", "lebanon": "Lebanon", "syria": "Syria",
+    "yemen": "Yemen", "oman": "Oman", "qatar": "Qatar",
+    "bahrain": "Bahrain", "kuwait": "Kuwait",
+    "myanmar": "Myanmar", "brunei": "Brunei",
+    "united arab emirates": "United Arab Emirates",
+    # 非洲
+    "egypt": "Egypt", "nigeria": "Nigeria", "south africa": "South Africa",
+    "kenya": "Kenya", "morocco": "Morocco", "ethiopia": "Ethiopia",
+    "tanzania": "Tanzania", "uganda": "Uganda", "ghana": "Ghana",
+    "senegal": "Senegal", "cameroon": "Cameroon", "angola": "Angola",
+    "mozambique": "Mozambique", "zimbabwe": "Zimbabwe", "zambia": "Zambia",
+    "botswana": "Botswana", "namibia": "Namibia", "tunisia": "Tunisia",
+    "algeria": "Algeria", "libya": "Libya", "sudan": "Sudan",
+    "madagascar": "Madagascar", "mauritius": "Mauritius", "gabon": "Gabon",
+    "congo": "Congo", "lesotho": "Lesotho", "sierra leone": "Sierra Leone",
+    "liberia": "Liberia", "togo": "Togo", "niger": "Niger",
+    "chad": "Chad", "somalia": "Somalia", "djibouti": "Djibouti",
+    "eritrea": "Eritrea", "mali": "Mali", "benin": "Benin",
+    "burkina faso": "Burkina Faso", "burundi": "Burundi", "rwanda": "Rwanda",
+    "ivory coast": "Ivory Coast", "cote d'ivoire": "Ivory Coast",
+    # 大洋洲
+    "australia": "Australia", "new zealand": "New Zealand",
+    "fiji": "Fiji", "papua new guinea": "Papua New Guinea",
 }
 
 # 公海/深海 -> NotCountry（明确无主权国）
@@ -371,12 +436,10 @@ def _ctx_reliable(snippet, token):
 def _reliability(sub_source, snippet):
     """标签 A：结合 sub_source 与上下文给出 high/medium/low。"""
     base = "medium"
-    if sub_source in ("study_description", "study_title", "literature_abstract"):
+    if sub_source in ("study_description", "study_title", "literature_abstract", "literature_title"):
         base = "high"
     elif sub_source == "center_name":
         base = "medium"          # 中心未必等于采样国
-    elif sub_source == "literature_title":
-        base = "medium"
     if _ctx_reliable(snippet, None):
         base = "high"
     return base
@@ -420,9 +483,15 @@ def infer_country(sources):
 
     if countries:
         vals = sorted(countries.keys())
-        # 取代表性 source/reliability/method
+        # confidence：有任何匹配处于采集上下文 → high，否则 medium
+        has_ctx = any(
+            _ctx_reliable(s, None)
+            for c in vals
+            for _sub, s, _m in countries[c]
+        )
         rep_sub, rep_snip, rep_method = countries[vals[0]][0]
         reli = _reliability(rep_sub, rep_snip)
+        conf = "high" if has_ctx else "medium"
         method = "rule_multi_country" if len(vals) > 1 else rep_method
         # 拼接 evidence（每国一个片段）
         ev_bits = []
@@ -431,7 +500,7 @@ def infer_country(sources):
             ev_bits.append(f"[{c}|{sub}] …{s}…")
         return {
             "value": vals,
-            "confidence": "high",
+            "confidence": conf,
             "content_reliability": reli,
             "source": source_of(rep_sub),
             "method": method,
