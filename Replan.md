@@ -243,13 +243,13 @@
 - **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
 - **置信度判定标准（对齐 mARG/ENA）**：
   - **country**：出现在**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；提及国 > 6 → `low`（综述噪）；公海/深海无主权国 → `NotCountry`（high，否定判定）；无国名 → `unknown`。多国实测 → `high` 多值全列；含大区词（Indo-Pacific）→ `medium` 多值。
-  - **date**：年份出现在**采集上下文** → `high`；否则 → `low`（基线不产生 medium）；无年份 → `unknown`。**务必区分采集年 vs 出版/检索年**。
+  - **date**：提取到年份或年份区间  → `high`；无年份 → `unknown`。
   - **host**：默认 `medium`（仅关键字命中，无上下文精判）；但 §3.1 现已支持**证据窗口 high** —— 当 `evidence`（匹配词 ±30 字）内能直接证明 host 值时即标 `high` 并跳过 §3.2（见下方「host High 规则」）。环境型（soil/plant/sediment）命中生境字典即 value，多为 medium；当 `soil/marine/...` 与 `metagenome` 在  evidence 时走高窗口 high。其余由 §3.2 判定后决定是否升 high。
   - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`（英文 canon，主权归一不可省，HK/TW/MO 不得写为独立国家）；Korea → `Korea`；Turkey 独立真实国，仅当研究确在土耳其才写 `Turkey`，**勿与 Korea 混淆**。
 - **host 语义**：ENA 侧 = 宿主生物；描述/论文里的 soil/gut/marine 等生境词本身是合法 host 信号，勿当"无宿主"砍（脚本已对复数 lambs/ewes 等做 `s?` 容错）；正则把研究微生物当"物种"混入时，需下游净化。
 - **host High 规则（证据窗口，§3.1 直接产出 high 不进 §3.2）**：`is_high_evidence()` 只看单条 `evidence`（匹配词 ±30 字片段），满足以下之一即标 `confidence=high`、置 `needs_review=False` 跳过 §3.2：
   - **规则1（三字科学名 `<host> <site> metagenome` 或 `<A> <B> metagenome`）**：host 指示词（human / homo sapiens，或 HOST_ANIMAL 对应俗名）**与** 中间部位词**同时**出现 —— 部位词允许 `HOST_SITE` 同义词（gut ↔ feces/faeces/fecal/faecal/stool/intestinal/intestine/colorectal/colon…）。例：`human gut metagenome` 可由 "human" + "feces" 同在 evidence 命中。
-  - **规则2（仅限二字生境科学名 `<X> metagenome`）**：如 `soil metagenome` / `gut metagenome` / `skin metagenome` —— 两词都出现在 evidence 中。**拉丁二名法（`Bos taurus` / `Homo sapiens` / `Mus musculus` 等，不以 metagenome 收尾）不适用规则2，也不适用规则1（无 site 中间词），故永不经证据窗口标 high，保持 medium 交 §3.2。**
+  - **规则2（仅限二字科学名 `<X> metagenome`）**：如 `soil metagenome` / `gut metagenome` / `skin metagenome` —— 两词都出现在 evidence 中。**拉丁二名法（`Bos taurus` / `Homo sapiens` / `Mus musculus` 等，不以 metagenome 收尾）不适用规则2，也不适用规则1（无 site 中间词），故永不经证据窗口标 high，保持 medium 交 §3.2。**
   - `rule_host_soft`（昆虫/灵长/爬行/植物等轻量俗名）**永不标 high**，恒交 §3.2。
 - **输出 schema**（每字段一个 jsonl，每行一项目记录）：
 
@@ -271,7 +271,7 @@
 - **红线**：禁止确定性 resolver 直接写 `llm_infer_*`（污染真裁定）；本脚本只写 `<field>_infer.jsonl`，不写 `llm_infer_*`。
 - **常见坑（来自 mARG/ENA 实战，务必规避）**：
   - 机构/作者**贡献国 ≠ 采样国**；试剂/设备/耗材产地（Qiagen Germany、PacBio USA）、基金机构、署名/实验室所在地，一律不计采样国。
-  - **date 出版/检索年 ≠ 采集年**；年份仅出现在出版/检索语境 → low，不误升 high。
+  - **date 基线不区分采集年 vs 出版/检索年**——有年份一律 `high`（已知局限：未来年/出版年噪声未过滤，靠 ENA 原始 date 字段质量兜底）。
   - **区域（洲/洋）≠ 国** → medium，不升 high；含大区词（Indo-Pacific）的多国 → medium 多值。
   - **国形容词盲点**（Japanese/Korean…）：国名词正则抓不到，须靠 DEMONYM 字典；但 demonym 修饰海域（Norwegian Sea→非国，走 NotCountry）、修饰工艺（Swiss-type cheese→指工艺非产地）、或地名/河名/物种名嵌国形容词（British Columbia→加拿大省、Russian River→加州河、Mexican *Gopherus berlandieri*→德州龟）极易误判，**必须 LLM 复核**（见 §3.2）。
   - **多论文混合项目**：只取本项目真正实测国，剔除其它论文背景国（如 PRJEB26069 实测 Indonesia+Fiji，剔除其它背景国）。
@@ -280,7 +280,7 @@
 
 ### 3.2 LLM 残差（规则判不了的，由 WorkBuddy 代理直读 evidence 逐条判，不走 API）
 
-- **路由判据**：规则+字典判不了的残差——即 **`content_reliability` 不足**（medium/low/unknown）的子集（**先不管来源**，两轴独立；来源在本项目已无弱源区分）。这些交由 LLM 做语义精判。
+- **路由判据**：规则+字典判不了的残差——即 **`content_reliability` 不足**（medium/low/unknown）的子集（**先不管来源**，两轴独立；来源在本项目已无弱源区分）。**仅 `country` / `host` 进 §3.2 交由 LLM 做语义精判；`date` 整字段豁免**（§3.1 有年份一律 high、无年份 unknown，LLM 无必要介入）。
 - **目标**：LLM 阅读 evidence，回答该字段的值（或"无法判断"）；可把规则基线 medium/low 升为 high，或把 unknown 解出值。
 - **流程（强调不走外部 API）**：脚本把待判 `evidence` 打印出来 → **你（WorkBuddy 代理，本身就是 LLM）直接读**，**一条条读、一条条判**，回答字段值 → 经写入脚本追加到 `ena_llm_infer_<field>.jsonl`。
   - 用脚本分批拉待判项目（断点续跑，已完成集合自动跳过），避免一次性涌入。
@@ -288,12 +288,12 @@
 - **升级 high 的语义判据（代理直读后判定，须在 `note` 写理由）**：
   - **country → high**：明确是主权国采样/采集地（单国或少数实测国），排除①机构/作者贡献国②区域级（留 medium）③多论文混合只取真正实测国；公海/深海显式 `NotCountry`（high 否定判定）。
   - **host → high**：§3.1 可能已直接产 host high（证据窗口强共现，value 形如 `human gut metagenome` / `soil metagenome`），§3.2 仅处理其残差（medium / unknown / soft 俗名）；残差中成功推断的部分可升 high（注意，两步的输出都要符合NCBI科学名的规范、流程之前已经从taxid_type.tsv中了解过）。
-  - **date → high**：确为样本采集年份/时段（已排除出版/检索年）。
+  - **date**：不进 §3.2（§3.1 有年份一律 high、无年份 unknown）。
   - **主权归一**：Hong Kong→`Hong Kong, China` / Taiwan→`Taiwan, China` / Macao→`Macao, China` / Korea→`Korea`；Turkey 勿与 Korea 混淆。
-- **不判 high 的情况**（→ medium / low / unknown）：区域级、环境型宿主、多国未定位单一采样国、date 年份为区间仍可能为采集期、host 基线默认、纯出版年噪声、证据矛盾/不足。
+- **不判 high 的情况**（→ medium / low / unknown）：区域级、环境型宿主、多国未定位单一采样国、host 基线默认、证据矛盾/不足。
 - **约束**：`llm_infer_*` 仅由写入脚本写（神圣性）；LLM 仅补规则判不了的残差，**不得凭空标 high**（无 evidence 不得编造值）。
 - **脚本**：`.script/ena_agent_residual.py`（可复用，`batch` 抽残差+落 evidence / `merge` 校验并入；只读输入、不改源文件、对话内只打印摘要不打印 evidence）。
-  - `batch`：`--field country|date|host` → 抽取残差写入 `agent_residual_<field>.jsonl`（含 `evidence_text` + `rule_partial`），并**自动跳过已完成集合**（断点续跑）。
+  - `batch`：`--field country|host` → 抽取残差写入 `agent_residual_<field>.jsonl`（含 `evidence_text` + `rule_partial`），并**自动跳过已完成集合**（断点续跑）。
   - 代理读 `agent_residual_<field>.jsonl` 逐条判，写 `agent_llm_<field>.jsonl`（判定记录，见下）。
   - `merge`：把 `agent_llm_<field>.jsonl` 并入 `ena_llm_infer_<field>.jsonl`（按 `project_accession` 去重、代理判定覆盖旧值），写 `llm_infer_stats.json`。
 - **输出 schema**：

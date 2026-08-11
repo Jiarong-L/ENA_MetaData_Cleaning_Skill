@@ -86,9 +86,11 @@ def load_literature(path):
 # ---- 残差判定 -------------------------------------------------------------
 
 def is_residual(rec):
-    """§3.2 路由：content_reliability 不足（!=high）或 value 未知 → 残差。"""
+    """§3.2 路由：仅 country/host 进残差；content_reliability 不足（!=high）或 value 未知 → 残差。"""
     if rec is None:
         return True
+    if rec.get("field") not in ("country", "host"):
+        return False
     if rec.get("value") in (None, "unknown", []):
         return True
     if rec.get("content_reliability") != "high":
@@ -134,6 +136,10 @@ def build_evidence(acc, study_meta, lit_rec, infer_rec, cap_desc=2000, cap_abs=1
 def phase_batch(args):
     out = args.out_dir
     field = args.field
+    # §3.2 残差仅限 country / host（date 整字段豁免：有年份一律 high，无年份无信息可判）
+    if field not in ("country", "host"):
+        print(f"[batch] field={field} 不进 §3.2 残差（仅 country/host），跳过")
+        return None
     infer_path = args.infer or os.path.join(out, f"{field}_infer.jsonl")
     study_meta = load_study_meta(args.study_meta)
     lit = load_literature(args.literature)

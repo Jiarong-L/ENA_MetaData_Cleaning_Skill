@@ -631,17 +631,16 @@ def infer_date(sources):
     if not years:
         return None
     ys = sorted(set(y for y, _, _ in years))
-    # 区间判定
     rep_sub, rep_snip = years[0][1], years[0][2]
     if len(ys) >= 2 and max(ys) - min(ys) >= 2:
         val = f"{min(ys)}-{max(ys)}"
-        conf, method = "medium", "rule_date_range"
+        method = "rule_date_range"
     else:
         val = str(ys[0])
-        conf, method = "high", "rule_date_year"
+        method = "rule_date_year"
     return {
         "value": val,
-        "confidence": conf,
+        "confidence": "high",
         "content_reliability": _reliability(rep_sub, rep_snip),
         "source": source_of(rep_sub),
         "method": method,
