@@ -132,34 +132,195 @@ REGION = [
     "cross-country", "internationally",
 ]
 
-# host 词表（ENV 生境词本身就是合法 host 信号，勿当"无宿主"砍）
-HOST_HUMAN = [
-    "human", "gut", "fecal", "faeces", "stool", "feces", "oral", "saliva",
-    "salivary", "skin", "blood", "blood culture", "urine", "urinary",
-    "endotracheal", "sputum", "breast milk", "breastmilk", "vaginal",
-    "infant", "neonatal", "newborn", "patient", "clinic", "clinical",
-    "hospital", "mucosal", "intestine", "intestinal", "colorectal",
-    "carrier", "fecal microbiota", "gut microbiome", "gut microbiota",
+# host 词表 —— VALUE 对齐 ENA metagenome scientific_name
+# （命名来源：.reuse/taxid_type.tsv 中 is_metagenome=1 的 scientific_name，
+#   例如 soil metagenome / human gut metagenome / pig gut metagenome / gut metagenome）
+# 优先级：生境词 -> "X metagenome"；人+部位 -> "human X metagenome"；
+#         动物+肠道 -> "X gut metagenome"；仅部位 -> "X metagenome"(generic)；
+#         仅人/动物 -> 物种 scientific_name（Homo sapiens / Bos taurus ...）
+# 此约定同时约束规则轮(§3.1)与后续 LLM 轮(§3.2)。
+
+# 人源触发词（命中即认为宿主为人，VALUE 优先 Homo sapiens / human X metagenome）
+# 注意：_find_words 对文本做小写匹配，故双词触发词须小写 "homo sapiens"，
+#       其 s? 后缀兼容 "homo sapiens" / "homo sapiens gut" 等写法
+HOST_HUMAN_TRIGGER = [
+    "homo sapiens", "human", "infant", "neonatal", "newborn", "patient", "clinical",
+    "clinic", "hospital", "mucosal", "carrier",
 ]
-HOST_ANIMAL = {
-    "lamb": "sheep (Ovis aries)", "sheep": "sheep (Ovis aries)",
-    "ovine": "sheep (Ovis aries)", "ewe": "sheep (Ovis aries)",
-    "cattle": "cattle (Bos taurus)", "cow": "cattle (Bos taurus)",
-    "bovine": "cattle (Bos taurus)", "pig": "pig (Sus scrofa)",
-    "porcine": "pig (Sus scrofa)", "poultry": "poultry",
-    "chicken": "chicken (Gallus)", "goat": "goat (Capra)",
-    "caprine": "goat (Capra)", "dog": "dog (Canis)", "cat": "cat (Felis)",
-    "mouse": "mouse (Mus)", "rat": "rat (Rattus)", "fish": "fish",
-    "horse": "horse (Equus)", "rabbit": "rabbit (Oryctolagus)",
-    "camel": "camel", "calf": "cattle (Bos taurus)",
+# 部位词 -> (generic ENA 名, 人源 ENA 名)；generic 为 None 表示仅有人源形式
+HOST_SITE = {
+    "gut": ("gut metagenome", "human gut metagenome"),
+    "fecal": ("gut metagenome", "human gut metagenome"),
+    "faecal": ("gut metagenome", "human gut metagenome"),
+    "faeces": ("gut metagenome", "human gut metagenome"),
+    "stool": ("gut metagenome", "human gut metagenome"),
+    "feces": ("gut metagenome", "human gut metagenome"),
+    "intestinal": ("gut metagenome", "human gut metagenome"),
+    "intestine": ("gut metagenome", "human gut metagenome"),
+    "colorectal": ("gut metagenome", "human gut metagenome"),
+    "colon": ("gut metagenome", "human gut metagenome"),
+    "oral": ("oral metagenome", "human oral metagenome"),
+    "saliva": ("oral metagenome", "human oral metagenome"),
+    "salivary": ("oral metagenome", "human oral metagenome"),
+    "mouth": ("oral metagenome", "human oral metagenome"),
+    "skin": ("skin metagenome", "human skin metagenome"),
+    "dermal": ("skin metagenome", "human skin metagenome"),
+    "vaginal": ("vaginal metagenome", "human vaginal metagenome"),
+    "milk": (None, "human milk metagenome", True),
+    "breast milk": (None, "human milk metagenome", True),
+    "breastmilk": (None, "human milk metagenome", True),
+    "lung": (None, "human lung metagenome", True),
+    "respiratory": (None, "human lung metagenome", True),
+    "sputum": (None, "human lung metagenome", True),
+    "endotracheal": (None, "human lung metagenome", True),
+    "nasopharyngeal": (None, "human nasopharyngeal metagenome", True),
+    "nasal": (None, "human nasopharyngeal metagenome", True),
+    "nose": (None, "human nasopharyngeal metagenome", True),
+    "skeleton": (None, "human skeleton metagenome", True),
+    "bone": (None, "human skeleton metagenome", True),
 }
-HOST_ENV = [
-    "soil", "sediment", "freshwater", "river", "lake", "stream", "marine",
-    "seawater", "ocean", "water", "wastewater", "sludge", "compost",
-    "manure", "plant", "rhizosphere", "phyllosphere", "air", "dust",
-    "biofilm", "glacier", "permafrost", "hot spring", "mangrove",
-    "wetland", "forest", "terrestrial", "aquatic", "groundwater",
-]
+# 规则1 site 同义词表：canonical middle 词 -> 触发该部位的所有 HOST_SITE 键。
+# 例如 "gut" -> {gut, fecal, faecal, faeces, stool, feces, intestinal, intestine, colorectal, colon}。
+# 用于 is_high_evidence 规则1：evidence 中出现任一部位同义词即视为该部位在场。
+_SITE_SYN = {}
+for _k, _v in HOST_SITE.items():
+    _generic, _human = _v[0], _v[1]
+    _mw = None
+    if _human and _human.startswith("human ") and _human.endswith(" metagenome"):
+        _mw = _human[len("human "):-len(" metagenome")]
+    elif _generic and _generic.endswith(" metagenome"):
+        _mw = _generic[:-len(" metagenome")]
+    if _mw:
+        _SITE_SYN.setdefault(_mw, set()).add(_k)
+# 动物 -> 物种 scientific_name（兜底用）。
+# 俗名与学名均触发（cattle / Bos taurus 都命中 -> Bos taurus），
+# 二者映射到同一物种，与 taxid_type.tsv 中 is_metagenome=0 的物种名对齐。
+# 注意：_find_words 对文本做小写匹配，双词学名须全小写（如 "bos taurus"）。
+HOST_ANIMAL = {
+    # 羊
+    "lamb": "Ovis aries", "sheep": "Ovis aries", "ovine": "Ovis aries", "ewe": "Ovis aries",
+    "ovis aries": "Ovis aries",
+    # 牛
+    "cattle": "Bos taurus", "cow": "Bos taurus", "bovine": "Bos taurus", "calf": "Bos taurus",
+    "bos taurus": "Bos taurus",
+    # 猪
+    "pig": "Sus scrofa", "porcine": "Sus scrofa",
+    "sus scrofa": "Sus scrofa",
+    # 鸡 / 禽
+    "poultry": "Gallus gallus", "chicken": "Gallus gallus",
+    "gallus gallus": "Gallus gallus",
+    # 山羊
+    "goat": "Capra hircus", "caprine": "Capra hircus",
+    "capra hircus": "Capra hircus",
+    # 犬
+    "dog": "Canis lupus familiaris",
+    "canis lupus familiaris": "Canis lupus familiaris",
+    # 猫
+    "cat": "Felis catus",
+    "felis catus": "Felis catus",
+    # 鼠
+    "mouse": "Mus musculus", "mice": "Mus musculus",
+    "rat": "Rattus norvegicus", "rats": "Rattus norvegicus",
+    "mus musculus": "Mus musculus", "rattus norvegicus": "Rattus norvegicus",
+    # 鱼
+    "fish": "Actinopterygii", "actinopterygii": "Actinopterygii",
+    # 马
+    "horse": "Equus caballus", "equus caballus": "Equus caballus",
+    # 兔
+    "rabbit": "Oryctolagus cuniculus", "oryctolagus cuniculus": "Oryctolagus cuniculus",
+    # 骆驼
+    "camel": "Camelus dromedarius", "camelus dromedarius": "Camelus dromedarius",
+}
+# 动物+肠道 -> ENA 名（仅 taxid_type.tsv 中有对应 "X gut metagenome" 者）。
+# 学名键与俗名键映射同一 ENA 名（如 sus scrofa / pig 均 -> pig gut metagenome）。
+ANIMAL_GUT_NAME = {
+    "pig": "pig gut metagenome", "porcine": "pig gut metagenome",
+    "sus scrofa": "pig gut metagenome",
+    "cattle": "bovine gut metagenome", "cow": "bovine gut metagenome",
+    "bovine": "bovine gut metagenome", "calf": "bovine gut metagenome",
+    "bos taurus": "bovine gut metagenome",
+    "chicken": "chicken gut metagenome",
+    "gallus gallus": "chicken gut metagenome",
+    "sheep": "sheep gut metagenome", "ovine": "sheep gut metagenome",
+    "lamb": "sheep gut metagenome", "ewe": "sheep gut metagenome",
+    "ovis aries": "sheep gut metagenome",
+    "mouse": "mouse gut metagenome", "mus musculus": "mouse gut metagenome",
+    "rat": "rat gut metagenome", "rattus norvegicus": "rat gut metagenome",
+}
+
+# 轻量补充：昆虫/灵长/爬行/两栖/甲壳/软体/其它哺乳/鸟/植物/真菌等常见俗名。
+# 这些词多为常见英文词，误匹配风险高，故：
+#   (1) 必须整段含 HOST_CTX 共存词（metagenome/genome/宿主部位等）才触发；
+#   (2) 命中一律 medium + needs_review，VALUE 暂用俗名（非 ENA 名），
+#       交 §3.2 LLM 精炼为规范 scientific_name / 判断是否真宿主。
+# 仅作"软信号"，不妄下结论，交 §3.2 LLM 精炼。
+HOST_ANIMAL_SOFT = {
+    # 昆虫 / 节肢动物
+    "honeybee": "honeybee", "termite": "termite", "mosquito": "mosquito",
+    "beetle": "beetle", "wasp": "wasp", "butterfly": "butterfly",
+    "moth": "moth", "caterpillar": "caterpillar", "cicada": "cicada",
+    "locust": "locust", "grasshopper": "grasshopper", "ant": "ant",
+    # 灵长
+    "monkey": "monkey", "ape": "ape", "gorilla": "gorilla",
+    "chimpanzee": "chimpanzee", "bonobo": "bonobo", "orangutan": "orangutan",
+    "gibbon": "gibbon", "baboon": "baboon", "macaque": "macaque",
+    "lemur": "lemur",
+    # 爬行 / 两栖
+    "lizard": "lizard", "snake": "snake", "turtle": "turtle",
+    "tortoise": "tortoise", "frog": "frog", "toad": "toad",
+    "crocodile": "crocodile", "salamander": "salamander", "gecko": "gecko",
+    # 甲壳 / 软体
+    "shrimp": "shrimp", "crab": "crab", "lobster": "lobster",
+    "oyster": "oyster", "mussel": "mussel", "squid": "squid",
+    "octopus": "octopus", "snail": "snail", "slug": "slug", "clam": "clam",
+    # 其它哺乳
+    "whale": "whale", "dolphin": "dolphin", "seal": "seal",
+    "elephant": "elephant", "zebra": "zebra", "giraffe": "giraffe",
+    "hippo": "hippo", "rhino": "rhino", "deer": "deer", "bison": "bison",
+    "buffalo": "buffalo", "yak": "yak", "wolf": "wolf", "fox": "fox",
+    "panda": "panda", "lion": "lion", "tiger": "tiger",
+    "leopard": "leopard", "hyena": "hyena",
+    # 鸟
+    "penguin": "penguin", "duck": "duck", "goose": "goose",
+    "pigeon": "pigeon",
+    # 植物 / 真菌
+    "wheat": "wheat", "maize": "maize", "soybean": "soybean",
+    "tomato": "tomato", "barley": "barley", "oat": "oat", "sorghum": "sorghum",
+    "pea": "pea", "carrot": "carrot", "lettuce": "lettuce", "grape": "grape",
+    "apple": "apple", "banana": "banana", "sugarcane": "sugarcane",
+    "sunflower": "sunflower", "rapeseed": "rapeseed", "cabbage": "cabbage",
+    "onion": "onion", "garlic": "garlic", "yeast": "yeast",
+    "mushroom": "mushroom", "fern": "fern",
+    # 其它无脊椎
+    "worm": "worm", "nematode": "nematode", "mite": "mite", "tick": "tick",
+    "coral": "coral", "sponge": "sponge", "jellyfish": "jellyfish",
+}
+# 生境词 -> ENA ecological metagenome 名（仅保留有官方命名的词；
+# 去掉 forest/terrestrial/dust：易误判且无对应 ENA 名）
+HOST_ENV = {
+    "soil": "soil metagenome", "sediment": "sediment metagenome",
+    "freshwater": "freshwater metagenome", "river": "riverine metagenome",
+    "lake": "lake water metagenome", "stream": "riverine metagenome",
+    "marine": "marine metagenome", "seawater": "seawater metagenome",
+    "ocean": "marine metagenome", "water": "aquatic metagenome",
+    "wastewater": "wastewater metagenome", "sludge": "sludge metagenome",
+    "compost": "compost metagenome", "manure": "manure metagenome",
+    "plant": "plant metagenome", "rhizosphere": "rhizosphere metagenome",
+    "phyllosphere": "phyllosphere metagenome", "air": "air metagenome",
+    "biofilm": "biofilm metagenome", "glacier": "glacier metagenome",
+    "permafrost": "permafrost metagenome", "hot spring": "hot springs metagenome",
+    "mangrove": "mangrove metagenome", "wetland": "wetland metagenome",
+    "aquatic": "aquatic metagenome", "groundwater": "groundwater metagenome",
+}
+
+HOST_CTX = set("""
+metagenome metagenomic microbiome microbial host gut fecal feces stool faeces oral skin soil
+water plant animal tissue commensal symbiont isolate strain genome sequencing sequenced dna rna
+biofilm rhizosphere sediment marine freshwater aquatic terrestrial invertebrate vertebrate
+mammal bird fish insect pathogen parasite fungus bacterial viral eukaryotic sample specimen
+taxonomic phylogenetic diversity abundance community communities amplicon illumina pacbio
+shotgun nanopore reads
+""".split())
 
 # 采样/地点上下文词（命中附近出现 -> content_reliability 提为 high）
 CTX_SAMPLE = [
@@ -306,31 +467,134 @@ def _find_words(text, words):
     return out
 
 
+def is_high_evidence(value, method, evidence):
+    """用户设定（证据窗口内强共现 -> 标 High、跳过 §3.2 LLM）：只看 evidence 单条 ±30 字片段。
+
+    规则1：三字科学名「<host> <site> metagenome」——host 指示词与中间词(site)同时出现在 evidence：
+      · host 指示词 = human / homo sapiens（或 HOST_ANIMAL 对应俗名，取 value 首词）
+      · site 词     = 三字科学名的中间词（如 gut / lung / oral …），
+                      允许 HOST_SITE 同义词（feces/faecal/stool/intestinal… 均视作 gut 在场）
+    规则2：仅限「二字生境科学名」（即 `<env_word> metagenome`，如 soil metagenome、
+            sludge metagenome、marine metagenome）——两词都出现在 evidence 中。
+            说明：Bos taurus / Homo sapiens / Mus musculus 等拉丁二名法（物种学名，
+            不以 metagenome 收尾）**不适用**规则2，也不适用规则1（无 site 中间词），
+            故永不经由证据窗口标 High，保持 medium 交 §3.2。
+    soft 永远不标 High（恒交 §3.2 LLM）。不回看全文。
+    """
+    if method == "rule_host_soft":
+        return False
+    ev = _norm(evidence)
+    toks = _norm(value).split()
+    if len(toks) == 3 and toks[-1] == "metagenome":
+        host_word, site_word = toks[0], toks[1]
+        host_ok = (host_word in ev) or (host_word == "human" and "homo sapiens" in ev)
+        if not host_ok:
+            return False
+        if site_word in ev:
+            return True
+        for syn in _SITE_SYN.get(site_word, ()):
+            if syn in ev:
+                return True
+        return False
+    # 规则2：仅「<env_word> metagenome」二字生境名适用；拉丁二名法（Bos taurus 等）不标 High
+    if len(toks) == 2 and toks[-1] == "metagenome":
+        return (toks[0] in ev) and (toks[1] in ev)
+    return False
+
+
 def infer_host(sources):
-    found = {"human": [], "animal": [], "env": []}
+    """返回 host 记录。基线 confidence 恒为 medium（仅关键字命中，无上下文精判）。
+
+    VALUE 对齐 ENA metagenome scientific_name（参照 .reuse/taxid_type.tsv 中
+    is_metagenome=1 的命名）：
+      - 生境词           -> "X metagenome"        (soil/marine/...)
+      - 人 + 部位        -> "human X metagenome"
+      - 动物 + 肠道      -> "X gut metagenome"
+      - 仅部位（无归属） -> "X metagenome"         (generic: gut/oral/skin/vaginal)
+      - 仅人 / 仅动物    -> 物种 scientific_name   (Homo sapiens / Bos taurus ...)
+    软信号（HOST_ANIMAL_SOFT：昆虫/灵长/爬行等俗名，无 ENA 专属名）仅作 needs_review
+    候选：须整段含 HOST_CTX 共存词才触发，VALUE 暂用俗名，交 §3.2 LLM 精炼。
+    sputum/lung/milk/naso/skeleton 等仅有人源形式的部位：无人源触发时不妄判，
+    留空交由 §3.2。
+    """
+    hit_human, hit_animal, hit_env, hit_site, hit_soft = [], [], [], [], []
     for sub, text in sources:
         if not text:
             continue
-        for w, snip in _find_words(text, HOST_HUMAN):
-            found["human"].append((sub, snip, w))
+        for w, snip in _find_words(text, HOST_HUMAN_TRIGGER):
+            hit_human.append((sub, snip, w))
         for w, snip in _find_words(text, list(HOST_ANIMAL.keys())):
-            found["animal"].append((sub, snip, HOST_ANIMAL[w]))
-        for w, snip in _find_words(text, HOST_ENV):
-            found["env"].append((sub, snip, w))
+            hit_animal.append((sub, snip, HOST_ANIMAL[w], w))
+        for w, snip in _find_words(text, list(HOST_ENV.keys())):
+            hit_env.append((sub, snip, w))
+        for w, snip in _find_words(text, list(HOST_SITE.keys())):
+            hit_site.append((sub, snip, w))
+        for w, snip in _find_words(text, list(HOST_ANIMAL_SOFT.keys())):
+            hit_soft.append((sub, snip, w))
 
-    if found["human"]:
-        sub, s, w = found["human"][0]
-        return _host_rec("human (Homo sapiens)", "high", sub, s, "rule_host_human", w)
-    if found["animal"]:
-        sub, s, v = found["animal"][0]
-        return _host_rec(v, "high", sub, s, "rule_host_animal", v)
-    if found["env"]:
-        sub, s, w = found["env"][0]
-        return _host_rec(w, "high", sub, s, "rule_host_env", w)
-    return None
+    human_present = bool(hit_human)
+    animal_word = hit_animal[0][3] if hit_animal else None
+    animal_species = hit_animal[0][2] if hit_animal else None
+    site_word = hit_site[0][2] if hit_site else None
+    env_word = hit_env[0][2] if hit_env else None
+    soft_word = hit_soft[0][2] if hit_soft else None
+
+    matched = []
+    for _, _, w in hit_human:
+        matched.append(w)
+    for _, _, _, w in hit_animal:
+        matched.append(w)
+    for _, _, w in hit_site:
+        matched.append(w)
+    for _, _, w in hit_env:
+        matched.append(w)
+    if soft_word:
+        matched.append(soft_word)
+
+    GUT_SITE = ("gut", "fecal", "faeces", "stool", "feces", "intestinal",
+                "intestine", "colorectal", "colon")
+    ctx_present = any(any(w in _norm(t) for w in HOST_CTX) for _, t in sources)
+
+    value, method = None, None
+    if site_word:
+        entry = HOST_SITE[site_word]
+        generic, human_name = entry[0], entry[1]
+        require_human = entry[2] if len(entry) > 2 else False
+        if human_present and human_name:
+            value, method = human_name, "rule_host_human"
+        elif (animal_word and site_word in GUT_SITE
+              and animal_word in ANIMAL_GUT_NAME):
+            value, method = ANIMAL_GUT_NAME[animal_word], "rule_host_animal"
+        elif generic and not require_human:
+            method = "rule_host_human" if human_present else "rule_host_env"
+            value, method = generic, method
+        # require_human 且无人源触发 -> 不妄判，留空
+    if value is None:
+        if human_present:
+            value, method = "Homo sapiens", "rule_host_human"
+        elif animal_species:
+            value, method = animal_species, "rule_host_animal"
+        elif env_word:
+            value, method = HOST_ENV[env_word], "rule_host_env"
+        elif soft_word and ctx_present:
+            value, method = HOST_ANIMAL_SOFT[soft_word], "rule_host_soft"
+
+    if value is None:
+        return None
+
+    rep = next((x[0] for x in (hit_site, hit_human, hit_animal, hit_env, hit_soft) if x), None)
+    if rep is None:
+        return None
+    sub, snip = rep[0], rep[1]
+    rec = _host_rec(value, "medium", sub, snip, method, matched)
+    if is_high_evidence(value, method, rec["evidence"]):
+        rec["confidence"] = "high"
+    if method == "rule_host_soft":
+        rec["needs_review"] = True
+    return rec
 
 
-def _host_rec(value, conf, sub, snip, method, token):
+def _host_rec(value, conf, sub, snip, method, tokens):
     return {
         "value": value,
         "confidence": conf,
@@ -338,7 +602,7 @@ def _host_rec(value, conf, sub, snip, method, token):
         "source": source_of(sub),
         "method": method,
         "evidence": f"[{sub}] …{snip}…",
-        "matched_tokens": [token],
+        "matched_tokens": tokens,
     }
 
 

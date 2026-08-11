@@ -235,18 +235,22 @@
 
 ### 3.1 规则 + 字典基线（确定性，优先跑，high 直接采纳）
 
-- **目标**：用规则 + 字典从文本推 `country` / `date` / `host`，产出 `high/medium/low/NotCountry/unknown`。规则判得了 high 的**直接采纳**，不必进 §3.2。
+- **目标**：用规则 + 字典从文本推 `country` / `date` / `host`，产出 `high/medium/low/NotCountry/unknown`。规则判得了 high 的**直接采纳**，不必进 §3.2（host 亦可由 §3.1 证据窗口 high 直接产出，见「host High 规则」）。
 - **脚本**：`.script/ena_infer_31.py`（可复用、参数化路径、自含字典 baseline、只读输入不改动任何文件）。
   - 用法：`python ena_infer_31.py`（默认读 `.tmp/` 下两输入）｜`--fields country,host`｜`--limit N`｜`--only PRJEBxxx`。
   - 输入：§2.1 `project_study_meta.json`（study_title/description/**center_name**）+ §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
   - 文本源拼接：`center_name` 属 `study_meta`（中心未必等于采样国，故其 `content_reliability` 默认 medium）。
-- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env 词表，生境词即合法 host 信号）。
+- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
 - **置信度判定标准（对齐 mARG/ENA）**：
   - **country**：出现在**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；提及国 > 6 → `low`（综述噪）；公海/深海无主权国 → `NotCountry`（high，否定判定）；无国名 → `unknown`。多国实测 → `high` 多值全列；含大区词（Indo-Pacific）→ `medium` 多值。
   - **date**：年份出现在**采集上下文** → `high`；否则 → `low`（基线不产生 medium）；无年份 → `unknown`。**务必区分采集年 vs 出版/检索年**。
-  - **host**：基线恒为 `medium`（仅关键字命中，无上下文精判）；具体生物体（human/cattle/pig/某鱼种）经净化后可由 §3.2 升 high；环境型（soil/plant/algae）通常留 medium。
+  - **host**：默认 `medium`（仅关键字命中，无上下文精判）；但 §3.1 现已支持**证据窗口 high** —— 当 `evidence`（匹配词 ±30 字）内能直接证明 host 值时即标 `high` 并跳过 §3.2（见下方「host High 规则」）。环境型（soil/plant/algae）命中生境字典即 value，多为 medium，仅标题直写「X metagenome」者走高窗口 high。其余由 §3.2 判定后决定是否升 high。
   - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`（英文 canon，主权归一不可省，HK/TW/MO 不得写为独立国家）；Korea → `Korea`；Turkey 独立真实国，仅当研究确在土耳其才写 `Turkey`，**勿与 Korea 混淆**。
 - **host 语义**：ENA 侧 = 宿主生物；描述/论文里的 soil/gut/marine 等生境词本身是合法 host 信号，勿当"无宿主"砍（脚本已对复数 lambs/ewes 等做 `s?` 容错）；正则把研究微生物当"物种"混入时，需下游净化。
+- **host High 规则（证据窗口，§3.1 直接产出 high 不进 §3.2）**：`is_high_evidence()` 只看单条 `evidence`（匹配词 ±30 字片段），满足以下之一即标 `confidence=high`、置 `needs_review=False` 跳过 §3.2：
+  - **规则1（三字科学名 `<host> <site> metagenome`）**：host 指示词（human / homo sapiens，或 HOST_ANIMAL 对应俗名）**与** 中间部位词**同时**出现 —— 部位词允许 `HOST_SITE` 同义词（gut ↔ feces/faeces/fecal/faecal/stool/intestinal/intestine/colorectal/colon…）。例：`human gut metagenome` 可由 "human" + "feces" 同在 evidence 命中。
+  - **规则2（仅限二字生境科学名 `<env_word> metagenome`）**：如 `soil metagenome` / `sludge metagenome` / `marine metagenome` —— 两词都出现在 evidence 中。**拉丁二名法（`Bos taurus` / `Homo sapiens` / `Mus musculus` 等，不以 metagenome 收尾）不适用规则2，也不适用规则1（无 site 中间词），故永不经证据窗口标 high，保持 medium 交 §3.2。**
+  - `rule_host_soft`（昆虫/灵长/爬行/植物等轻量俗名）**永不标 high**，恒交 §3.2。
 - **输出 schema**（每字段一个 jsonl，每行一项目记录）：
 
 > **产物文件 / 模式**：`<field>_infer.jsonl`（globs 到 `country_infer.jsonl` / `host_infer.jsonl` / `date_infer.jsonl`，每行一项目记录）+ `infer_stats.json`（计数汇总；glob `infer_stats.json`，唯一）。
@@ -283,7 +287,7 @@
 - **工程约束（防上下文爆炸）**：跑时**注意上下文长度、自动清理**已读批次；**会话内不报告任何结果**（防上下文膨胀），只保存结果文件（结果由写入脚本落盘，不在对话里复述）。
 - **升级 high 的语义判据（代理直读后判定，须在 `note` 写理由）**：
   - **country → high**：明确是主权国采样/采集地（单国或少数实测国），排除①机构/作者贡献国②区域级（留 medium）③多论文混合只取真正实测国；公海/深海显式 `NotCountry`（high 否定判定）。
-  - **host → high**：经净化后单一具体生物体/宿主；环境型来源通常留 medium。
+  - **host → high**：§3.1 可能已直接产 host high（证据窗口强共现，value 形如 `human gut metagenome` / `soil metagenome`），§3.2 仅处理其残差（medium / unknown / soft 俗名）；残差中成功推断的部分可升 high（注意，两步的输出都要符合NCBI科学名的规范、流程之前已经从taxid_type.tsv中了解过）。
   - **date → high**：确为样本采集年份/时段（已排除出版/检索年）。
   - **主权归一**：Hong Kong→`Hong Kong, China` / Taiwan→`Taiwan, China` / Macao→`Macao, China` / Korea→`Korea`；Turkey 勿与 Korea 混淆。
 - **不判 high 的情况**（→ medium / low / unknown）：区域级、环境型宿主、多国未定位单一采样国、date 年份为区间仍可能为采集期、host 基线默认、纯出版年噪声、证据矛盾/不足。
