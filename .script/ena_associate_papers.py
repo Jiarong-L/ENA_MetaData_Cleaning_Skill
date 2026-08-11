@@ -195,8 +195,11 @@ def load_acc_file(path):
 
 
 # ================================================================ §2.1 ENA study
-def fetch_study_batch(accessions):
-    """ENA portal result=study, 一次最多 ~100 accession。多则分批。"""
+def fetch_study_batch(accessions, on_chunk=None):
+    """ENA portal result=study, 一次最多 ~100 accession。多则分批。
+
+    on_chunk(all_recs): 每成功拉完一个分片(80个)后回调，便于断点续跑检查点。
+    """
     all_recs = {}
     B = 80
     for i in range(0, len(accessions), B):
@@ -219,6 +222,8 @@ def fetch_study_batch(accessions):
                             "center_name": (rr.get("center_name") or "").strip(),
                             "study_description": (rr.get("description") or "").replace("_", " ").strip(),
                         }
+                if on_chunk:
+                    on_chunk(all_recs)   # 每批检查点
                 break
             except Exception as e:
                 log("  study err att%d: %s" % (att+1, e)); time.sleep(1.0)
@@ -235,7 +240,13 @@ def phase_study(accs, out_dir, force=False):
     todo = [a for a in accs if a not in recs]
     if todo:
         log("  待拉取 %d / 已有 %d" % (len(todo), len(recs)))
-        got = fetch_study_batch(todo)
+
+        def _ckpt(fresh):
+            # 每批拉完即落盘(已缓存 + 新拉取)，进程被杀也能续跑
+            with open(meta_path, "w", encoding="utf-8") as f:
+                json.dump({**recs, **fresh}, f, ensure_ascii=False, indent=1)
+
+        got = fetch_study_batch(todo, on_chunk=_ckpt)
         recs.update(got)
         with open(meta_path, "w", encoding="utf-8") as f:
             json.dump(recs, f, ensure_ascii=False, indent=1)
@@ -456,7 +467,14 @@ def process_one(acc, meta, freetext_n):
     return rec
 
 
-def phase_lit(meta, out_dir, limit=None, freetext_n=20):
+def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
+    """§2.2 关联论文 + PaperSource 标注。
+
+    accs: 显式传入要处理的 accession 集合/列表 (来自 --acc-file 或 --batch-date 解析)。
+          - 传入时, 严格只处理这些 accession (修复旧版忽略 --acc-file、只遍历 meta 的 bug);
+          - 不传 (None) 时, 回退为遍历 meta 全部 key (向后兼容旧调用方式)。
+    无论哪种情况, 处理顺序内部仍为 meta 顺序; meta 仅用于查 study 自述 (title/desc/center)。
+    """
     log("=== §2.2 EPMC + 作者单位过滤 ===")
     lit_path = os.path.join(out_dir, "project_literature.jsonl")
     # 断点续跑: 已存在的 project_accession 跳过
@@ -468,7 +486,12 @@ def phase_lit(meta, out_dir, limit=None, freetext_n=20):
                     done.add(json.loads(line).get("project_accession"))
                 except Exception:
                     pass
-    accs = [a for a in meta if a not in done]
+    # 真正按传入的 accs 处理; 不传则回退 meta 全量 (兼容 --phase all / --batch-date 老用法)
+    if accs is not None:
+        accs_src = list(accs.keys() if isinstance(accs, dict) else accs)
+    else:
+        accs_src = list(meta.keys())
+    accs = [a for a in accs_src if a not in done]
     if limit:
         accs = accs[:limit]
     stats = {"projects": 0, "accession_hit": 0, "freetext": 0, "with_hits": 0,
@@ -701,7 +724,8 @@ def main():
         meta = json.load(open(mp, encoding="utf-8")) if os.path.exists(mp) else {}
 
     if args.phase in ("lit", "all"):
-        phase_lit(meta, args.out, limit=args.limit, freetext_n=args.freetext_n)
+        # 把 --acc-file / --batch-date 解析出的 accs 真正传进 phase_lit (修复旧版忽略 --acc-file)
+        phase_lit(meta, args.out, accs=accs_items, limit=args.limit, freetext_n=args.freetext_n)
 
 
 if __name__ == "__main__":
