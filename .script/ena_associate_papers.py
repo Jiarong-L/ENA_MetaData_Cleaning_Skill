@@ -411,6 +411,9 @@ def process_one(acc, meta, freetext_n):
             rec["hitCount"] = len(res)
             for p in res_sorted:
                 rec["papers"].append(paper_record(p, "high", matched="(accession-linked)"))
+            # accession 分支提前返回, 须显式设置 _counts 供 §2.2 汇总与日志 (否则 high_total 漏算)
+            rec["_counts"] = {"high": len(res_sorted), "low": 0, "missing": 0,
+                              "linkauthor": 0, "review_demoted": 0, "used": "accession"}
             return rec
     # ---- 2) free-text (多策略检索 + 单位过滤 + linkauthor) ----
     title = meta.get("study_title", "")
