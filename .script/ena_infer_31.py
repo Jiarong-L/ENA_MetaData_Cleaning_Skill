@@ -3,7 +3,7 @@
 """
 ena_infer_31.py — §3.1 规则 + 字典基线（确定性，优先跑）
 
-从可信文本源（study_meta: study_title/study_description/center_name；
+从可信文本源（study_meta: study_title/study_description；
 papersource=high 的 literature: title/abstract）用规则 + 字典推断
 country / date / host。
 
@@ -438,17 +438,15 @@ def _reliability(sub_source, snippet):
     base = "medium"
     if sub_source in ("study_description", "study_title", "literature_abstract", "literature_title"):
         base = "high"
-    elif sub_source == "center_name":
-        base = "medium"          # 中心未必等于采样国
     if _ctx_reliable(snippet, None):
         base = "high"
     return base
 
 
 def source_of(sub_source):
-    """标签 B：sub_source -> study_meta / literature（center_name 属 study_meta）。"""
+    """标签 B：sub_source -> study_meta / literature。"""
     return "study_meta" if sub_source in (
-        "study_title", "study_description", "center_name") else "literature"
+        "study_title", "study_description") else "literature"
 
 
 # ----------------------------------------------------------------------------
@@ -745,7 +743,6 @@ def build_sources(acc, meta, lit):
     m = meta.get(acc, {})
     sources.append(("study_title", m.get("study_title", "")))
     sources.append(("study_description", m.get("study_description", "")))
-    sources.append(("center_name", m.get("center_name", "")))
     d = lit.get(acc, {})
     for p in d.get("papers", []):
         if p.get("papersource") == "high":

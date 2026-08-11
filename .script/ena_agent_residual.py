@@ -104,12 +104,9 @@ def build_evidence(acc, study_meta, lit_rec, infer_rec, cap_desc=2000, cap_abs=1
     parts = []
     study = study_meta.get(acc, {})
     title = (study.get("study_title") or "").strip()
-    center = (study.get("center_name") or "").strip()
     desc = (study.get("study_description") or "").strip()
     if title:
         parts.append(f"[study_title] {title}")
-    if center:
-        parts.append(f"[center_name] {center}")
     if desc:
         parts.append(f"[study_description] {desc[:cap_desc]}")
     # literature：仅 papersource=high 才可信（§2.2 / §3.0 标签 B）

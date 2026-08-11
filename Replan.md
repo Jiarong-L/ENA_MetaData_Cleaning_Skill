@@ -238,11 +238,10 @@
 - **目标**：用规则 + 字典从文本推 `country` / `date` / `host`，产出 `high/medium/low/NotCountry/unknown`。规则判得了 high 的**直接采纳**，不必进 §3.2（host 亦可由 §3.1 证据窗口 high 直接产出，见「host High 规则」）。
 - **脚本**：`.script/ena_infer_31.py`（可复用、参数化路径、自含字典 baseline、只读输入不改动任何文件）。
   - 用法：`python ena_infer_31.py`（默认读 `.tmp/` 下两输入）｜`--fields country,host`｜`--limit N`｜`--only PRJEBxxx`。
-  - 输入：§2.1 `project_study_meta.json`（study_title/description/**center_name**）+ §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
-  - 文本源拼接：`center_name` 属 `study_meta`（中心未必等于采样国，故其 `content_reliability` 默认 medium）。
+  - 输入：§2.1 `project_study_meta.json`（study_title/description）+ §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
 - **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 USA/UK/China 等直写国名，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
 - **置信度判定标准（对齐 mARG/ENA）**：
-  - **country**：出现在**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；提及国 > 6 → `low`（综述噪）；公海/深海无主权国 → `NotCountry`（high，否定判定）；无国名 → `unknown`。多国实测 → `high` 多值全列；含大区词（Indo-Pacific）→ `medium` 多值。
+  - **country**：匹配到国名且附近有**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词（洲/洋/global）→ `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
   - **date**：提取到年份或年份区间  → `high`；无年份 → `unknown`。
   - **host**：默认 `medium`（仅关键字命中，无上下文精判）；但 §3.1 现已支持**证据窗口 high** —— 当 `evidence`（匹配词 ±30 字）内能直接证明 host 值时即标 `high` 并跳过 §3.2（见下方「host High 规则」）。环境型（soil/plant/sediment）命中生境字典即 value，多为 medium；当 `soil/marine/...` 与 `metagenome` 在  evidence 时走高窗口 high。其余由 §3.2 判定后决定是否升 high。
   - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`（英文 canon，主权归一不可省，HK/TW/MO 不得写为独立国家）；Korea → `Korea`；Turkey 独立真实国，仅当研究确在土耳其才写 `Turkey`，**勿与 Korea 混淆**。
@@ -271,6 +270,7 @@
 - **红线**：禁止确定性 resolver 直接写 `llm_infer_*`（污染真裁定）；本脚本只写 `<field>_infer.jsonl`，不写 `llm_infer_*`。
 - **常见坑（来自 mARG/ENA 实战，务必规避）**：
   - 机构/作者**贡献国 ≠ 采样国**；试剂/设备/耗材产地（Qiagen Germany、PacBio USA）、基金机构、署名/实验室所在地，一律不计采样国。
+  - **center_name 不参与 §3.1 推断**（测序中心所在国 ≠ 采样国，已从 sources 中移除）。
   - **date 基线不区分采集年 vs 出版/检索年**——有年份一律 `high`（已知局限：未来年/出版年噪声未过滤，靠 ENA 原始 date 字段质量兜底）。
   - **区域（洲/洋）≠ 国** → medium，不升 high；含大区词（Indo-Pacific）的多国 → medium 多值。
   - **国形容词盲点**（Japanese/Korean…）：国名词正则抓不到，须靠 DEMONYM 字典；但 demonym 修饰海域（Norwegian Sea→非国，走 NotCountry）、修饰工艺（Swiss-type cheese→指工艺非产地）、或地名/河名/物种名嵌国形容词（British Columbia→加拿大省、Russian River→加州河、Mexican *Gopherus berlandieri*→德州龟）极易误判，**必须 LLM 复核**（见 §3.2）。
@@ -310,7 +310,7 @@
 | `project_accession` | 项目编号 |
 | `field` | `country` / `date` / `host` |
 | `rule_partial` | 规则基线残留（对象）：`value` / `confidence` / `content_reliability` / `source` / `method` / `matched_tokens` |
-| `evidence_text` | 已组装供直读的原文（study_title + center_name + study_description + high 论文 title/abstract） |
+| `evidence_text` | 已组装供直读的原文（study_title + study_description + high 论文 title/abstract） |
 
 **② 中间（代理写）`agent_llm_<field>.jsonl`（每行一判定）**
 
