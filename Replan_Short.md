@@ -36,8 +36,8 @@
 ### 2.2  project_literature.jsonl 
 搜索关联论文，为 PaperSource 标注置信来源（`papersource`：high / linkauthor / low / missing）
 
-1. 先用项目编号查 Europe PMC（最准，指名道姓: high quality；只留发表年最早 1–2 篇）
-2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上但（无宏基因组关键词 或 论文是 Review / meta-analysis → `linkauthor`（质量同 low，不进全文）
+1. 先用项目编号查 Europe PMC（最准，指名道姓；只留发表年最早 1–2 篇）。命中论文逐篇查：非 Review / meta-analysis → `high`；是 Review / meta-analysis → `linkauthor`
+2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上且含 metagenome 关键词且非 Review / meta-analysis → `high`；否则（无关键词 或 是 Review / meta-analysis）→ `linkauthor`（质量同 low，不进全文）
 
 爬取论文的 标题+摘要/[全文:默认不爬]+paper的其它信息，比如：paper_title / paper_authors / paper_year /journal/pmid/pmcid/doi 
 

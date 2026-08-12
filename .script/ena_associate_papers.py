@@ -412,7 +412,10 @@ def process_one(acc, meta, freetext_n):
     rec = {"project_accession": acc, "strategy": "", "accession_hit": False,
            "query": "", "hitCount": 0, "papers": []}
     # ---- 1) accession-first (最准, 指名道姓) ----
-    #    该分支命中即 high 强源, 与 free-text 的 linkauthor 无关。
+    #    该分支命中 → high 强源; 但不强制要求标题/摘要含 metagenome 关键词
+    #    (accession 直接关联即视为足够强的证据).
+    #    例外: review / meta-analysis 等二次文献即便直接关联本项目, 也非具体样本研究,
+    #    降为 linkauthor (弱信号, 不进 §2.3), 与 free-text 分支口径一致.
     for fld in ("PROJECT_ID", "BIOPROJECT", "ACCESSION_ID"):
         # ACCESSION_ID 才是 ENA/DDBJ project 编号在 EPMC 里的正确字段
         # (旧代码误用 ACCESSION, 对本区间项目一律 0 命中)
@@ -427,11 +430,21 @@ def process_one(acc, meta, freetext_n):
             rec["strategy"] = "accession"
             rec["query"] = "%s:%s" % (fld, acc)
             rec["hitCount"] = len(res)
+            a_high = a_link = a_synth = 0
             for p in res_sorted:
-                rec["papers"].append(paper_record(p, "high", matched="(accession-linked)"))
-            # accession 分支提前返回, 须显式设置 _counts 供 §2.2 汇总与日志 (否则 high_total 漏算)
-            rec["_counts"] = {"high": len(res_sorted), "low": 0, "missing": 0,
-                              "linkauthor": 0, "synthesis_demoted": 0, "used": "accession"}
+                mk = has_metagenome_kw(p)
+                if is_non_primary(p):
+                    # 综述/荟萃分析: 直接关联本项目也非具体样本研究 → linkauthor (弱信号)
+                    if mk:
+                        a_synth += 1
+                    rec["papers"].append(paper_record(p, "linkauthor", matched="(accession-linked)"))
+                    a_link += 1
+                else:
+                    rec["papers"].append(paper_record(p, "high", matched="(accession-linked)"))
+                    a_high += 1
+            # accession 分支提前返回, 须显式设置 _counts 供 §2.2 汇总与日志
+            rec["_counts"] = {"high": a_high, "low": 0, "missing": 0,
+                              "linkauthor": a_link, "synthesis_demoted": a_synth, "used": "accession"}
             return rec
     # ---- 2) free-text (多策略检索 + 单位过滤 + linkauthor) ----
     title = meta.get("study_title", "")
@@ -457,7 +470,8 @@ def process_one(acc, meta, freetext_n):
             # 关联信号(linked): 单位对上 或 author 策略命中
             # 判 high 三条件: linked 且 标题/摘要含 META_KW(metagenome/metagenomic/metagenomes/metagenomics/
             #   metatranscriptome/metatranscriptomic/metaproteome/metaproteomic) 且 非 Review/ meta-analysis
-            #   (标题含 review/'meta-analysis' 词, 或摘要含 'in this review'/'meta-analysis'/'meta-analytic') → 真·宏基因组论文, high
+            #   (标题含 review 词, 或摘要含 'in this review', 或标题/摘要含 meta-analysis/meta analysis/metaanalysis/
+            #    meta-analytic/meta analytic/metaanalytic 任一子串) → 真·宏基因组论文, high
             # 否则(无关键词 | 是 Review | 是 meta-analysis 含 meta-analytic 等同族) → 降 linkauthor(低质量, 二次文献非具体样本研究)
             if mk and not is_non_primary(p):
                 ps = "high"; high += 1
