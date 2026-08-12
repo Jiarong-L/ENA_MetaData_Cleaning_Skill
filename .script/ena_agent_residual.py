@@ -88,7 +88,9 @@ def load_literature(path):
 
 def is_residual(rec):
     """§3.2 路由：仅 country/host 进残差。
-    confidence 列表为空（规则没抓到值）→ 进；任一值非 high → 进；全部 high → 不进。
+    confidence 列表为空（规则没抓到值）→ 进；任一值非 high/medium/NotCountry（即含 low/unknown）→ 进；
+    全部值为 high/medium/NotCountry → 不进（medium 视为终态，不再 LLM 复核）。
+    NotCountry（公海，country 字段确定不适用）视同 high（与 final_merge CONF_TIER 对齐）。
     rec is None → 不进（3.1 应全量跑，若 None 需重跑 3.1）。"""
     if rec is None:
         return False
@@ -99,7 +101,7 @@ def is_residual(rec):
         conf_list = [conf_list]
     if not conf_list:
         return True
-    return any(c != "high" for c in conf_list)
+    return any(c not in ("high", "medium", "NotCountry") for c in conf_list)
 
 # ---- evidence 组装 --------------------------------------------------------
 
@@ -210,20 +212,78 @@ def phase_batch(args):
 
 # ---- 阶段：merge ----------------------------------------------------------
 
+_CONF_DOMAIN = {"high", "medium", "low", "unknown", "NotCountry"}
+_TAX_DOMAIN = {"high", "medium", "unknown"}  # tax_confidence 值域锁定（LLM 写的 low 归一为 medium）
+
+def _as_list(x):
+    """标量 → 单元素列表；None → []；列表原样。"""
+    if x is None:
+        return []
+    if isinstance(x, list):
+        return list(x)
+    return [x]
+
+def _align(lst, n, pad, acc, name, repairs):
+    """把逐值字段对齐到长度 n：单元素广播；短补齐 pad；长截断。非常规情况记修复。"""
+    if n == 0:
+        return [pad] if lst else []
+    if len(lst) == 0:
+        repairs.append(f"{name}: empty -> padded x{n}")
+        return [pad] * n
+    if len(lst) == 1 and n > 1:
+        return lst * n  # LLM 常见：一个置信度管全部值，视为广播，不算修复
+    if len(lst) < n:
+        repairs.append(f"{name}: len {len(lst)} < {n}, padded")
+        return lst + [pad] * (n - len(lst))
+    if len(lst) > n:
+        repairs.append(f"{name}: len {len(lst)} > {n}, truncated")
+        return lst[:n]
+    return lst
+
 def _normalize(rec, field):
-    """校验/补全代理判定记录。value/confidence/source/method 均为列表，逐值对齐。"""
+    """校验/补全代理判定记录。value/confidence/source/method 均为列表，逐值对齐。
+    校验：① 标量归一为列表；② 长度对齐到 len(value)（单元素广播、短补齐、长截断）；
+    ③ 值域白名单（confidence∈_CONF_DOMAIN 越界→unknown；host tax_confidence∈_TAX_DOMAIN 越界→medium）；
+    ④ 修复全部写运行日志，返回 (rec, repairs)。"""
+    acc = rec["project_accession"]
+    repairs = []
+    value = [v for v in _as_list(rec.get("value")) if v not in (None, "")]
+    if len(value) != len(_as_list(rec.get("value"))):
+        repairs.append("value: dropped null/empty entries")
+    n = len(value)
+
+    confidence = _align(_as_list(rec.get("confidence")), n, "unknown", acc, "confidence", repairs)
+    source = _align(_as_list(rec.get("source")), n, "llm_agent", acc, "source", repairs)
+    method = _align(_as_list(rec.get("method")), n, "llm_agent", acc, "method", repairs)
+    conf_fixed = [c if c in _CONF_DOMAIN else "unknown" for c in confidence]
+    n_bad = sum(1 for c0, c1 in zip(confidence, conf_fixed) if c0 != c1)
+    if n_bad:
+        repairs.append(f"confidence: {n_bad} out-of-domain -> unknown")
+    confidence = conf_fixed
+    if n == 0 and not confidence:
+        confidence = ["unknown"]
+
     out = {
-        "project_accession": rec["project_accession"],
+        "project_accession": acc,
         "field": rec.get("field", field),
-        "value": rec.get("value"),
-        "confidence": rec.get("confidence"),
-        "source": rec.get("source"),
-        "method": rec.get("method"),
+        "value": value,
+        "confidence": confidence,
+        "source": source,
+        "method": method,
         "note": rec.get("note", ""),
     }
     if out["field"] == "host":
-        out["tax_confidence"] = rec.get("tax_confidence")
-    return out
+        tax = _align(_as_list(rec.get("tax_confidence")), n, "unknown", acc, "tax_confidence", repairs)
+        tax_fixed = [t if t in _TAX_DOMAIN else "medium" for t in tax]
+        n_bad_t = sum(1 for t0, t1 in zip(tax, tax_fixed) if t0 != t1)
+        if n_bad_t:
+            repairs.append(f"tax_confidence: {n_bad_t} out-of-domain -> medium")
+        if n == 0 and not tax:
+            tax_fixed = ["unknown"]
+        out["tax_confidence"] = tax_fixed
+    for r in repairs:
+        _replan_log(f"[normalize] {acc}/{field}: {r}")
+    return out, repairs
 
 def phase_merge(args):
     out = args.out_dir
@@ -243,6 +303,7 @@ def phase_merge(args):
 
     n_new = 0
     n_over = 0
+    n_repaired = 0
     if os.path.exists(agent_path):
         with open(agent_path, encoding="utf-8") as f:
             for line in f:
@@ -250,7 +311,9 @@ def phase_merge(args):
                 if not line:
                     continue
                 raw = json.loads(line)
-                rec = _normalize(raw, field)
+                rec, repairs = _normalize(raw, field)
+                if repairs:
+                    n_repaired += 1
                 if rec["project_accession"] in merged:
                     n_over += 1
                 else:
@@ -265,13 +328,23 @@ def phase_merge(args):
         for d in merged.values():
             f.write(json.dumps(d, ensure_ascii=False) + "\n")
 
-    c = Counter(d["confidence"] for d in merged.values())
+    # confidence 已列表化：取代表值（最高档）再计数，避免 Counter(list) 崩溃
+    _TIER = {"high": 0, "NotCountry": 0, "medium": 1, "low": 2, "unknown": 3}
+    def _rep(d):
+        conf = d.get("confidence")
+        if isinstance(conf, str):
+            return conf
+        if not conf:
+            return "unknown"
+        return min(conf, key=lambda x: _TIER.get(x, 3))
+    c = Counter(_rep(d) for d in merged.values())
     stats = {
         "field": field,
         "total": len(merged),
         "by_confidence": dict(c),
         "new_this_merge": n_new,
         "overridden": n_over,
+        "repaired_records": n_repaired,
     }
     with open(os.path.join(out, "llm_infer_stats.json"), "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, ensure_ascii=False)
@@ -279,6 +352,7 @@ def phase_merge(args):
     print(f"[merge] field={field}")
     print(f"  并入新判定       : {n_new}")
     print(f"  覆盖旧值         : {n_over}")
+    print(f"  修复记录数       : {n_repaired}（详见 .log 运行日志）")
     print(f"  累计总计         : {len(merged)}  ->  {llm_path}")
     print(f"  置信度分布       : {dict(c)}")
     print(f"  统计             : {os.path.join(out, 'llm_infer_stats.json')}")

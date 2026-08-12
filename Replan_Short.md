@@ -9,7 +9,6 @@
 
 ## 步骤 1 
 
-
 ### 1.1  raw.metagenomic_wgs.csv
 从欧洲核苷酸档案库（ENA）查询某个run 我是否可以提取以下信息： run_accession,sample_accession,study_accession,country,location,collection_date,first_public,tax_id,host,host_tax_id,instrument_platform,instrument_model,library_layout,read_count
 
@@ -197,7 +196,7 @@ infer_country(sources)
 {
     "project_accession": "PRJEB35612",
     "field": "host",
-    "value":          ["aquatic metagenome", "soil metagenome"],
+    "value":          ["aquatic metagenome", "soil metagenome"],      ← Taxa学名，可能会有一些俗名
     "confidence":     ["medium", "medium"],      ← CTX_SAMPLE：命中片段是否含采集词 ("collected from...")
     "tax_confidence": ["medium", "medium"],      ← is_high_evidence：host 专属，Taxa的推断是否合理
     "source":         ["study_meta", "study_meta"],
@@ -212,26 +211,41 @@ infer_country(sources)
 
 然后，LLM 复核：
 ```bash
-
 is_residual(rec)
 │
 ├─ field == date
 │   └─ 不进（豁免）
 │
-├─ confidence 列表为空（规则没抓到值）
-│   └─ 进LLM，读原始文本，因为无evidence
+├─ confidence 列表为空/含unknown （事实上规则应该不会出现low的判定，故不提）
+│   └─ 进LLM，读整个项目的 evidence_text
 │
-├─ confidence 列表有值
-│   │
-│   ├─ 列表全部 high → False（整个项目不进 §3.2）
-│   │
-│   └─ 列表任一非 high → True（项目进 §3.2）
-│      LLM 读整个项目的 evidence_text
-│      但只复核非 high 的值：
-│           ├─ value[0] confidence=high   → 跳过
-│           ├─ value[1] confidence=medium → 读 evidence[1]，判
-│           └─ value[2] confidence=low    → 读 evidence[2]，判
+├─ confidence 列表全部为 high/medium/NotCountry 值 
+│   └─ 不进
 │
 └─ 返回 True/False
 ```
+
+完成后，merge：
+```bash
+<field> = country/date/host
+
+ 输入：rule(<field>_infer) + llm(agent_llm_<field>) + manual(ena_manual_<field>)
+        │
+        ▼
+ 按 project_accession 取三源并集 ──► 逐项目收集候选
+        │
+        ▼
+ 排序键 =（轴A, 轴B）
+   轴A：confidence 列表最高档   high/NotCountry > medium > low > unknown
+   轴B：method 列表最高来源     manual > llm_agent > rule_*
+        │
+        ▼
+ 最优者 = winner
+   ├─ winner 是 unknown 档 → value=null, confidence=["unknown"]
+   └─ 否则                 → value/confidence 整条透传（host 附带 tax_confidence 透传）
+        │
+        ▼
+ 输出：final_<field>.jsonl + final_<field>_stats.json
+```
+
 

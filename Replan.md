@@ -266,7 +266,7 @@
 | `field` | `country` / `date` / `host` |
 | `value` | 推断值列表（country=国名列表或 `NotCountry`；date=年列表；host=宿主列表） |
 | `confidence` | **列表（逐值）**：CTX_SAMPLE 采集上下文 → `high` / `medium`；公海 `NotCountry`；兜底 `unknown` |
-| `tax_confidence` | **列表（逐值），仅 host**：`is_high_evidence` 证据窗口强共现 → `high` / `medium` |
+| `tax_confidence` | **列表（逐值），仅 host**：`is_high_evidence` 证据窗口强共现 → `high` / `medium`；空记录兜底 `unknown` |
 | `source` | **列表（逐值）**：`study_meta` / `literature` |
 | `method` | **列表（逐值）**：`rule_demonym`/`rule_place`/`rule_open_ocean`/`rule_region`/`rule_host_*`/`rule_date`/`none`（无 `rule_multi_*`，多值各标自命中规则） |
 | `evidence` | 结构化列表 `[{"value": "X", "sub_source": "study_title", "snippet": "…"}, …]`，每值一段 |
@@ -288,21 +288,21 @@
 
 - **路由判据**（`is_residual`）：**仅 `country` / `host` 进 §3.2 交由 LLM 做语义精判；`date` 整字段豁免**（§3.1 有年份一律 high、无年份 unknown，LLM 无必要介入）。按 `confidence` 列表判定：
   - `rec` 为 `None` → **不进**（§3.1 应全量跑；为 None 说明 §3.1 漏跑该项目，`batch` 打 WARNING 提示重跑 §3.1）；
-  - `confidence` 列表为空（规则没抓到值，`value=None/[]`）→ **进**（补漏：LLM 从零读原始文本，无 `rule_partial`/`rule_evidence`）；
-  - `confidence` 列表有值但**任一非 high** → **进**（值级复核：LLM 跳过 `confidence=high` 的值、只逐条读非 high 值的 evidence，输出完整列表）；
-  - `confidence` 列表全 `high` → **不进**。
-- **目标**：LLM 阅读 evidence，回答该字段的值（或"无法判断"）；可把规则基线 medium/low 升为 high，或把 unknown 解出值。
+  - `confidence` 列表为空（规则没抓到值，`value=None/[]`）→ **进**（补漏：LLM 从零读原始文本；`rule_partial` 为全 null 占位、无 `[rule_evidence]` 行）；
+  - `confidence` 列表有值但**任一值为 low/unknown**（非 high/medium/NotCountry）→ **进**（LLM 补漏：对 unknown 从零判、对 low 复核，输出完整列表）；`NotCountry`（公海否定判定）视同 `high`，与 §3.4 `CONF_TIER` 口径一致；
+  - `confidence` 列表全为 `high`/`medium`/`NotCountry` → **不进**（**medium 视为终态**，不再 LLM 复核，按原置信度直接进 §3.4）。
+- **目标**：LLM 阅读 evidence，回答该字段的值（或"无法判断"）；可把 unknown 解出值并定档（high/medium/low），或维持 unknown。
 - **流程（强调不走外部 API）**：脚本把待判 `evidence` 打印出来 → **你（WorkBuddy 代理，本身就是 LLM）直接读**，**一条条读、一条条判**，回答字段值 → 经写入脚本追加到 `ena_llm_infer_<field>.jsonl`。
   - 用脚本分批拉待判项目（断点续跑，已完成集合自动跳过），避免一次性涌入。
 - **工程约束（防上下文爆炸）**：跑时**注意上下文长度、自动清理**已读批次；**会话内不报告任何结果**（防上下文膨胀），只保存结果文件（结果由写入脚本落盘，不在对话里复述）。
 - **升级 high 的语义判据（代理直读后判定，须在 `note` 写理由）**：
   - **country → high**：明确是主权国采样/采集地（单国或少数实测国），排除①机构/作者贡献国②区域级（留 medium）③多论文混合只取真正实测国；公海/深海显式 `NotCountry`（high 否定判定）。
-  - **host → high**：§3.1 可能已直接产 host high（证据窗口强共现，value 形如 `human gut metagenome` / `soil metagenome`），§3.2 仅处理其残差（medium / unknown / soft 俗名）；残差中成功推断的部分可升 high（注意，两步的输出都要符合NCBI科学名的规范、流程之前已经从taxid_type.tsv中了解过）。
+  - **host → high**：§3.1 可能已直接产 host high（证据窗口强共现，value 形如 `human gut metagenome` / `soil metagenome`），§3.2 仅处理其残差（实际仅剩 unknown；medium/soft 俗名按 v3 路由已终态，不再 LLM 复核）；残差中成功推断的部分可升 high（注意，两步的输出都要符合NCBI科学名的规范、流程之前已经从taxid_type.tsv中了解过）。
   - **date**：不进 §3.2（§3.1 有年份一律 high、无年份 unknown）。
   - **主权归一**：Hong Kong→`Hong Kong, China` / Taiwan→`Taiwan, China` / Macao→`Macao, China` / Korea→`Korea`；Turkey 勿与 Korea 混淆。
 - **不判 high 的情况**（→ medium / low / unknown）：区域级、环境型宿主、多国未定位单一采样国、host 基线默认、证据矛盾/不足。
 - **约束**：`llm_infer_*` 仅由写入脚本写（神圣性）；LLM 仅补规则判不了的残差，**不得凭空标 high**（无 evidence 不得编造值）。
-- **脚本**：`.script/ena_agent_residual.py`（可复用，`batch` 抽残差+落 evidence / `merge` 校验并入；只读输入、不改源文件、对话内只打印摘要不打印 evidence）。
+- **脚本**：`.script/ena_agent_residual.py`（可复用，`batch` 抽残差+落 evidence / `merge` 校验并入；只读输入、不改源文件、对话内只打印摘要不打印 evidence）。`merge` 的 `_normalize` 对每条 LLM 判定做四层校验：① 标量归一为列表；② 长度对齐到 `len(value)`（单元素广播、短补齐 `unknown`/`llm_agent`、长截断）；③ 值域白名单（`confidence∈{high,medium,low,unknown,NotCountry}` 越界→`unknown`；host `tax_confidence∈{high,medium,unknown}` 越界含 LLM 写的 `low`→`medium`）；④ 修复全部写 `.log` 运行日志并计入 `llm_infer_stats.json` 的 `repaired_records`。
   - `batch`：`--field country|host` → 抽取残差写入 `agent_residual_<field>.jsonl`（含 `evidence_text` + `rule_partial`），并**自动跳过已完成集合**（断点续跑）。
   - 代理读 `agent_residual_<field>.jsonl` 逐条判，写 `agent_llm_<field>.jsonl`（判定记录，见下）。
   - `merge`：把 `agent_llm_<field>.jsonl` 并入 `ena_llm_infer_<field>.jsonl`（按 `project_accession` 去重、代理判定覆盖旧值），写 `llm_infer_stats.json`。
@@ -320,7 +320,7 @@
 | `project_accession` | 项目编号 |
 | `field` | `country` / `date` / `host` |
 | `rule_partial` | 规则基线残留（对象）：`value` / `confidence`（列表）/ `source`（列表）/ `method`（列表）/ `matched_tokens`（列表的列表） |
-| `evidence_text` | 已组装供直读的原文（study_title + study_description + high 论文 title/abstract） |
+| `evidence_text` | 已组装供直读的原文（study_title + study_description + high 论文 title/abstract + `[rule_partial]` 基线 + `[rule_evidence]` 逐值片段） |
 
 **② 中间（代理写）`agent_llm_<field>.jsonl`（每行一判定）**
 
@@ -330,7 +330,7 @@
 | `field` | `country` / `date` / `host` |
 | `value` | 国名列表 \| `NotCountry` \| 年列表 \| 宿主列表 \| `null`（无法判断） |
 | `confidence` | **列表（逐值）**：`high` / `medium` / `low` / `unknown` / `NotCountry`；LLM 逐值判定 |
-| `tax_confidence` | **列表（逐值），仅 host**：`high` / `medium` |
+| `tax_confidence` | **列表（逐值），仅 host**：`high` / `medium` / `unknown`（merge 端 `_normalize` 已锁该值域，越界→medium） |
 | `source` | **列表（逐值）**：`study_meta` / `literature` |
 | `method` | **列表（逐值）**：未改值保持 `rule_*`，改过/新增值为 `llm_agent` |
 | `note` | 英文证据链（升级 high 须在 `note` 写理由） |
@@ -403,7 +403,7 @@
   | `field` | country / date / host |
   | `value` | 胜者值列表：国名 / 年 / 宿主 / `null`（unknown 时） |
   | `confidence` | 胜者**列表（逐值）**：high / NotCountry / medium / low / unknown |
-  | `tax_confidence` | 胜者**列表（逐值），仅 host**：high / medium |
+  | `tax_confidence` | 胜者**列表（逐值），仅 host**：high / medium / unknown（整条透传，不参与裁决） |
   | `source` | 胜者**列表（逐值）**：study_meta / literature / manual |
   | `method` | 胜者**列表（逐值）**：`rule_*` / `llm_agent` / `manual` |
   | `evidence_basis` | 仅 manual 有：`direct` / `institution_inferred`；其余 `null` |
