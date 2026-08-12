@@ -295,22 +295,54 @@ def center_tokens(center):
 
 
 def strong_center_tokens(center):
-    """center_name 中的独特机构/城市 token (排除通用学术词 + 国家/州级 + 学科词)。"""
+    """center_name 中的独特机构/城市 token (排除通用学术词 + 国家/州级 + 学科词 + 方位/地理通名)。"""
     return {t for t in center_tokens(center)
-            if t.lower() not in GEO_STATE and t.lower() not in DISCIPLINE and len(t) >= 4}
+            if t.lower() not in GEO_STATE and t.lower() not in DISCIPLINE
+            and t.lower() not in GEO_GENERIC and len(t) >= 4}
+
+
+# 方位/地理通名/通用修饰词: 在机构名中毫无区分度, 既不可作"强 token" 也不可作"作者姓氏"。
+# 修复A (PRJNA416160↔MOMMY 事故根因): center_name="UNIVERSITY OF SOUTH FLORIDA" 漏出 SOUTH,
+#   ① 作强 token 走 match_affil 子串匹配, 撞上 MOMMY 论文单位的 "Southern Medical University"
+#      (south ∈ southern) → 无关中国队列论文被标 high;
+#   ② 作假姓氏使 author 兜底查询退化为纯主题搜索, 召回主题同构的无关论文。
+# 这些词即便真可作英语姓氏, 出现在 center_name(机构名) 里也几乎不可能是 PI 姓氏, 一律剔除。
+GEO_GENERIC = {"south","north","east","west","central","southern","northern",
+               "eastern","western","state","city","town","county","campus",
+               "saint","mount","lake","bay","beach","coast","valley","hills",
+               "springs","park","parks","river","island","islands","global",
+               "international","regional","public","private","general"}
 
 
 def author_surnames(center):
     """从 center_name 抽取疑似作者姓氏 (大写开头、非通用词、长度 3-10)。
-    仅用于 fallback 的作者检索策略, 不作为机构强 token, 以免与单位误匹配。"""
+    仅用于 fallback 的作者检索策略, 不作为机构强 token, 以免与单位误匹配。
+    修复A: 过滤 GEO_GENERIC 假姓氏; 全部过滤完则返回空 -> author 策略不启用
+    (build_freetext_queries 中 `if sur and topic` 自然跳过), 宁缺毋滥。"""
     out = []
     for t in re.findall(r"[A-Za-z]{3,}", center or ""):
         tl = t.lower()
-        if tl in GEN or tl in STOP or tl in GEO_STATE or tl in DISCIPLINE:
+        if tl in GEN or tl in STOP or tl in GEO_STATE or tl in DISCIPLINE or tl in GEO_GENERIC:
             continue
         if t[0].isupper() and 3 <= len(t) <= 10:
             out.append(t)
     return out
+
+
+def author_verified(p, surnames):
+    """修复B: author 策略召回候选的真实性校验——
+    抽取的姓氏须真的出现在该论文作者列表, 否则视为查询退化(假姓氏/主题搜索), 不算 linked。
+    背景: EPMC 对 AUTHOR:"X" 无精确命中时会按相关度返回部分匹配, 召回论文可能根本没有该作者。
+    校验顺序: authorList.lastName 精确(小写) -> authorString 词 token 兜底。"""
+    if not surnames:
+        return False
+    surs = {s.lower() for s in surnames}
+    for a in p.get("authorList", {}).get("author", []):
+        ln = (a.get("lastName") or "").lower()
+        if ln and ln in surs:
+            return True
+    toks = set(re.findall(r"[a-z]+", (p.get("authorString") or "").lower()))
+    return bool(toks & surs)
 
 
 def build_freetext_queries(title, desc, center):
@@ -372,16 +404,24 @@ def norm(s):
     return re.sub(r"[^a-z0-9 ]", " ", (s or "").lower()).strip()
 
 
+def _wb_contains(term, text):
+    """词边界包含: term 作为整词出现在 text 中 (text 已 norm 归一, 仅 [a-z0-9 ])。
+    第三层加固: 取代子串匹配, 防 'south' 撞进 'southern'、'hong' 撞进 'hongkong' 类碰撞。"""
+    return re.search(r"\b%s\b" % re.escape(term), text) is not None
+
+
 def match_affil(affils, strong_tokens, desc_phrases):
-    """强匹配: 单位含项目独特机构/城市 token, 或含 DESCRIPTION 实体机构名。"""
+    """强匹配: 单位含项目独特机构/城市 token, 或含 DESCRIPTION 实体机构名。
+    第三层加固(2026-08-12): 子串 → 词边界匹配。norm() 已把标点/连字符归一为空格,
+    故 \b 对纯字母数字 term 安全; 词表漏网的方位/通名词 (如未进 GEO_GENERIC 者) 在此兜底。"""
     for af in affils:
         afl = norm(af)
         for tok in strong_tokens:
-            if len(tok) >= 4 and tok.lower() in afl:
+            if len(tok) >= 4 and _wb_contains(tok.lower(), afl):
                 return True, tok
         for ph in desc_phrases:
             pn = norm(ph)
-            if len(pn) >= 6 and pn in afl:
+            if len(pn) >= 6 and _wb_contains(pn, afl):
                 return True, ph
     return False, None
 
@@ -457,17 +497,23 @@ def process_one(acc, meta, freetext_n):
     rec["hitCount"] = len(candidates)
     strong = strong_center_tokens(center)
     desc_ph = desc_inst_entities(desc)
+    surnames = author_surnames(center)   # 修复B: 供 author 召回真实性校验
     high = low = missing = linkauthor = 0
     synthesis_demoted = 0
+    author_unverified = 0                # author 召回但姓氏不在真实作者列表 (查询退化) 的篇数
     for p in candidates:
         pid = p.get("pmid") or p.get("id") or json.dumps(p, sort_keys=True)[:60]
         affils = get_affils(p)
         ok, tok = match_affil(affils, strong, desc_ph)
-        # 关联信号: 单位强匹配, 或该候选由 author 策略召回
-        linked = ok or (tag_of.get(pid) == "author")
+        # 关联信号: 单位强匹配, 或该候选由 author 策略召回且姓氏经真实性校验通过
+        author_hit = tag_of.get(pid) == "author"
+        if author_hit and not author_verified(p, surnames):
+            author_hit = False
+            author_unverified += 1
+        linked = ok or author_hit
         mk = has_metagenome_kw(p)
         if linked:
-            # 关联信号(linked): 单位对上 或 author 策略命中
+            # 关联信号(linked): 单位对上 或 author 策略命中且姓氏已核实
             # 判 high 三条件: linked 且 标题/摘要含 META_KW(metagenome/metagenomic/metagenomes/metagenomics/
             #   metatranscriptome/metatranscriptomic/metaproteome/metaproteomic) 且 非 Review/ meta-analysis
             #   (标题含 review 词, 或摘要含 'in this review', 或标题/摘要含 meta-analysis/meta analysis/metaanalysis/
@@ -485,7 +531,8 @@ def process_one(acc, meta, freetext_n):
             ps = "low"; low += 1              # 无单位信息 → 无法验证, 交人工
         rec["papers"].append(paper_record(p, ps, matched=(tok if ok else None), aff=affils))
     rec["_counts"] = {"high": high, "low": low, "missing": missing,
-                      "linkauthor": linkauthor, "synthesis_demoted": synthesis_demoted, "used": used}
+                      "linkauthor": linkauthor, "synthesis_demoted": synthesis_demoted,
+                      "author_unverified": author_unverified, "used": used}
     return rec
 
 
@@ -518,7 +565,7 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
         accs = accs[:limit]
     stats = {"projects": 0, "accession_hit": 0, "freetext": 0, "with_hits": 0,
              "high_total": 0, "low_total": 0, "missing_total": 0,
-             "linkauthor_total": 0, "errs": 0}
+             "linkauthor_total": 0, "author_unverified_total": 0, "errs": 0}
     if not accs:
         log("  全部已处理, 无需重跑")
         return stats
@@ -542,13 +589,15 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
                 stats["low_total"] += c["low"]
                 stats["missing_total"] += c["missing"]
                 stats["linkauthor_total"] += c.get("linkauthor", 0)
+                stats["author_unverified_total"] += c.get("author_unverified", 0)
             if rec.get("strategy") == "ERR":
                 stats["errs"] += 1
             cc = c or {}
-            log("  %s strat=%s hit=%s papers=%d high=%s low=%s missing=%s linkauthor=%s" % (
+            log("  %s strat=%s hit=%s papers=%d high=%s low=%s missing=%s linkauthor=%s aunv=%s" % (
                 acc, rec.get("strategy"), rec.get("hitCount"),
                 len(rec.get("papers", [])), cc.get("high", "-"),
-                cc.get("low", "-"), cc.get("missing", "-"), cc.get("linkauthor", "-")))
+                cc.get("low", "-"), cc.get("missing", "-"), cc.get("linkauthor", "-"),
+                cc.get("author_unverified", "-")))
             rec.pop("_counts", None)   # 内部计数, 不写入交付 schema
             fo.write(json.dumps(rec, ensure_ascii=False) + "\n")
             time.sleep(0.3)
