@@ -241,8 +241,8 @@
   - 输入：§2.1 `project_study_meta.json`（study_title/description）+ §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
 - **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 USA/UK/China 等直写国名，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
 - **置信度判定标准**：
-  - **country**：匹配到国名且附近有**采集上下文**（collect/sample/isolat/obtain/recruit/enroll/harvest/… 或 `from the`/`across`/`throughout`）→ `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词（洲/洋/global）→ `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
-  - **date**：提取到年份或年份区间  → `high`；无年份 → `unknown`。
+  - **country**：匹配到国名且附近有**采集上下文**（collect/sampl(isolat/obtain/recruit/enroll/harvest/cohort/locat/origin/resident/hospital/clinic/biopsy 等明确采样动作或场所词）→ `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词（洲/洋/global）→ `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
+  - **date**：提取到年份或年份合集  → `high`；无年份 → `unknown`。
   - **host**：默认 `medium`（仅关键字命中，无上下文精判）；但 §3.1 现已支持**证据窗口 high** —— 当 `evidence`（匹配词 ±30 字）内能直接证明 host 值时即标 `high` 并跳过 §3.2（见下方「host High 规则」）。环境型（soil/plant/sediment）命中生境字典即 value，多为 medium；当 `soil/marine/...` 与 `metagenome` 在  evidence 窗口内同窗共现时走高窗口 high。其余由 §3.2 判定后决定是否升 high。
   - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`（英文 canon，主权归一不可省，HK/TW/MO 不得写为独立国家）；Korea → `Korea`；Turkey 独立真实国，仅当研究确在土耳其才写 `Turkey`，**勿与 Korea 混淆**。
 - **host 语义**：ENA 侧 = 宿主生物；描述/论文里的 soil/gut/marine 等生境词本身是合法 host 信号，勿当"无宿主"砍（脚本已对复数 lambs/ewes 等做 `s?` 容错）；正则把研究微生物当"物种"混入时，需下游净化。
@@ -258,12 +258,13 @@
 |---|---|
 | `project_accession` | 项目编号 |
 | `field` | `country` / `date` / `host` |
-| `value` | 推断值（country=国名列表或 `NotCountry`；date=年或年区间；host=生物/生境） |
-| `confidence` | `high` / `medium` / `low` / `NotCountry` / `unknown` |
+| `value` | 推断值列表（country=国名列表或 `NotCountry`；date=年列表；host=宿主列表） |
+| `confidence` | 记录级置信度（取最高）：`high` / `medium` / `low` / `NotCountry` / `unknown` |
+| `value_confidence` | 逐值置信度 `{"值1": "high/medium", ...}`；每个值独立判定 |
 | `content_reliability` | **标签 A**：匹配内容本身可信度 high/medium/low |
 | `source` | **标签 B**：`study_meta` / `literature` |
 | `method` | 命中规则（rule_demonym/place/open_ocean/region/multi_country/host_*/date_* / none） |
-| `evidence` | 命中片段 + 上下文（含 sub_source 标注） |
+| `evidence` | 结构化列表 `[{"value": "X", "sub_source": "study_title", "snippet": "…"}, …]`，每值一段 |
 | `matched_tokens` | 命中的国名/年/宿主词 |
 
   另写 `infer_stats.json`（各字段各 confidence 计数）。
@@ -318,8 +319,9 @@
 |---|---|
 | `project_accession` | 项目编号 |
 | `field` | `country` / `date` / `host` |
-| `value` | 国名 \| 国名列表 \| `NotCountry` \| 年 \| 宿主 \| `null`（无法判断） |
-| `confidence` | `high` / `medium` / `low` / `unknown` / `NotCountry` |
+| `value` | 国名列表 \| `NotCountry` \| 年列表 \| 宿主列表 \| `null`（无法判断） |
+| `confidence` | 记录级：`high` / `medium` / `low` / `unknown` / `NotCountry` |
+| `value_confidence` | 逐值置信度 `{"值1": "high/medium/low", ...}`；LLM 逐值判定 |
 | `content_reliability` | **标签 A**：匹配内容本身可信度 high/medium/low |
 | `source` | **标签 B**：`study_meta` / `literature` |
 | `method` | 固定 `llm_agent` |
@@ -391,8 +393,9 @@
   |---|---|
   | `project_accession` | ENA 项目编号（join key） |
   | `field` | country / date / host |
-  | `value` | 胜者值：国名 / 国名列表 / 年 / 宿主 / `null`（unknown 时） |
-  | `confidence` | 胜者置信度：high / NotCountry / medium / low / unknown |
+  | `value` | 胜者值列表：国名 / 年 / 宿主 / `null`（unknown 时） |
+  | `confidence` | 胜者记录级置信度：high / NotCountry / medium / low / unknown |
+  | `value_confidence` | 胜者逐值置信度 `{"值1": "high/medium", ...}` |
   | `content_reliability` | 轴 A 标签：high / medium / `null`（unknown 时） |
   | `source` | 胜者来源：study_meta / literature / manual |
   | `method` | 胜者方法：`rule_*` / `llm_agent` / `manual` |
@@ -420,10 +423,4 @@
 - EPMC 关键词检索当权威绑定 → 误关联（2.2）
 - 把机构/试剂/署名产地（Qiagen Germany、PacBio USA）当采样国 → 误判（3.1 坑清单）
 - LLM 凭空标 high（无 evidence 编造值）→ 违反神圣性（3.2）
-
-## 开放问题
-
-- 小批验证正例偏少（仅 PRJEB11419 触发单位过滤）。建议换大批次再跑一轮，更全面地检验 accession 命中 + 单位匹配。
-- 全文经 EPMC REST `/fullTextXML` 已可得 **JATS XML 纯文本**（无需 PDF 抽取）；脚本 `--phase fulltext` 优先下 XML、PDF 兜底。如后续确需更强解析，可在 XML 上做 xpath/正文抽取。
-
 
