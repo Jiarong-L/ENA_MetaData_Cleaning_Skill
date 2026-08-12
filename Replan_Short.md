@@ -33,12 +33,28 @@
 
 
 ### 2.2  project_literature.jsonl 
-搜索关联论文，为 PaperSource 标注置信来源（`papersource`：high / linkauthor / low / missing）
 
-1. 先用项目编号查 Europe PMC（最准，指名道姓；只留发表年最早 1–2 篇）。命中论文逐篇查：非 Review / meta-analysis → `high`；是 Review / meta-analysis → `linkauthor`
-2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上且含 metagenome 关键词且非 Review / meta-analysis → `high`；否则（无关键词 或 是 Review / meta-analysis）→ `linkauthor`（质量同 low，不进全文）
 
-爬取论文的 标题+摘要/[全文:默认不爬]+paper的其它信息，比如：paper_title / paper_authors / paper_year /journal/pmid/pmcid/doi 
+## 1. 
+
+1. Accession 直查: 用**项目编号**查 Europe PMC，只留发表年**最早 2 篇**。逐篇判：
+- 非 Review / meta-analysis / 工具论文 → **`high`**（直接关联即强证据，不要求 metagenome 关键词）
+- 是 Review / meta-analysis / 工具论文 → **`linkauthor`**
+
+2. 当直查无结果时，Freetext 检索：用项目描述搜 EPMC（会带出很多话题相关论文）。定义**真关联（linked）**：单位对上（词边界）或 author 召回且姓氏核实过。
+
+| 情况 | 结果 |
+|---|---|
+| linked + 含 metagenome 关键词 + 非 Review/meta-analysis/工具 | 进第 3 步 IDF_Check |
+| linked，但无关键词 / 是 Review/meta-analysis/工具 | `linkauthor`（同 low，不进全文） |
+| 不 linked，有单位但完全对不上 | `missing`（噪声，丢弃） |
+| 不 linked，无任何单位 | `low`（交人工） |
+
+3. 对 Freetext `high` 论文进行 IDF_Check：对比 ENA study（标题+描述）和 论文 的签名，须共享 ≥1 个稀有签名才能维持 'high' 评价，否则降为 `candidate`（一个词要算稀有签名，须同时满足：）
+    - 词长 ≥ 4 且不在停用词表
+    - 全项目少见（经小批次测试的交叉验证，推荐**DF ≤ 10**）
+    - 非通用英语高频词（**zipf ≤ 4.5**）
+
 
 ### 2.3 project_fulltext.jsonl （option）
 
@@ -209,20 +225,27 @@ infer_country(sources)
 }
 ```
 
-然后，LLM 复核：
+然后，LLM 复核。注意：进LLM = LLM 读整个项目的 evidence_text
 ```bash
-is_residual(rec)
+设计依据：估算「可由 LLM 提升」（按 field × method × confidence）
+
+is_residual(rec)            // rec = 单 (project, field) 的 §3.1 记录
 │
 ├─ field == date
-│   └─ 不进（豁免）
+│   ├─ 全部                                            → 不进
+│   └─ 否则                                            → 进      // unknown / rule_date-medium
 │
-├─ confidence 列表为空/含unknown （事实上规则应该不会出现low的判定，故不提）
-│   └─ 进LLM，读整个项目的 evidence_text
+├─ field == country
+│   ├─ 含 unknown / 空                                  → 进
+│   ├─ 存在元素 method ∈ {rule_region, rule_demonym}     → 进
+│   └─ 否则（= 仅 rule_place / rule_open_ocean）          → 不进
 │
-├─ confidence 列表全部为 high/medium/NotCountry 值 
-│   └─ 不进
+├─ field == host
+│   ├─ 含 unknown / 空                                  → 进
+│   ├─ 存在元素 method ∈ {rule_host_human, rule_host_animal} → 进
+│   └─ 否则（= 仅 rule_host_env / rule_host_soft）        → 不进
 │
-└─ 返回 True/False
+└─ 否则                                                  → 不进
 ```
 
 完成后，merge：
