@@ -34,14 +34,11 @@
 
 ### 2.2  project_literature.jsonl 
 
-
-## 1. 
-
 1. Accession 直查: 用**项目编号**查 Europe PMC，只留发表年**最早 2 篇**。逐篇判：
-- 非 Review / meta-analysis / 工具论文 → **`high`**（直接关联即强证据，不要求 metagenome 关键词）
-- 是 Review / meta-analysis / 工具论文 → **`linkauthor`**
+    - 非 Review / meta-analysis / 工具论文 → **`high`**（直接关联即强证据，不要求 metagenome 关键词、不过对题闸）
+    - 是 Review / meta-analysis / 工具论文 → **`linkauthor`**
 
-2. 当直查无结果时，Freetext 检索：用项目描述搜 EPMC（会带出很多话题相关论文）。定义**真关联（linked）**：单位对上（词边界）或 author 召回且姓氏核实过。
+2. 当直查无结果时，Freetext 检索：用项目描述搜 EPMC（会带出很多话题相关论文）。定义**真关联（linked）**：单位对上（词边界 `_wb_contains`，排除 GEO_GENERIC 地理词 / DISCIPLINE 学科词）或 author 召回且姓氏核实过（`author_verified`）。
 
 | 情况 | 结果 |
 |---|---|
@@ -50,10 +47,12 @@
 | 不 linked，有单位但完全对不上 | `missing`（噪声，丢弃） |
 | 不 linked，无任何单位 | `low`（交人工） |
 
-3. 对 Freetext `high` 论文进行 IDF_Check：对比 ENA study（标题+描述）和 论文 的签名，须共享 ≥1 个稀有签名才能维持 'high' 评价，否则降为 `candidate`（一个词要算稀有签名，须同时满足：）
+3. 对 Freetext `high` 论文进行 IDF_Check（对题闸）：对比 ENA study（标题+描述）和 论文 的签名，须共享 ≥1 个稀有签名才能维持 'high' 评价，否则降为 `candidate`。一个词要算稀有签名，须同时满足：
     - 词长 ≥ 4 且不在停用词表
-    - 全项目少见（经小批次测试的交叉验证，推荐**DF ≤ 10**）
-    - 非通用英语高频词（**zipf ≤ 4.5**）
+    - 全项目少见（**DF ≤ 10**，两轮交叉验证定）
+    - 非通用英语高频词（**zipf ≤ 4.5**，用 wordfreq，缺库自动跳过）
+
+> 另有第 4 道闸在 §3.2：LLM 判三字段前会先对每篇 high 论文做**主题甄别**，离题的由 `apply-demote` 从 high 降为 `candidate`（标 `demoted_by=llm_topic`）。
 
 
 ### 2.3 project_fulltext.jsonl （option）
@@ -70,11 +69,13 @@
     - 记录 `confidence`（上下文含有采集关键词：high/medium）+ `source`（文本来源：study_meta/literature）。对于 `host` 额外 `tax_confidence`（taxa 关键词是否在同一条 evidence 片段 ±30 字窗口内强共现：high/medium）
     - 记录相关上下文，作为推断的evidence
 
-2. 对于规则判断结果中质量不佳者（从 `confidence` 列表判定。仅 country/host；date 豁免），人工（LLM）阅读 evidence_text，并且回答[xx]信息的值（或依旧无法判断）。强调一下：要的是你（WorkBuddy 代理，本身就是 LLM）直接读 evidence 并推断，不走外部 API。具体来说：用脚本把 evidence 打印你、你一条条读、一条条判，再写入结果文件；**跑的时候注意上下文长度、自动清理，会话里不用报告任何结果（防止上下文过长）、只要保存结果即可 ----- 如果需要判定的量非常大，尝试开 sub agents 加速**
+2. LLM 推断：对所有有可信论文的项目，你（WorkBuddy 代理，本身就是 LLM）**一次读入该项目全部 evidence，同判 country/date/host 三字段**，并在同一次读取里**先做论文主题甄别**（不符主题的 high 论文标 `aligned=false`，后续降级 candidate）。LLM 结果写**独立文件**（不覆盖 §3.1 规则输出），两者一致性由 reconcile 核对。
+    - 强调：要你直接读 evidence 推断，**不走外部 API**。脚本把 evidence 打印你、你一条条读、一条条判，再写入结果文件；**跑的时候注意上下文长度、自动清理，会话里不用报告任何结果（防止上下文过长）、只要保存结果即可 ----- 如果需要判定的量非常大，尝试开 sub agents 加速**
+    - 默认只判有 high 论文的项目（`--scope high-paper`）；可选把无 high 论文的项目（`--scope no-high-paper` ，evidence 仅 study_meta）也判，结果写同一套文件。
 
 3. 对于以上两步依旧无法判定的，用户会在对话中提供消息，由LLM阅读判定（必要时联网搜索）、规范化至资源文件‘manual_check_[country/data/host].json’）以供复用
 
-4. 合并，优先级A：`confidence` high > medium > low; 保证优先级A的前提下、优先级B：`source` manual > LLM > rule
+4. 合并：先在 §3.2 内做**规则×LLM reconcile**（agree→high；仅一方→取该方；disagree 且置信相当→flag review；disagree 分高低→取高置信方），再由 §3.4 final_merge 把 manual 并入。final_merge 双轴：优先级A `confidence` high > medium > low > unknown；保证A的前提下、优先级B `source` manual > LLM > rule
 
 ### 流程示意：infer_host
 
@@ -159,7 +160,7 @@ infer_date(sources)
     │   ├─ evidence:       {"value":y, "sub_source":…, "snippet":…}
     │   └─ matched_tokens: [str(y)]
     │
-    └─ 返回 rec（date 豁免 §3.2，不进残差）
+    └─ 返回 rec
 ```
 
 
@@ -225,34 +226,42 @@ infer_country(sources)
 }
 ```
 
-然后，LLM 复核。注意：进LLM = LLM 读整个项目的 evidence_text
-```bash
-设计依据：估算「可由 LLM 提升」（按 field × method × confidence）
+然后，LLM 平行复核（§3.2，取代旧 is_residual 残差路由）。注意：进LLM = LLM 一次读整个项目的 evidence_text（study_meta + 全部 high 论文），同判三字段。
 
-is_residual(rec)            // rec = 单 (project, field) 的 §3.1 记录
+```bash
+ena_agent_parallel.py  ── LLM 与规则平行，一次读取判 (country,date,host)
 │
-├─ field == date
-│   ├─ 全部                                            → 不进
-│   └─ 否则                                            → 进      // unknown / rule_date-medium
+├─ batch     按 scope 选项目（默认 high-paper=有≥1篇high论文；
+│            可选 no-high-paper=无high论文仅study_meta, 默认不开）
+│            拼 evidence（study标题/描述 + 每篇high论文 [paper #n|pid=pmid] 分块）
+│            不含 §3.1 规则输出（保持 LLM 独立、避免锚定） → agent_parallel.jsonl
 │
-├─ field == country
-│   ├─ 含 unknown / 空                                  → 进
-│   ├─ 存在元素 method ∈ {rule_region, rule_demonym}     → 进
-│   └─ 否则（= 仅 rule_place / rule_open_ocean）          → 不进
+├─ 代理判    逐项目读 evidence，一次完成两件事：
+│            ① 论文主题甄别：每篇 high 论文判 aligned（与 study 主题是否相符）
+│            ② 在「study_meta+相符论文」上判 country/date/host
+│            → agent_llm_parallel.jsonl（每行一项目：papers 裁决 + 三字段子判定）
 │
-├─ field == host
-│   ├─ 含 unknown / 空                                  → 进
-│   ├─ 存在元素 method ∈ {rule_host_human, rule_host_animal} → 进
-│   └─ 否则（= 仅 rule_host_env / rule_host_soft）        → 不进
+├─ merge     逐字段归一（_normalize：标量→列表/长度对齐/值域白名单）
+│            → 分写 ena_llm_infer_{country,date,host}.jsonl（独立文件，不覆盖§3.1）
+│            → papers 裁决写 agent_paper_verdicts.jsonl
 │
-└─ 否则                                                  → 不进
+├─ apply-demote  aligned=false 论文 high→candidate（标 demoted_by=llm_topic）
+│            幂等：首次备份 _bak/，之后从备份重算。（§3.1 只读 high → 自动不消费）
+│
+└─ reconcile 规则 × LLM 合并（逐项目逐字段）：
+            agree(取值集合相交)     → 并集 + high
+            仅一方有值            → 取该方
+            disagree 且置信相当    → flag review（暂定，暂取规则值）
+            disagree 置信分高低    → 取高置信方
+            双方 unknown          → unknown
+            → reconciled_<field>.jsonl + review_<field>.jsonl
 ```
 
-完成后，merge：
+完成后，再由 §3.4 final_merge 把 manual 并入成三源终态：
 ```bash
 <field> = country/date/host
 
- 输入：rule(<field>_infer) + llm(agent_llm_<field>) + manual(ena_manual_<field>)
+ 输入：rule(<field>_infer) + llm(ena_llm_infer_<field>) + manual(ena_manual_<field>)
         │
         ▼
  按 project_accession 取三源并集 ──► 逐项目收集候选
@@ -270,5 +279,3 @@ is_residual(rec)            // rec = 单 (project, field) 的 §3.1 记录
         ▼
  输出：final_<field>.jsonl + final_<field>_stats.json
 ```
-
-

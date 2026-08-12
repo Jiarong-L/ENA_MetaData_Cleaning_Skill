@@ -3,7 +3,7 @@
 > **数据范围**：`library_source=METAGENOMIC` & `library_strategy=WGS` 的 run。
 > **本项目示例**：`ENA_cleaning`，区间 `yyyy-mm-dd ~ yyyy-mm-dd`。
 > **适用范围**：任何从 ENA 拉取并补全样本元数据（`country` / `date` / `host`）的任务，仅改筛选/区间即可套用。
-> **配套代码**：§2.1+§2.2+§2.3 通用脚本 **`.script/ena_associate_papers.py`**（已小批验证，断点续跑、路径参数化，只读 `--src` 不改动 `./` 外文件）；§3.1 规则基线 **`.script/ena_infer_31.py`**；§1.2 类型解析 **`.script/ena_taxid_type.py`**。
+> **配套代码**：§2.1+§2.2+§2.3 通用脚本 **`.script/ena_associate_papers.py`**；§3.1 规则基线 **`.script/ena_infer_31.py`**；§3.2 LLM 平行推断 **`.script/ena_agent_parallel.py`**（取代旧 `ena_agent_residual.py` 残差设计）；§1.2 类型解析 **`.script/ena_taxid_type.py`**。
 
 ---
 
@@ -13,22 +13,21 @@
 
 ```
 ./
-├── Replan.md                 # 完整方法论（本文件）
+├── Replan.md                 # 完整方法论
 ├── Replan_Short.md           # 精简版说明
-├── .script/                  # 所有可复用脚本（根目录 . 下的 ena_*.py / 测试脚本等）
+├── .script/                  # 所有可复用脚本
 │   ├── ena_fetch_runs.py     # 步骤 1：ENA 数据拉取
 │   ├── ena_taxid_type.py     # 步骤 1.2：tax_id → type/scientific_name 解析
 │   ├── ena_associate_papers.py  # 步骤 2：关联论文（study_meta / literature / fulltext）
 │   ├── ena_infer_31.py       # 步骤 3.1：规则 + 字典基线推断
-│   ├── ena_agent_residual.py # 步骤 3.2：LLM 残差裁定
+│   ├── ena_agent_parallel.py # 步骤 3.2：LLM 平行推断（与规则平行，一次读取判三字段+论文主题甄别）
+│   ├── ena_agent_residual.py # （已弃用）旧 §3.2 残差裁定，保留备查
 │   ├── ena_load_manual.py    # 步骤 3.3：读 .manual/ 资源落库
-│   ├── ena_final_merge.py    # 步骤 3.4：三源合并
-│   ├── llm_candidate.py      # 步骤 3.2 辅助：候选 evidence 压缩打印（供 LLM 直读）
-│   └── llm_judge_helper.py   # 步骤 3.2 辅助：seed 基线 + append LLM 判定落库
+│   └── ena_final_merge.py    # 步骤 3.4：三源合并
 ├── .manual/                  # 用户补判资源（跨项目复用库）
 │   └── manual_check_country.json   # manual_check_*.json（glob；仅 country 已生成 17 条）
 ├── .reuse/                   # 跨步骤复用、非中间产物的稳定资源
-│   └── taxid_type.tsv        # 8,289 行 tax_id → scientific_name/type（步骤 1.2 产出，稳定复用）
+│   └── taxid_type.tsv        # tax_id → scientific_name/type（步骤 1.2 产出，稳定复用）
 ├── .log/                     # 运行日志
 │   └── run_YYYY-MM-DD.log    # _replan_log() 统一追加；异常静默
 └── .tmp/                     # 其它一切中间流程产物（断点续跑、可重建）
@@ -40,8 +39,8 @@
 
 ## 红线 / 原则（不可违背）
 
-- **papersource=high 的论文文本为可信源**（与 ENA 自述同等），可直接用于 high 推断；papersource=linkauthor 质量等同 low、不进 §2.3 全文下载、不参与自动推断；papersource=low 进人工队列、missing 丢弃，二者不参与自动推断。后续分析不再有弱源。
-- `llm_infer_*` 仅由 `agent_write` 写（神圣性）；禁止任何 resolver/transform 写。
+- **papersource=high 的论文文本为可信源**（与 ENA 自述同等），可直接用于 high 推断；`linkauthor` 质量等同 low、不进 §2.3 全文下载、不参与自动推断；`candidate`（high 但未过对题闸 / 被 LLM 判离题）不参与自动推断；`low` 进人工队列、`missing` 丢弃，二者不参与自动推断。后续分析不再有弱源。
+- `llm_infer_*` 仅由写入脚本（§3.2 `merge`）写（神圣性）；禁止任何 resolver/transform 写。
 - 默认**不爬全文**（title/abstract 足够；全文实测无推断增量）。
 - `location` 字段**取消**（样本级经纬度已由合并表覆盖）。
 - 大查询必须**分页/分片 + 断点续跑**，绝不一次性全拉。
@@ -89,24 +88,16 @@
   lineage:  unclassified sequences → metagenomes → [type: xx metagenomes]
   self:     [scientific_name]   (e.g. human gut metagenome)
   ```
-  - `type` = `lineage` 中位于 `metagenomes` 锚点之后、名字形如 `* metagenomes` 的层；若存在多层（如 `ecological metagenomes → environmental metagenomes`），取**最具体**一层（离自身最近）。**已验证**：`human gut metagenome`(408170) 的 lineage = `unclassified sequences; metagenomes; organismal metagenomes` → `type = organismal metagenomes`。
+  - `type` = `lineage` 中位于 `metagenomes` 锚点之后、名字形如 `* metagenomes` 的层；若存在多层，取**最具体**一层（离自身最近）。
   - `scientific_name` = `tax_id` 自身的科学名（来自 `scientificName` 字段，如 `human gut metagenome`）。
   - `metagenome: false`（或 lineage 无 `metagenomes` 节点）→ `type` 留空（`NA`）；`scientific_name` 仍填自身名（多为具体菌）。
 - **解析规则**：
-  1. **批量**查 NCBI taxonomy Entrez `efetch`（db=taxonomy，逗号分隔多 ID，单批 ≤200）取完整有序 lineage —— **实测 ENA 的 taxonomy REST 不支持逗号批量（GET 404 / POST 405），NCBI efetch 支持批量且沙箱内用 `-k` 绕过 TLS 拦截即可**。8,289 个 unique `tax_id` 仅需 **~42 次请求**全部拿完（非逐条查询）。
+  1. **批量**查 NCBI taxonomy Entrez `efetch`（db=taxonomy，逗号分隔多 ID，单批 ≤200）取完整有序 lineage —— **实测 ENA 的 taxonomy REST 不支持逗号批量，NCBI efetch 支持批量且沙箱内用 `verify=False` 绕过 TLS 即可**。
   2. 若 lineage 含 `metagenomes` 节点 → `type` = 其上最具体的 `* metagenomes` 子层；`scientific_name` = 该 tax_id 的科学名。
   3. 若 lineage **不含** `metagenomes`（即 `tax_id` 指向具体生物 / 宿主 / 污染，非 metagenome 本身）→ `type` 留空（`NA`）；`scientific_name` 仍填 NCBI 实际科学名（回退，多为具体菌名）。
-- **实现 / 脚本**：`.script/ena_taxid_type.py`（NCBI efetch 批量 200/req，遵守 3 req/s 限速，沙箱内 `verify=False` 绕过 TLS）。输入主表 `tax_id` 列 → 输出 `.reuse/taxid_type.tsv`（8,289 行：`tax_id / scientific_name / type / is_metagenome`）+ 回填列（见下）。**已实测跑通**：42 批请求覆盖全部 8,289 unique，无失败。
-- **回填主表（step 1 落表）**：脚本 `--backfill` 输出 **新文件** `.tmp/metagenomic_wgs.typed.csv`（原 `raw.metagenomic_wgs.csv` 不动，非破坏性）。列序 `…, type, scientific_name, tax_id, host_tax_id, …` 符合要求；`type` 升级为 NCBI 真实子层（`organismal metagenomes` / `ecological metagenomes` / `engineered metagenomes`），`scientific_name` = NCBI 名。除下方两列外，其余列与原表完全一致（行数不变）。
-  - **产物文件 / 模式**：`.tmp/metagenomic_wgs.typed.csv`（glob：`metagenomic_wgs.typed.csv`，单文件，全量落表）。
-  - **下游衔接**：步骤 2 通用脚本 `.script/ena_associate_papers.py` 的默认 `--src` 已指向本表（`metagenomic_wgs.typed.csv`），与 §1.2 完全自洽；原 `raw.metagenomic_wgs.csv` 仅作为非破坏性原始存档保留。
-  - **输出 schema（仅列出本步新增的两列）**：
-    | 列名 | 含义 | 取值 |
-    |---|---|---|
-    | `type` | 宏基因组类型子层 | `* metagenomes` 最具体层（`organismal metagenomes` / `ecological metagenomes` / `engineered metagenomes`）；非 metagenome 或裸 `metagenome` 节点 → 空（`NA`） |
-    | `scientific_name` | `tax_id` 在 NCBI 的科学名 | 如 `human gut metagenome`、`Homo sapiens`、`Shewanella putrefaciens` 等 |
-
-
+- **实现 / 脚本**：`.script/ena_taxid_type.py`（NCBI efetch 批量 200/req，遵守 3 req/s 限速，沙箱内 `verify=False` 绕过 TLS）。输入主表 `tax_id` 列 → 输出 `.reuse/taxid_type.tsv`（`tax_id / scientific_name / type / is_metagenome`）+ 回填列。
+- **回填主表（step 1 落表）**：脚本 `--backfill` 输出 **新文件** `.tmp/metagenomic_wgs.typed.csv`（原 `raw.metagenomic_wgs.csv` 不动，非破坏性）。列序 `…, type, scientific_name, tax_id, host_tax_id, …`。
+- **下游衔接**：步骤 2 通用脚本 `.script/ena_associate_papers.py` 的默认 `--src` 已指向本表（`metagenomic_wgs.typed.csv`）。
 
 ---
 
@@ -118,27 +109,33 @@
 
 - **目标**：取 `study_title` / `center_name` / `study_description`。
 - **输入**：ENA portal `result=study`，按 `study_accession`（即 `project_accession`）批量（每批 ≤80）。
-- **输出**：`project_study_meta.json`（glob `project_study_meta.json`，唯一）→ `{study_acc: {study_title, center_name, study_description}}`。
+- **输出**：`project_study_meta.json` → `{study_acc: {study_title, center_name, study_description}}`。
 - **脚本**：`.script/ena_associate_papers.py --phase study`（断点续跑）。
 - **易错点**：这是**强源**（ENA 自述，权威），优先于任何论文信号；`center_name` 很多项目为空，勿因空误判。
 
 
 ### 2.2 搜索关联论文 + 标注 PaperSource 置信 
 
-- **目标**：为每个 project 找到**真正属于它**的发表文献，给 `PaperSource` 标置信：`high` / `linkauthor` / `low` / `missing`。
-- **方法（两步，越靠前越准）**：
-  1. **先用项目编号查 Europe PMC**（最准，指名道姓）：`PROJECT_ID:` / `BIOPROJECT:` / `ACCESSION_ID:` 查询，命中即真关联；**只保留按发表年（pubYear）升序最早 1–2 篇**（后续关联可能只是引用、不详细描述本项目，且可滤掉晚于项目的疑似假阳性）。命中论文逐篇查 `is_non_primary`：**非 Review / meta-analysis → `high`**（accession 关联视为足够强，不强制 metagenome 关键词）；**是 Review / meta-analysis → `linkauthor`**
-     - 实测坑：DDBJ 来源（`PRJDB*`）在 EPMC 按上述字段**常 0 命中**（连 `ACCESSION_ID` 也多为 0），须直接走第 2 步。
-  2. **查不到才用项目描述搜 Europe PMC**（free-text，四策略回退）：以 `study_title` / `description` / `center_name` 构造查询，会带出大量"话题相关"论文（不一定是本项目发的）→ 必须过**作者单位过滤 + metagenome 关键词判定**后才定型：
-     - **四策略**（按序回退、`exact` 命中即短路）：`exact`（引号包完整标题短语）→ `loose`（标题实词去停用词/通用词）→ `loose_desc`（描述实词）→ `author`（`AUTHOR:"姓" 主题词`，姓取自 center 里的作者姓氏）。合并去重成候选池，并记录每篇由哪个策略命中（`tag_of`）。
-     - **单位匹配**：候选论文抽作者单位，与项目"强机构 token"（≥4 字母、排除地理州名如 Japan/China 与**学科词**如 Medicine/Anatomy/Biology，避免假阳性）比对；`center_name` 提取的强机构 token 在 paper 作者单位里命中 → 视为关联(linked)。
+- **目标**：为每个 project 找到**真正属于它**的发表文献，给 `PaperSource` 标置信：`high` / `linkauthor` / `low` / `missing` / **`candidate`**。
+- **方法（三步，越靠前越准）**：
+  1. **先用项目编号查 Europe PMC**（最准，指名道姓）：`PROJECT_ID:` / `BIOPROJECT:` / `ACCESSION_ID:` 查询，命中即真关联；**只保留按发表年（pubYear）升序最早 1–2 篇**（`ACCESSION_TOP_N=2`）。命中论文逐篇查 `is_non_primary` / `is_method_tool`：**非 Review / meta-analysis / 工具论文 → `high`**（accession 关联视为足够强，不强制 metagenome 关键词、**不过对题闸**）；**是 Review / meta-analysis / 工具论文 → `linkauthor`**。
+     - 实测坑：DDBJ 来源（`PRJDB*`）在 EPMC 按上述字段**常 0 命中**，须直接走第 2 步。
+  2. **查不到才用项目描述搜 Europe PMC**（free-text，四策略回退）：以 `study_title` / `description` / `center_name` 构造查询，会带出大量"话题相关"论文（不一定是本项目发的）→ 必须过**作者单位过滤 + metagenome 关键词判定 + 方法学排除**后才定型：
+     - **四策略**（按序回退、`exact` 命中即短路）：`exact`（引号包完整标题短语）→ `loose`（标题实词去停用词）→ `loose_desc`（描述实词）→ `author`（`AUTHOR:"姓" 主题词`，姓取自 center 里的作者姓氏、经 `GEO_GENERIC`/`DISCIPLINE` 过滤且 `author_verified` 核实）。合并去重成候选池，记录每篇由哪个策略命中（`tag_of`）。
+     - **单位匹配**：候选论文抽作者单位，与项目"强机构 token"（≥4 字母、`_wb_contains` 词边界匹配、排除 `GEO_GENERIC` 地理词与 `DISCIPLINE` 学科词如 Medicine/Anatomy/Biology）比对；命中 → 视为关联（linked）。
      - **定型（仅 free-text 分支）**：
-       - 单位对上 **或** `author` 策略命中（linked）**且** 标题/摘要含 `metagenome/metagenomic/metagenomes/metagenomics/metatranscriptome/metatranscriptomic/metaproteome/metaproteomic` **且非 Review 或 meta-analysis**（标题含 `review` 词，或标题/摘要含 `meta-analysis`/`meta analysis`/`metaanalysis`/`meta-analytic`/`meta analytic`/`metaanalytic` 任一子串，忽略大小写、'-' 与空格；或摘要含 `in this review`；命中即视为二次文献排除）→ **`high`**（确属本项目的真·宏基因组论文，自动采纳）；
-       - linked 但（**无 metagenome 关键词 或 是 Review / meta-analysis**）→ **`linkauthor`**（低质量：同一批作者/机构对同一样本做了非宏基因组研究，或综述/荟萃分析而非本项目具体样本研究；宏基因组论文可能尚未发布）；
+       - 单位对上 **或** `author` 策略命中（linked）**且** 标题/摘要含 `metagenome/metagenomic/metagenomes/metagenomics/metatranscriptome/metatranscriptomic/metaproteome/metaproteomic` **且非 Review / meta-analysis / 工具论文** → 进入第 3 步**对题闸**；
+       - linked 但（**无 metagenome 关键词 或 是 Review / meta-analysis / 工具论文**）→ **`linkauthor`**；
        - 有单位信息但与项目期望单位**完全无重叠** → **`missing`**（噪声，丢弃）；
        - 无单位信息 → **`low`**（进人工）。
-- **脚本**：`.script/ena_associate_papers.py --phase lit`（accession 优先 + free-text 四策略 + 单位过滤 + metagenome 关键词判定；`--phase all` 一次跑完 §2.1+§2.2）。
+  3. **对题闸 topic-gate（仅 free-text 的 high 候选）**：上一步定型的 `high` 论文，还须与 ENA study（标题+描述）共享 **≥1 个稀有签名 token** 才保 `high`，否则降 **`candidate`**。一个 token 算"稀有签名"须同时满足：
+     - 词长 ≥ 4 且不在停用词表；
+     - 全项目语料少见（IDF：**DF ≤ `TOPIC_DF_MAX`=10**，两轮交叉验证定）；
+     - 非通用英语高频词（**zipf ≤ `TOPIC_ZIPF_MAX`=4.5**，用 `wordfreq`，缺库自动跳过此层）。
+     - **方法学/工具论文**（`is_method_tool`：标题形如 "X: a tool/method/web server/software…"、摘要开头 "we present/develop … method/tool/pipeline"、或含 "available at|web server|github.com"）与 Review/meta-analysis 一致降 `linkauthor`，不入对题闸。
+- **脚本**：`.script/ena_associate_papers.py --phase lit`（`--phase all` 一次跑完 §2.1+§2.2）。
 - **输出**：`project_literature.jsonl`（每行一个项目记录，`papers[]` 含 `papersource`）。
+- **运行环境**：对题闸的 zipf 层依赖 `wordfreq`，须用 venv python（`binaries/python/envs/default`）；其余阶段纯标准库。
 
 ### 2.2 输出 schema（逐字段解释）
 
@@ -149,10 +146,10 @@
 | 字段 | 含义 |
 |---|---|
 | `project_accession` | 项目编号（= 步骤 1 的 `project_accession`） |
-| `strategy` | **本次走哪条路径**：`accession`（编号直连）/ `freetext`（描述搜）/ `ERR`（异常），判断结果可信度的总开关 |
+| `strategy` | **本次走哪条路径**：`accession`（编号直连）/ `freetext`（描述搜）/ `ERR`（异常） |
 | `accession_hit` | bool；`strategy=accession` 时为 `true` |
 | `query` | 实际发给 EPMC 的查询串（便于复核/复现） |
-| `hitCount` | EPMC 返回命中数（accession 命中=论文本数；free-text=候选池大小） |
+| `hitCount` | EPMC 返回命中数 |
 | `papers[]` | 候选论文列表，每篇含 `papersource`（见下） |
 | `error` | 仅 `strategy=ERR` 时出现 |
 
@@ -160,264 +157,224 @@
 
 | `strategy` | 含义 |
 |---|---|
-| `accession` | 编号在 EPMC 直连命中（按 pubYear 升序取最早 1–2 篇）—— "指名道姓"权威关联；命中论文逐篇查 `is_non_primary`，**非 Review / meta-analysis → `high`**（不经单位过滤、不强制 metagenome 关键词），**是 Review / meta-analysis → `linkauthor`** |
-| `freetext` | 编号未命中改用描述搜，返回"话题相关"候选，**须经单位过滤 + metagenome 关键词判定**后才定型：`high` / `linkauthor` / `low` / `missing` |
+| `accession` | 编号在 EPMC 直连命中（按 pubYear 升序取最早 1–2 篇）；命中论文**非 Review / meta-analysis / 工具 → `high`**（不经单位过滤、不强制 metagenome 关键词、不过对题闸），**是 → `linkauthor`** |
+| `freetext` | 编号未命中改用描述搜，返回"话题相关"候选，**须经单位过滤 + metagenome 关键词判定 + 方法学排除 + 对题闸**后才定型：`high` / `linkauthor` / `low` / `missing` / `candidate` |
 | `ERR` | 处理该项目时网络/解析异常，需重跑（断点续跑自动补） |
 
-**每篇候选论文 `papers[]` 的 `papersource` 四档**
+**每篇候选论文 `papers[]` 的 `papersource` 五档**
 
 | `papersource` | 含义 | 处置 |
 |---|---|---|
-| `high` | 论文**确属该项目发表**：accession 直连命中且非 Review / meta-analysis，或 free-text 中"单位/作者关联"且标题/摘要含 metagenome 关键词且非 Review / meta-analysis（含同族变体） | 自动采纳为关联文献，文本可直接用于 high 推断 |
-| `linkauthor` | accession 直连命中但为 Review / meta-analysis，或 free-text 中"单位/作者关联"但**标题/摘要无 metagenome 关键词**或**是 Review / meta-analysis**（同一批作者/机构对同一样本做了非宏基因组研究，宏基因组论文可能尚未发布）；质量视作 low | 不进入 §2.3 全文下载；作为"关联但待确认"的弱信号，可辅助人工判断，不参与自动推断 |
+| `high` | 论文**确属该项目发表**：accession 直连命中且非 Review/meta-analysis/工具；或 free-text 中"单位/作者关联"且含 metagenome 关键词、非 Review/meta-analysis/工具、且**过了对题闸** | 自动采纳为关联文献，文本可直接用于 high 推断 |
+| `candidate` | free-text 单位/作者关联且非二次文献，但**未过对题闸**（与 study 无共享稀有签名），或 §3.2 被 LLM 判离题降级（`demoted_by=llm_topic`） | 疑似"同域不同研究"，不参与自动推断，待人工/复核 |
+| `linkauthor` | accession 直连命中但为 Review/meta-analysis/工具；或 free-text "单位/作者关联"但**无 metagenome 关键词或是 Review/meta-analysis/工具**（同一批作者/机构对同一样本做了非宏基因组研究）；质量视作 low | 不进 §2.3 全文下载；不参与自动推断 |
 | `low` | free-text 候选，论文**无作者单位信息**（无法验证是否真属本项目） | 进人工队列，不自动采纳 |
 | `missing` | free-text 候选，论文**有单位但与项目期望单位完全无重叠** → 噪声 | 丢弃，不进入后续推断 |
 
-> **关联置信即推断源强度**：`papersource=high` 表示"这篇论文确属该项目发表"，其文本**可直接用于 high 推断**（与 ENA 自述同等）；`linkauthor`/`low`/`missing` 不参与自动推断（其中 `linkauthor` 质量等同 `low`，不进入 §2.3 全文下载）。
+> **关联置信即推断源强度**：仅 `papersource=high` 文本可直接用于 high 推断（与 ENA 自述同等）；`candidate`/`linkauthor`/`low`/`missing` 均不参与自动推断。
 
-- **易错点**：accession 直连 ≠ free-text 关联（后者是关键词重叠，关联≠真相关）；单位匹配排除**学科词**（Medicine/Anatomy/Biology 等）与国家级地名（Japan/China），只认独特机构名/城市名，避免把同行评审/方法学论文误判为 `high`；`exact` 标题短语策略命中即短路，不强求四策略都跑；Bing 学术不可用（无结构化字段），free-text 分支只用 EPMC。
+- **易错点**：accession 直连 ≠ free-text 关联（后者是关键词重叠，关联≠真相关）；单位匹配排除**学科词**与国家级地名、用词边界（`_wb_contains`），避免把同行评审/方法学论文误判 `high`；对题闸用 IDF(DF≤10)+zipf(≤4.5) 双过滤，泛词（play/located/past）不当签名；`exact` 标题短语策略命中即短路；Bing 学术不可用，free-text 只用 EPMC。
 
 
 ### 2.3 关联论文元数据 + 全文下载（可选，默认关）
 
 - **目标**：取 `papersource=high` 论文作为**关联论文**，爬取其标题+摘要/全文 + 其它信息。
-- **元数据（随 §2.2 一并完成）**：`--phase lit` 在 EPMC `resultType=core` 返回里**已采集**每篇论文完整字段（见下方 schema），无需单独跑。
-- **全文下载（可选，默认关）**：新增 `--phase fulltext`，从 `project_literature.jsonl` 取候选下载 EPMC free 全文到 `<out>/fulltext/`，写 `fulltext_stats.json`：
-  - `--phase fulltext`（默认 `scope=high`：仅 `papersource=high`；`--fulltext-limit N` 默认 5）
-  - `--phase fulltext --fulltext-scope any --fulltext-limit N`（测试/演示：任何有 free 全文的候选都下）
-  - 起初只爬标题+摘要+其它信息（§2.2 已得）；按需求再对部分项目做全文爬取（`project_fulltext.jsonl`）——**注意部分文章非 openAccess，不一定能下载**。
-- **EPMC 全文现状（实测 2026-08，重要）**：EPMC **REST API 直接返回 JATS XML 全文**——`GET /rest/PMC{pmcid}/fullTextXML` 对开放获取（PMC OA）论文返回 `application/xml` 的完整 `<article>`（含正文、方法、结果） 纯文本。非 PMC / 非 OA 的论文无 JATS XML（404），此时回退到出版商 `Open access` **PDF**（`fullTextUrlList` 里 `style=pdf`）或仅用标题+摘要。脚本优先下 XML，PDF 作兜底。与红线"默认不爬全文"一致。
+- **元数据（随 §2.2 一并完成）**：`--phase lit` 在 EPMC `resultType=core` 返回里**已采集**每篇论文完整字段，无需单独跑。
+- **全文下载（可选，默认关）**：新增 `--phase fulltext`，从 `project_literature.jsonl` 取候选下载 EPMC free 全文到 `<out>/fulltext/`（`scope=high` 仅 high，`--fulltext-scope any` 演示用）。起初只爬标题+摘要；按需求再对部分项目做全文爬取——**注意部分文章非 openAccess，不一定能下载**。
+- **EPMC 全文现状（实测 2026-08）**：EPMC **REST API 直接返回 JATS XML 全文**——`GET /rest/PMC{pmcid}/fullTextXML` 对 PMC OA 论文返回完整 `<article>`。非 PMC / 非 OA 的论文无 JATS XML（404），此时回退出版商 PDF 或仅用标题+摘要。脚本优先 XML，PDF 兜底。与红线"默认不爬全文"一致。
 
 #### 2.3 输出 schema
 
-> **产物文件 / 模式**：
-> - `project_literature.jsonl`（§2.2 同文件，`papers[]` 内每篇论文记录，见 ①）
-> - `project_fulltext.jsonl`（仅 `--phase fulltext` 产出；glob `project_fulltext.jsonl`，唯一）
-> - `<out>/fulltext/<pmcid>.xml`（优先：JATS 全文，纯文本）/ `<pmid>.pdf`（兜底：仅当无 XML 时）
-> - `fulltext_stats.json`（全文下载统计；glob `fulltext_stats.json`，唯一）
-
-**① 每篇论文记录（内嵌于 `project_literature.jsonl` 的 `papers[]`，§2.2 已落地）**
+**① 每篇论文记录（内嵌于 `project_literature.jsonl` 的 `papers[]`）**
 
 | 字段 | 含义 |
 |---|---|
-| `pmid` / `pmcid` / `doi` | 论文标识 |
-| `title` | 标题 |
-| `journal` | 期刊 |
-| `year` | 发表年 |
-| `authors` | 作者串 |
-| `abstract` | 摘要（已去 HTML 标签） |
-| `paper_affiliations` | 作者单位列表 |
+| `pmid` / `pmcid` / `doi` | 论文标识（pmid 为 §3.2 主题甄别/降级的稳定 pid） |
+| `title` / `journal` / `year` / `authors` / `abstract` / `paper_affiliations` | 论文元数据 |
 | `matched_token` | 命中的项目单位 token（free-text 过滤用） |
-| `papersource` | high / linkauthor / low / missing（关联置信；high = 可信推断源，linkauthor 等同 low、不进自动推断） |
-| `full_text_urls` | EPMC 全文 URL 列表（含 `style`/`source`/`avail`） |
-| `full_text_available` | bool |
+| `papersource` | high / candidate / linkauthor / low / missing（仅 high = 可信推断源） |
+| `demoted_by` | 仅被降级论文有：`llm_topic`（§3.2 LLM 判离题） |
+| `full_text_urls` / `full_text_available` | EPMC 全文信息 |
 
 **② 全文下载记录（`project_fulltext.jsonl`，仅 `--phase fulltext` 产出）**
 
 | 字段 | 含义 |
 |---|---|
 | `pmid` / `pmcid` | 论文标识 |
-| `file` | 下载到 `<out>/fulltext/<pmcid>.xml`（JATS 全文，优先）或 `<pmid>.pdf`（兜底）的路径 |
-| `size` | 字节数 |
-| `status` | `ok_xml`（JATS XML 全文）/ `ok_pdf`（兜底 PDF）/ `no_free`（无 OA 全文）/ `failed`（网络错） |
-| `note` | 失败原因 |
+| `file` | 下载到 `<out>/fulltext/<pmcid>.xml`（JATS，优先）或 `<pmid>.pdf`（兜底）的路径 |
+| `size` / `status` / `note` | 字节数 / `ok_xml`/`ok_pdf`/`no_free`/`failed` / 失败原因 |
 
-- **易错点**：全文优先取 JATS XML（文本，免抽取）；仅非 PMC/非 OA 才回退 PDF；默认关；papersource=low/missing 论文不参与自动推断。
+- **易错点**：全文优先取 JATS XML；仅非 PMC/非 OA 才回退 PDF；默认关；papersource≠high 论文不参与自动推断。
 
 
 ---
 
 ## 步骤 3 — INFERENCE_METHOD（从不同来源文本推断 country/date/host）
 
-> 核心四点：**① 规则+字典基线 → ② LLM 残差（WorkBuddy 代理直读 evidence，不走 API） → ③ 用户消息补判 → ④ 合并**。
+> 核心四点：**① 规则+字典基线 → ② LLM 平行推断（WorkBuddy 代理直读 evidence，不走 API） → ③ 用户消息补判 → ④ 合并**。
 
 ### 3.0 核心：每条推断逐值带质控标签 + evidence
 
-- **逐值 `confidence`**（列表，与 `value` 对齐）：匹配片段是否处于**采集上下文**（CTX_SAMPLE：collected/sampled/recruited/enrolled/cohort/obtained/isolated/harvest/biopsy/located/origin/resident/hospital/clinic 等明确采样/场所词）。含 → `high`；不含 → `medium`。统一判据，适用于 country/date/host。
-- **逐值 `tax_confidence`**（列表，**仅 host**）：host 专属，由 `is_high_evidence()` 判断「分类名推断是否可靠」——单条 `evidence`（匹配词 ±30 字窗口）内 host 词与 site/env 词强共现 → `high`；否则 `medium`（soft 恒 medium）。country/date 无此栏。
-- **文本来源 `source`**（列表，逐值）：`study_meta`（ENA 自述，权威可信）/ `literature`（关联论文文本，仅 `papersource=high` 才采用，与 ENA 自述**同等可信**）。`papersource=linkauthor`（质量等同 low）、`low` 进人工、`missing` 丢弃，不参与自动推断（沿用 §2.2 关联置信分档）。
-- 每条推断**记录相关上下文**作为 `evidence`（谁、哪段原文、怎么匹配），供复核与 §3.2/§3.3 使用。
+- **逐值 `confidence`**（列表，与 `value` 对齐）：匹配片段是否处于**采集上下文**（CTX_SAMPLE：collected/sampled/recruited/enrolled/cohort/obtained/isolated/harvest/biopsy/located/origin/resident/hospital/clinic 等）。含 → `high`；不含 → `medium`。统一判据，适用于 country/date/host。
+- **逐值 `tax_confidence`**（列表，**仅 host**）：由 `is_high_evidence()` 判断「分类名推断是否可靠」——单条 `evidence`（匹配词 ±30 字窗口）内 host 词与 site/env 词强共现 → `high`；否则 `medium`（soft 恒 medium）。country/date 无此栏。
+- **文本来源 `source`**（列表，逐值）：`study_meta`（ENA 自述，权威）/ `literature`（仅 `papersource=high` 论文文本采用，与 ENA 自述同等可信）。`candidate`/`linkauthor`/`low`/`missing` 不参与自动推断。
+- 每条推断**记录相关上下文**作为 `evidence`，供复核与 §3.2/§3.3 使用。
 
 ### 3.1 规则 + 字典基线（确定性，优先跑，high 直接采纳）
 
-- **目标**：用规则 + 字典从文本推 `country` / `date` / `host`，产出 `high/medium/low/NotCountry/unknown`。规则判得了 high 的**直接采纳**，不必进 §3.2（host 亦可由 §3.1 证据窗口 high 直接产出，见「host High 规则」）。
+- **目标**：用规则 + 字典从文本推 `country` / `date` / `host`，产出 `high/medium/low/NotCountry/unknown`。规则判得了 high 的**直接采纳**。
 - **脚本**：`.script/ena_infer_31.py`（可复用、参数化路径、自含字典 baseline、只读输入不改动任何文件）。
   - 用法：`python ena_infer_31.py`（默认读 `.tmp/` 下两输入）｜`--fields country,host`｜`--limit N`｜`--only PRJEBxxx`。
-  - 输入：§2.1 `project_study_meta.json`（study_title/description）+ §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
-- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 USA/UK/China 等直写国名，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表，生境词即合法 host 信号；`HOST_SITE` 含 feces/faecal/stool 等同义词用于部位回退）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；早期试过的「双名法学名 catch-all 正则兜底」已移除（其 `BINOMIAL_RE`/`ENGLISH_STOP` 等不可复用给其他项目），现 host 纯靠字典 + soft 词表 + 证据窗口 High 规则。更大/更多样语料中未进字典的宿主会落 `unknown`（漏检而非错判），需靠扩字典或换策略解决。
+  - 输入：§2.1 `project_study_meta.json` + §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
+- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；更大语料中未进字典的宿主落 `unknown`（漏检而非错判），需扩字典或换策略。
 - **置信度判定标准**：
-  - **country**：匹配到国名且附近有**采集上下文**（collect/sampl(isolat/obtain/recruit/enroll/harvest/cohort/locat/origin/resident/hospital/clinic/biopsy 等明确采样动作或场所词）→ `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词（洲/洋/global）→ `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
-  - **date**：提取到年份或年份合集  → `high`；无年份 → `unknown`。
-  - **host**：`confidence` 判据与 country/date 完全一致（CTX_SAMPLE 采集上下文 → high/medium）。此外 **`tax_confidence`**（host 专属）由证据窗口强共现判定——单条 `evidence`（匹配词 ±30 字）内 host 词与 site/env 词同窗共现 → `tax_confidence=high`（见下方「host High 规则」）。环境型（soil/plant/sediment）命中生境字典即 value，多为 medium；当 `soil/marine/...` 与 `metagenome` 在 evidence 窗口内同窗共现时 `tax_confidence=high`。**注意：`tax_confidence=high` 不等于跳过 §3.2**——§3.2 路由只看 `confidence`（CTX_SAMPLE），仅当 `confidence` 列表全 high 才跳过；仅 `tax_confidence=high` 而 `confidence=medium`（缺采集词）仍进 §3.2。其余由 §3.2 判定后决定是否升。
-  - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`（英文 canon，主权归一不可省，HK/TW/MO 不得写为独立国家）；Korea → `Korea`；Turkey 独立真实国，仅当研究确在土耳其才写 `Turkey`，**勿与 Korea 混淆**。
-- **host 语义**：ENA 侧 = 宿主生物；描述/论文里的 soil/gut/marine 等生境词本身是合法 host 信号，勿当"无宿主"砍（脚本已对复数 lambs/ewes 等做 `s?` 容错）；正则把研究微生物当"物种"混入时，需下游净化。
-- **host High 规则（证据窗口，判定 `tax_confidence`）**：`is_high_evidence()` 只看单条 `evidence`（匹配词 ±30 字片段），满足以下之一即标 `tax_confidence=high`：
-  - **规则1（三字科学名 `<host> <site> metagenome` 或 `<A> <B> metagenome`）**：host 指示词（human / homo sapiens，或 HOST_ANIMAL 对应俗名）**与** 中间部位词**同时**出现 —— 部位词允许 `HOST_SITE` 同义词（gut ↔ feces/faeces/fecal/faecal/stool/intestinal/intestine/colorectal/colon…）。例：`human gut metagenome` 可由 "human" + "feces" 同在 evidence 命中。
-  - **规则2（仅限二字科学名 `<X> metagenome`）**：如 `soil metagenome` / `gut metagenome` / `skin metagenome` —— 两词都出现在 evidence 中。**拉丁二名法（`Bos taurus` / `Homo sapiens` / `Mus musculus` 等，不以 metagenome 收尾）不适用规则2，也不适用规则1（无 site 中间词），故 `tax_confidence` 恒 medium。**
-  - `rule_host_soft`（昆虫/灵长/爬行/植物等轻量俗名）**`tax_confidence` 永不标 high**（恒 medium）；**是否进 §3.2 仍由 `confidence` 决定**（同其它值，见下条）。
-  - **`tax_confidence` ≠ §3.2 跳过判据**：是否进 §3.2 只看 `confidence`（CTX_SAMPLE），不看 `tax_confidence`。
+  - **country**：匹配到国名且附近有**采集上下文** → `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词 → `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
+  - **date**：提取到年份或年份合集 → `high`；无年份 → `unknown`。
+  - **host**：`confidence` 判据与 country/date 一致（CTX_SAMPLE → high/medium）。此外 **`tax_confidence`**（host 专属）由证据窗口强共现判定。
+  - **主权归一**：HK/TW/MO → `Hong Kong, China` / `Taiwan, China` / `Macao, China`；Korea → `Korea`；Turkey 独立真实国，勿与 Korea 混淆。
+- **host 语义**：ENA 侧 = 宿主生物；描述/论文里的 soil/gut/marine 等生境词本身是合法 host 信号，勿当"无宿主"砍（脚本已对复数 lambs/ewes 等做 `s?` 容错）。
+- **host High 规则（证据窗口，判定 `tax_confidence`）**：`is_high_evidence()` 只看单条 `evidence`（匹配词 ±30 字片段）：
+  - **规则1（三字科学名 `<host> <site> metagenome`）**：host 指示词与中间部位词**同时**出现（部位词允许 `HOST_SITE` 同义词 gut↔feces/faeces/fecal/stool…）。
+  - **规则2（仅限二字科学名 `<X> metagenome`）**：两词都出现在 evidence 中。**拉丁二名法（`Bos taurus`/`Homo sapiens` 等不以 metagenome 收尾）不适用，`tax_confidence` 恒 medium。**
+  - `rule_host_soft` 的 `tax_confidence` **永不标 high**（恒 medium）。
 - **输出 schema**（每字段一个 jsonl，每行一项目记录）：
 
-> **产物文件 / 模式**：`<field>_infer.jsonl`（globs 到 `country_infer.jsonl` / `host_infer.jsonl` / `date_infer.jsonl`，每行一项目记录）+ `infer_stats.json`（计数汇总；glob `infer_stats.json`，唯一）。
+> **产物文件**：`<field>_infer.jsonl`（`country_infer.jsonl`/`host_infer.jsonl`/`date_infer.jsonl`）+ `infer_stats.json`。
 
 | 字段 | 含义 |
 |---|---|
 | `project_accession` | 项目编号 |
 | `field` | `country` / `date` / `host` |
 | `value` | 推断值列表（country=国名列表或 `NotCountry`；date=年列表；host=宿主列表） |
-| `confidence` | **列表（逐值）**：CTX_SAMPLE 采集上下文 → `high` / `medium`；公海 `NotCountry`；兜底 `unknown` |
-| `tax_confidence` | **列表（逐值），仅 host**：`is_high_evidence` 证据窗口强共现 → `high` / `medium`；空记录兜底 `unknown` |
+| `confidence` | **列表（逐值）**：CTX_SAMPLE → `high`/`medium`；公海 `NotCountry`；兜底 `unknown` |
+| `tax_confidence` | **列表（逐值），仅 host**：证据窗口强共现 → `high`/`medium`；空记录兜底 `unknown` |
 | `source` | **列表（逐值）**：`study_meta` / `literature` |
-| `method` | **列表（逐值）**：`rule_demonym`/`rule_place`/`rule_open_ocean`/`rule_region`/`rule_host_*`/`rule_date`/`none`（无 `rule_multi_*`，多值各标自命中规则） |
-| `evidence` | 结构化列表 `[{"value": "X", "sub_source": "study_title", "snippet": "…"}, …]`，每值一段 |
-| `matched_tokens` | **列表的列表（逐值）**：`[["cyprus"], ["germany"]]` |
+| `method` | **列表（逐值）**：`rule_demonym`/`rule_place`/`rule_open_ocean`/`rule_region`/`rule_host_*`/`rule_date`/`none` |
+| `evidence` | 结构化列表 `[{"value","sub_source","snippet"}, …]` |
+| `matched_tokens` | **列表的列表（逐值）** |
 
-  另写 `infer_stats.json`（各字段各 confidence 计数）。
-- **红线**：禁止确定性 resolver 直接写 `llm_infer_*`（污染真裁定）；本脚本只写 `<field>_infer.jsonl`，不写 `llm_infer_*`。
-- **常见坑**：
-  - 机构/作者**贡献国 ≠ 采样国**；试剂/设备/耗材产地（Qiagen Germany、PacBio USA）、基金机构、署名/实验室所在地，一律不计采样国。
-  - **center_name 不参与 §3.1 推断**（测序中心所在国 ≠ 采样国，已从 sources 中移除）。
-  - **date 基线不区分采集年 vs 出版/检索年**——有年份一律 `high`（已知局限：未来年/出版年噪声未过滤，靠 ENA 原始 date 字段质量兜底）。
-  - **区域（洲/洋）≠ 国** → medium，不升 high；含大区词（Indo-Pacific）的多国 → medium 多值。
-  - **国形容词盲点**（Japanese/Korean…）：国名词正则抓不到，须靠 DEMONYM 字典；但 demonym 修饰海域（Norwegian Sea→非国，走 NotCountry）、修饰工艺（Swiss-type cheese→指工艺非产地）、或地名/河名/物种名嵌国形容词（British Columbia→加拿大省、Russian River→加州河、Mexican *Gopherus berlandieri*→德州龟）极易误判，**必须 LLM 复核**（见 §3.2）。
-  - **多论文混合项目**：只取本项目真正实测国，剔除其它论文背景国（如 PRJEB26069 实测 Indonesia+Fiji，剔除其它背景国）。
-  - **geonoun 正则（river/lake/sea…）仅作发现器**，不直接定国（70% 噪声，ASCII 语料下"非英语"信号失效）；陌生专名捞成候选交 LLM/人工补字典。
-  - **NotCountry**：公海/深海/远海/abyssal/hadal/hydrothermal vent/gyre 等无主权国样本显式标 `NotCountry`（high，否定判定），**勿当 unknown**；但 `pelagic`（开放水层）可指半封闭海（北海/Helgoland 有德国/荷兰 EEZ）或淡水，不属"明确无主权国"，已从信号词剔除，勿误判。
+- **红线**：禁止确定性 resolver 直接写 `llm_infer_*`；本脚本只写 `<field>_infer.jsonl`。
+- **已知规则局限（由 §3.2 LLM 平行复核兜住）**：
+  - `rule_host_human` 跨宿主误判（狗/鼠/母鸡/虎粪 → `human gut metagenome`）：实测 high 层 ~29%、medium 层 ~4% 错。
+  - `rule_place` 子串碰撞：`new south wales`⊃`wales`→UK、Georgia（美州名）→国家、模糊 "America"→US。
+  - `rule_demonym` 聚簇错：`british columbia`→UK（同项目族 ~31 例）、German Bight 海区、German Shepherd 犬种→Germany。
+  - `rule_region`/`rule_open_ocean`：global/worldwide/pacific/atlantic 等非国家值须重标 `NotCountry`。
+  - 机构/试剂/署名产地（Qiagen Germany、PacBio USA）≠ 采样国；**center_name 不参与 §3.1**。
+  - **date 基线不区分采集年 vs 出版/检索年**——有年份一律 `high`（已知局限）。
 
-### 3.2 LLM 残差（规则判不了的，由 WorkBuddy 代理直读 evidence 逐条判，不走 API）
+### 3.2 LLM 平行推断（与规则平行，WorkBuddy 代理直读 evidence，不走 API）
 
-- **路由判据**（`is_residual`）：**仅 `country` / `host` 进 §3.2 交由 LLM 做语义精判；`date` 整字段豁免**（§3.1 有年份一律 high、无年份 unknown，LLM 无必要介入）。按 `confidence` 列表判定：
-  - `rec` 为 `None` → **不进**（§3.1 应全量跑；为 None 说明 §3.1 漏跑该项目，`batch` 打 WARNING 提示重跑 §3.1）；
-  - `confidence` 列表为空（规则没抓到值，`value=None/[]`）→ **进**（补漏：LLM 从零读原始文本；`rule_partial` 为全 null 占位、无 `[rule_evidence]` 行）；
-  - `confidence` 列表有值但**任一值为 low/unknown**（非 high/medium/NotCountry）→ **进**（LLM 补漏：对 unknown 从零判、对 low 复核，输出完整列表）；`NotCountry`（公海否定判定）视同 `high`，与 §3.4 `CONF_TIER` 口径一致；
-  - `confidence` 列表全为 `high`/`medium`/`NotCountry` → **不进**（**medium 视为终态**，不再 LLM 复核，按原置信度直接进 §3.4）。
-- **目标**：LLM 阅读 evidence，回答该字段的值（或"无法判断"）；可把 unknown 解出值并定档（high/medium/low），或维持 unknown。
-- **流程（强调不走外部 API）**：脚本把待判 `evidence` 打印出来 → **你（WorkBuddy 代理，本身就是 LLM）直接读**，**一条条读、一条条判**，回答字段值 → 经写入脚本追加到 `ena_llm_infer_<field>.jsonl`。
-  - 用脚本分批拉待判项目（断点续跑，已完成集合自动跳过），避免一次性涌入。
-- **工程约束（防上下文爆炸）**：跑时**注意上下文长度、自动清理**已读批次；**会话内不报告任何结果**（防上下文膨胀），只保存结果文件（结果由写入脚本落盘，不在对话里复述）。
+- **定位**：不再是「规则判不了才交 LLM」。LLM 与 §3.1 规则**平行**——对所有有可信证据的项目，代理**一次读入该项目的全部 evidence，同判 (country, date, host) 三字段**，并在同一次读取里先做**论文主题甄别**。LLM 结果写入**独立文件** `ena_llm_infer_<field>.jsonl`，**不覆盖 §3.1 输出**；规则与 LLM 的一致性在 `reconcile` 阶段核对。
+- **为什么平行（而非残差路由）**：残差路由需先判「哪些单元格可信到可跳过 LLM」，而实测连白名单格也有 0.45%~3.6% 错判会被路由漏掉；平行全判则没有路由可错，且规则结果自然变成 LLM 的独立交叉验证（agree→提置信 / disagree→flag review）。同时 date 不再豁免（论文能提供规则拿不到的采集年/出版年信号）。
+- **一次读取完成两件事**：
+  1. **论文主题甄别**：对每篇 high 论文判「与 study 主题是否相符」。不符 → `aligned=false`，该论文由 `apply-demote` 降级 `high→candidate`，且判三字段时**不得再以它为据**（此时该项目有效证据只剩 study_meta + 相符论文）。
+  2. **三字段判定**：在「study_meta + 相符论文」上判 country/date/host，逐值给 `confidence`（host 另 `tax_confidence`）。
+- **scope（`--scope`，默认 `high-paper`）**：
+  - `high-paper`（默认）：有 ≥1 篇 high 论文的项目（本区间 **467**）——证据最足、LLM 增益最大。
+  - `no-high-paper`（**可选补充档，默认不开**）：没有 high 论文的项目（**~1539**），evidence 仅 study_meta；结果写同一套 `ena_llm_infer_<field>.jsonl`（与 high-paper 不相交、按 acc 去重）。
+  - `all` / `union`：全量（2006）/ high-paper ∪ 残差 unknown。
+- **流程（不走外部 API）**：`batch` 拼 evidence → **你（WorkBuddy 代理，本身就是 LLM）逐项目读、逐项目判** → 写 `agent_llm_parallel.jsonl` → `merge` 归一分写 → `apply-demote` 落降级 → `reconcile` 合并规则。工程约束：注意上下文长度、自动清理已读批次、**会话内不报告结果只落盘**；量大开 sub-agents 加速。
+- **四阶段脚本 `.script/ena_agent_parallel.py`**：
+  - `batch`：按 scope 拼 evidence（study 标题/描述 + 每篇 high 论文独立分块 `[paper #n | pid=pmid]`）→ `agent_parallel.jsonl`。**evidence 不含 §3.1 规则输出**（保持 LLM 独立、避免锚定）。断点续跑。
+  - `merge`：读 `agent_llm_parallel.jsonl`（每行=一项目，含 `papers` 裁决 + 三字段子判定）→ 逐字段 `_normalize` 归一 → 分写 `ena_llm_infer_{country,date,host}.jsonl`；同时把 `papers` 裁决写 `agent_paper_verdicts.jsonl`。
+  - `apply-demote`：把 `aligned=false` 论文在 literature 里 `high→candidate`（标 `demoted_by=llm_topic`）；**幂等**（首次备份 `_bak/project_literature.pre_demote.jsonl`，之后从备份重算）。降级后 §3.1 只读 high → 不再消费这些论文（如需 §3.1 反映需重跑 `ena_infer_31.py`）。
+  - `reconcile`：规则 × LLM 合并（见下）。
+- **reconcile 策略（逐项目逐字段，取代表值比较、归一小写集合）**：
+  - 取值集合相交（agree）→ 并集，`confidence=high`，`method=agree`；
+  - 仅一方有值 → 取该方；
+  - **disagree 且置信相当 → flag review**（暂定，`needs_review=True`，暂取规则值；最终选择测试时再定）；
+  - disagree 且置信分高低 → 取高置信方（`method=disagree_rule/llm`）；
+  - 双方 unknown → unknown（不写 final）。
+  - 产物：`reconciled_<field>.jsonl` + `review_<field>.jsonl` + `reconcile_stats.json`。
 - **升级 high 的语义判据（代理直读后判定，须在 `note` 写理由）**：
-  - **country → high**：明确是主权国采样/采集地（单国或少数实测国），排除①机构/作者贡献国②区域级（留 medium）③多论文混合只取真正实测国；公海/深海显式 `NotCountry`（high 否定判定）。
-  - **host → high**：§3.1 可能已直接产 host high（证据窗口强共现，value 形如 `human gut metagenome` / `soil metagenome`），§3.2 仅处理其残差（实际仅剩 unknown；medium/soft 俗名按 v3 路由已终态，不再 LLM 复核）；残差中成功推断的部分可升 high（注意，两步的输出都要符合NCBI科学名的规范、流程之前已经从taxid_type.tsv中了解过）。
-  - **date**：不进 §3.2（§3.1 有年份一律 high、无年份 unknown）。
+  - **country → high**：明确主权国采样/采集地（单国或少数实测国），排除机构/作者贡献国、区域级、多论文混合背景国；公海/深海显式 `NotCountry`。
+  - **host → high**：value 须符合 NCBI 科学名规范（对齐 `taxid_type.tsv` 中 `is_metagenome=1` 的形式：生境→`X metagenome`、人+部位→`human X metagenome`、动物+肠道→`X gut metagenome`、仅部位→`gut/oral/skin/vaginal metagenome`、human 无部位→`Homo sapiens`）。
   - **主权归一**：Hong Kong→`Hong Kong, China` / Taiwan→`Taiwan, China` / Macao→`Macao, China` / Korea→`Korea`；Turkey 勿与 Korea 混淆。
-- **不判 high 的情况**（→ medium / low / unknown）：区域级、环境型宿主、多国未定位单一采样国、host 基线默认、证据矛盾/不足。
-- **约束**：`llm_infer_*` 仅由写入脚本写（神圣性）；LLM 仅补规则判不了的残差，**不得凭空标 high**（无 evidence 不得编造值）。
-- **脚本**：`.script/ena_agent_residual.py`（可复用，`batch` 抽残差+落 evidence / `merge` 校验并入；只读输入、不改源文件、对话内只打印摘要不打印 evidence）。`merge` 的 `_normalize` 对每条 LLM 判定做四层校验：① 标量归一为列表；② 长度对齐到 `len(value)`（单元素广播、短补齐 `unknown`/`llm_agent`、长截断）；③ 值域白名单（`confidence∈{high,medium,low,unknown,NotCountry}` 越界→`unknown`；host `tax_confidence∈{high,medium,unknown}` 越界含 LLM 写的 `low`→`medium`）；④ 修复全部写 `.log` 运行日志并计入 `llm_infer_stats.json` 的 `repaired_records`。
-  - `batch`：`--field country|host` → 抽取残差写入 `agent_residual_<field>.jsonl`（含 `evidence_text` + `rule_partial`），并**自动跳过已完成集合**（断点续跑）。
-  - 代理读 `agent_residual_<field>.jsonl` 逐条判，写 `agent_llm_<field>.jsonl`（判定记录，见下）。
-  - `merge`：把 `agent_llm_<field>.jsonl` 并入 `ena_llm_infer_<field>.jsonl`（按 `project_accession` 去重、代理判定覆盖旧值），写 `llm_infer_stats.json`。
-- **输出 schema**：
+- **约束**：`llm_infer_*` 仅由 `merge` 写（神圣性）；LLM **不得凭空标 high**（无 evidence 不得编造值）。
+- **与 §3.4 的关系**：`reconcile` 只做**规则 × LLM** 两源合并，输出 `reconciled_<field>.jsonl`；§3.4 `final_merge` 再把 **manual** 并入成三源终态，输出 `final_<field>.jsonl`。两者文件名已区分，无覆盖风险。
 
-> **产物文件 / 模式**：
-> - `agent_residual_<field>.jsonl`（glob `agent_residual_*.jsonl`，中间：代理读）— ①
-> - `agent_llm_<field>.jsonl`（glob `agent_llm_*.jsonl`，中间：代理写）— ②
-> - `ena_llm_infer_<field>.jsonl`（globs 到 `ena_llm_infer_country.jsonl` / `ena_llm_infer_date.jsonl` / `ena_llm_infer_host.jsonl`，最终：仅由 `merge` 写）+ `llm_infer_stats.json`（glob，计数汇总）— ③
+**输出 schema**
 
-**① 中间（代理读）`agent_residual_<field>.jsonl`（每行一残差项目）**
+> **产物文件**：
+> - `agent_parallel.jsonl`（中间：代理读，每行一项目）
+> - `agent_llm_parallel.jsonl`（中间：代理写，每行一项目含三字段+papers 裁决）
+> - `agent_paper_verdicts.jsonl`（中间：merge 收集的论文主题裁决）
+> - `ena_llm_infer_<field>.jsonl`（最终 LLM 结果，仅 merge 写）+ `llm_infer_stats.json`
+> - `reconciled_<field>.jsonl` / `review_<field>.jsonl` / `reconcile_stats.json`（reconcile 产出）
 
-| 字段 | 含义 |
-|---|---|
-| `project_accession` | 项目编号 |
-| `field` | `country` / `date` / `host` |
-| `rule_partial` | 规则基线残留（对象）：`value` / `confidence`（列表）/ `source`（列表）/ `method`（列表）/ `matched_tokens`（列表的列表） |
-| `evidence_text` | 已组装供直读的原文（study_title + study_description + high 论文 title/abstract + `[rule_partial]` 基线 + `[rule_evidence]` 逐值片段） |
-
-**② 中间（代理写）`agent_llm_<field>.jsonl`（每行一判定）**
+**① `agent_parallel.jsonl`（代理读）**
 
 | 字段 | 含义 |
 |---|---|
 | `project_accession` | 项目编号 |
-| `field` | `country` / `date` / `host` |
-| `value` | 国名列表 \| `NotCountry` \| 年列表 \| 宿主列表 \| `null`（无法判断） |
-| `confidence` | **列表（逐值）**：`high` / `medium` / `low` / `unknown` / `NotCountry`；LLM 逐值判定 |
-| `tax_confidence` | **列表（逐值），仅 host**：`high` / `medium` / `unknown`（merge 端 `_normalize` 已锁该值域，越界→medium） |
-| `source` | **列表（逐值）**：`study_meta` / `literature` |
-| `method` | **列表（逐值）**：未改值保持 `rule_*`，改过/新增值为 `llm_agent` |
-| `note` | 英文证据链（升级 high 须在 `note` 写理由） |
+| `papers` | 该项目 high 论文映射 `[{"ref":"#1","pid":"<pmid>"}]` |
+| `evidence_text` | 供直读原文（study_title + study_description + 每篇 high 论文 `[paper #n|pid=…]` 分块的 title/abstract） |
 
-**③ 最终 `ena_llm_infer_<field>.jsonl`（每行一项目记录，仅由 `merge` 写）+ `llm_infer_stats.json`（计数汇总）**
+**② `agent_llm_parallel.jsonl`（代理写）**
 
 | 字段 | 含义 |
 |---|---|
 | `project_accession` | 项目编号 |
-| `field` | `country` / `date` / `host` |
-| `value` | 同 ②（合并后同口径） |
-| `confidence` | 同 ②（列表，逐值） |
-| `tax_confidence` | 同 ②（列表，仅 host） |
-| `source` | 同 ②（列表，逐值） |
-| `method` | 同 ②（列表；若经 §3.3 并入则 `manual`） |
-| `note` | 英文证据链 |
-| `llm_infer_stats.json` | 各字段各 confidence 计数汇总（glob，唯一） |
+| `papers` | 主题甄别 `[{"pid","aligned":true/false,"note"}]`；`aligned=false` → 降级 |
+| `country` / `date` / `host` | 各为子对象 `{value[], confidence[], note}`；host 另 `tax_confidence[]`；无把握 → `value=[]` 或 `["unknown"]`；公海 → `value=["NotCountry"]` |
 
+**③ `ena_llm_infer_<field>.jsonl`（最终，仅 merge 写）**：与 ② 子对象同口径，补 `project_accession`/`field`/`source`/`method`，经 `_normalize` 归一。
 
 ### 3.3 用户消息补判（人工高可信 `manual`）
 
-- **目标**：§3.1（规则+字典）与 §3.2（LLM 残差直读 evidence）**两步仍无法判定**的项目进入本步，由用户主动介入提供消息，LLM 阅读判定。
-- **可复用资源 `manual_check_<field>.json`**（按字段各自成文件；核心变更，取代原自由文本 `manual_check.txt`）：
-  - **文件名**：`manual_check_country.json` / `manual_check_date.json` / `manual_check_host.json`，对应字段 `country` / `date` / `host`。**目前仅 `manual_check_country.json` 已生成**（17 条 country 实例，跨项目库）；`date` / `host` 待各自后续生成同类文件。
-  - 这是**跨项目、机器可加载**的 manual 裁定库，**不局限于测试批**。每条记录是一个项目的「用户背书高可信裁定」，全量 `final_merge` 可按 `project_accession` 直接采用。
-  - **机器从对话加载，而非人工手写/编辑**：用户在对话里贴 prose 形式的判定（如"PRJXXX 采样于法国里昂临床样本，证据是…"），由 **LLM 抽取并规范化**为下方 schema 的 JSON 对象，append 进对应字段的 `manual_check_<field>.json` 数组（如 country 实例进 `manual_check_country.json`）。人类不直接编辑该文件内容；若需修正，在对话里说明、由 LLM 重写对应对象。
-  - 亦支持用户随对话附其它文件（文献 PDF / 注册库导出 / 截图 / 网页），LLM 阅读后同样规范化写入。
-  - **必要时联网搜索**：LLM 主动检索项目注册库（ENA / SRA / BioProject）、机构主页、关联文献（ClinicalTrials.gov / Nature 文章 / GOLD / RISE 项目站等）核验或补全证据。
+- **目标**：§3.1（规则）与 §3.2（LLM 平行）**两步仍无法判定**的项目进入本步，由用户主动介入提供消息，LLM 阅读判定。
+- **可复用资源 `manual_check_<field>.json`**（按字段各自成文件；取代原自由文本 `manual_check.txt`）：
+  - **文件名**：`manual_check_country.json` / `manual_check_date.json` / `manual_check_host.json`。**目前仅 `manual_check_country.json` 已生成**（17 条，跨项目库）；`date` / `host` 待后续生成。
+  - **机器从对话加载，而非人工手写**：用户在对话里贴 prose 判定，由 **LLM 抽取并规范化**为 schema 的 JSON 对象，append 进对应字段文件。人类不直接编辑；修正时对话说明、由 LLM 重写。
+  - **必要时联网搜索**：LLM 主动检索项目注册库（ENA/SRA/BioProject）、机构主页、关联文献核验或补全证据。
 - **输出 schema（`manual_check_<field>.json` 中每个 JSON 对象）**：
 
   | 字段 | 类型 | 必填 | 说明 |
   |---|---|---|---|
   | `project_accession` | str | ✓ | ENA project accession |
   | `field` | str | ✓ | `country` / `date` / `host` |
-  | `value` | list | ✓ | 国名列表 / 年列表 / host 词；多值用 list（如 `["Indonesia","Fiji"]`），单值也用 list（`["Gambia"]`） |
-  | `confidence` | list | ✓ | 必填但脚本强制覆盖为 `["high"]*len(value)`（逐值对齐） |
-  | `tax_confidence` | list | host | **仅 host**：强制 `["high"]*len(value)`；country/date 无此栏 |
-  | `source` | list | 脚本补 | 强制 `["manual"]*len(value)` |
-  | `method` | list | 脚本补 | 强制 `["manual"]*len(value)` |
-  | `evidence_basis` | str | | `direct`（采样地/文献/注册库直接陈述）/ `institution_inferred`（以提交机构所在国作采样国代理，证据链弱于 direct） |
-  | `note` | str | | **英文**证据链（来源字段 / 注册号 / 关联依据 / 检索 URL），可逐条追溯 |
+  | `value` | list | ✓ | 国名列表 / 年列表 / host 词；多值用 list |
+  | `confidence` | list | ✓ | 脚本强制 `["high"]*len(value)` |
+  | `tax_confidence` | list | host | **仅 host**：强制 `["high"]*len(value)` |
+  | `source` / `method` | list | 脚本补 | 强制 `["manual"]*len(value)` |
+  | `evidence_basis` | str | | `direct` / `institution_inferred`（后者以提交机构国作采样国代理，证据弱） |
+  | `note` | str | | **英文**证据链，可逐条追溯 |
 
-- **国名规范**：采用**英文 canon**（如 `Korea` 非中文"韩国"；`Hong Kong, China` / `Taiwan, China` 按主权归一，HK/TW/MO 不可写为独立国家）；多国为 list。非 country 字段（date→年、host→生境词）同理按需规范化。
-- **`evidence_basis` 语义**：`direct` 为采样地/文献/注册库直接陈述，证据强；`institution_inferred` 仅以提交机构所在国推采样国（如 PRJEB22007→`Korea`、PRJNA256007→`New Zealand`），证据链弱——仍标 `confidence=["high"]`（用户背书），但以 `evidence_basis=institution_inferred` 显式标记，下游可单独审计/降权。
-- **落库流程（脚本化）**：`ena_load_manual.py` 读 `.manual/manual_check_*.json`（glob，按文件名 `manual_check_<field>` 取字段）→ 按 `project_accession` 去重 → 写 `ena_manual_<field>.jsonl`（机器消费的实际 manual store）。`final_merge`（§3.4）读取 `ena_manual_*` 并按双轴优先级合并。**该脚本只写 `ena_manual_*.jsonl`，不碰 `ena_llm_infer_*.jsonl`**（后者由 final_merge 统一收口，天然避免 §3.2 merge 乱序覆盖 manual）。
-- **定位**：`manual` 是「final 仅含规则 + LLM 文本裁定」的**唯一明确例外**——由用户直接背书、等同正式裁定（对齐 ENA / mARG 的 `manual` 机制），在 §3.4 轴 B 中位于来源最高档。
+- **国名规范**：英文 canon；`Hong Kong, China` / `Taiwan, China` / `Macao, China` 主权归一，HK/TW/MO 不可写为独立国家；Korea→`Korea`。
+- **落库流程（脚本化）**：`ena_load_manual.py` 读 `.manual/manual_check_*.json` → 按 `project_accession` 去重 → 写 `ena_manual_<field>.jsonl`。**该脚本只写 `ena_manual_*.jsonl`，不碰 `ena_llm_infer_*`**。
+- **定位**：`manual` 是「final 仅含规则 + LLM 文本裁定」的**唯一明确例外**——用户直接背书、等同正式裁定，在 §3.4 轴 B 中位于来源最高档。
 
 ### 3.4 合并
 
 - **目标**：`final_merge` 按优先级合并，输出 final。
-- **双轴优先级**：先保证 **轴 A（置信度）**，同级内再比 **轴 B（来源）**——置信度是合并第一判据，来源仅作同置信度内的决胜。
-  - **轴 A（主导，由高到低）**：`high` / `NotCountry`（高置信否定，等同 high 层级）> `medium` > `low` > `unknown`（无信号）。**高置信的规则结果优先于中/低置信的 LLM 或用户结果**。
-  - **轴 B（同置信度内排序）**：`manual`（用户，§3.3）> `llm_agent`（LLM，§3.2）> `rule_*`（规则，§3.1）。仅当两条候选**置信度相同**时才用轴 B 决出胜者。
+- **双轴优先级**：先保证 **轴 A（置信度）**，同级内再比 **轴 B（来源）**。
+  - **轴 A（主导，由高到低）**：`high` / `NotCountry` > `medium` > `low` > `unknown`。**高置信的规则结果优先于中/低置信的 LLM 或用户结果**。
+  - **轴 B（同置信度内排序）**：`manual`（用户，§3.3）> `llm_agent`（LLM，§3.2）> `rule_*`（规则，§3.1）。
 - **合并步骤（逐项目·逐字段）**：
-  1. 收集该项目该字段全部候选（来自三源：`<field>_infer.jsonl` 的 `rule_*`；`agent_llm_<field>.jsonl` 的 `llm_agent`；`ena_manual_<field>.jsonl` 的 `manual`）。
-  2. 按 (轴 A tier, 轴 B rank) 升序取最小 = 胜者；轴 A tier 相同（≥2 条）才进轴 B 决胜。**注意**：候选的 `confidence`/`method` 现为逐值列表，比较时各取列表中**最高档代表值**参与排序（`_rep_conf` 取 tier 最小者、`_rep_method` 取 rank 最小者；兼容旧单值 str）。
-  3. 胜者写入 final；若胜者置信度为 `unknown`（无任何信号）→ `value` 置 `null` / `confidence=unknown`。
-- **示例**：
-  - 规则 `high`（法国）vs LLM `medium`（法国）→ **轴 A 胜**：规则 `high`（置信度压倒来源）。
-  - 规则 `high`（法国）vs 用户 `manual` `high`（德国）→ 轴 A 平手（皆 high）→ **轴 B 胜**：`manual` 德国。
-  - LLM `medium`（同值）vs 规则 `medium` → 轴 A 平手 → **轴 B 胜**：`llm_agent`（LLM ≥ 规则，对齐用户原话「用户 > LLM > 规则」；旧版示例误写"规则胜"，已更正）。
-- **字段范围**：`country` / `date` / `host`；**`location` 字段取消**（样本级经纬度已由合并表覆盖）。
-- **易错点**：项目级 `location` 生境（gut/soil…）**≠** 样本级经纬度坐标，同名异义，勿互填；轴 A 优先保证高置信，**勿因"用户/LLM 更权威"而用中/低置信覆盖高置信规则结果**（旧版"规则>LLM>用户"已废弃，改为置信度优先）。
-- **脚本**：`ena_final_merge.py`（`--field country|date|host|all`）；只读三源、原子写、可重跑；**不读** `ena_llm_infer_<field>.jsonl`（那是 §3.2 内部 merge 视图，与 rule+llm 源重复，避免双计）。
-- **输出 schema（`final_<field>.jsonl`，glob 到 `final_country.jsonl` / `final_date.jsonl` / `final_host.jsonl`；每行一项目·字段最终裁定）**：
+  1. 收集该项目该字段全部候选（`<field>_infer.jsonl` 的 `rule_*`；`ena_llm_infer_<field>.jsonl` 的 `llm_agent`；`ena_manual_<field>.jsonl` 的 `manual`）。
+  2. 按 (轴 A tier, 轴 B rank) 升序取最小 = 胜者；候选的 `confidence`/`method` 为逐值列表，比较时各取**最高档代表值**（`_rep_conf`/`_rep_method`）。
+  3. 胜者写入 final；胜者置信度为 `unknown` → `value=null` / `confidence=unknown`。
+- **与 §3.2 reconcile 的关系**：§3.2 `reconcile` 已先做规则 × LLM 两源合并（输出 `reconciled_<field>.jsonl`）；本步 `final_merge` 再从三源把 manual 并入，产出最终 `final_<field>.jsonl`（两者文件名已区分）。
+- **字段范围**：`country` / `date` / `host`；**`location` 字段取消**。
+- **易错点**：项目级 `location` 生境 ≠ 样本级经纬度坐标，勿互填；轴 A 优先保证高置信，**勿因"用户/LLM 更权威"而用中/低置信覆盖高置信规则结果**。
+- **脚本**：`ena_final_merge.py`（`--field country|date|host|all`）；只读三源、原子写、可重跑。
+- **输出 schema（`final_<field>.jsonl`，每行一项目·字段最终裁定）**：
 
   | 字段 | 含义 |
   |---|---|
-  | `project_accession` | ENA 项目编号（join key） |
-  | `field` | country / date / host |
-  | `value` | 胜者值列表：国名 / 年 / 宿主 / `null`（unknown 时） |
-  | `confidence` | 胜者**列表（逐值）**：high / NotCountry / medium / low / unknown |
-  | `tax_confidence` | 胜者**列表（逐值），仅 host**：high / medium / unknown（整条透传，不参与裁决） |
-  | `source` | 胜者**列表（逐值）**：study_meta / literature / manual |
-  | `method` | 胜者**列表（逐值）**：`rule_*` / `llm_agent` / `manual` |
-  | `evidence_basis` | 仅 manual 有：`direct` / `institution_inferred`；其余 `null` |
-  | `note` | 胜者证据链（rule 取 `evidence` 拼接，llm/manual 取 `note`） |
-  | `n_candidates` | 该项目的候选源数量（审计：1=sole，>1=有竞争） |
-  | `won_by` | 裁决方式：`sole` / `axis_A` / `axis_B`（轴 A 唯一 / 轴 A 平手靠轴 B） |
+  | `project_accession` / `field` | join key / country / date / host |
+  | `value` / `confidence` / `tax_confidence` / `source` / `method` | 胜者（逐值列表；host 附 tax_confidence 透传） |
+  | `evidence_basis` | 仅 manual 有：`direct` / `institution_inferred` |
+  | `note` | 胜者证据链 |
+  | `n_candidates` / `won_by` | 候选源数量 / `sole` / `axis_A` / `axis_B` |
 
-  配套 `final_<field>_stats.json`（glob）：`total_projects` / `by_confidence` / `by_method` / `resolved_by{sole,axis_A,axis_B}` / `truly_unknown`。
+  配套 `final_<field>_stats.json`。
 
 ---
 
 ## 护栏清单（机器可机检）
 
-- **G1** `llm_infer_*` 仅 `agent_write` 可写。
+- **G1** `llm_infer_*` 仅写入脚本（§3.2 `merge`）可写。
 - **G2** 默认无全文爬取（检查是否存在 fulltext 抓取步骤）。
 - **G3** `location` 字段冻结（合并表不含独立的项目级 location 推断列）。
 
@@ -430,4 +387,4 @@
 - EPMC 关键词检索当权威绑定 → 误关联（2.2）
 - 把机构/试剂/署名产地（Qiagen Germany、PacBio USA）当采样国 → 误判（3.1 坑清单）
 - LLM 凭空标 high（无 evidence 编造值）→ 违反神圣性（3.2）
-
+- 残差路由按 confidence 白名单跳过 LLM → 漏掉白名单格 0.45%~3.6% 错判（已被 §3.2 平行架构取代）
