@@ -37,7 +37,7 @@
 搜索关联论文，为 PaperSource 标注置信来源（`papersource`：high / linkauthor / low / missing）
 
 1. 先用项目编号查 Europe PMC（最准，指名道姓: high quality；只留发表年最早 1–2 篇）
-2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上但（无宏基因组关键词 或 论文是 Review：标题含 review 词/摘要含 "in this review"）→ `linkauthor`（质量同 low，不进全文）
+2. 查不到，才用项目描述搜 Europe PMC（会带出很多"话题相关"的论文）。用作者单位 & 宏基因组关键词过滤：作者/单位对上但（无宏基因组关键词 或 论文是 Review / meta-analysis → `linkauthor`（质量同 low，不进全文）
 
 爬取论文的 标题+摘要/[全文:默认不爬]+paper的其它信息，比如：paper_title / paper_authors / paper_year /journal/pmid/pmcid/doi 
 
@@ -56,25 +56,11 @@
     - 记录相关上下文，作为推断的evidence
 
 对于规则匹配不进（仅指：匹配内容本身的可信度，先不管来源），仅限 `country` / `host` 
-    - 人工（LLM）阅读 evidence_text，并且回答[xx]信息的值（或依旧无法判断）。强调一下：要的是你（WorkBuddy 代理，本身就是 LLM）直接读 evidence 并推断，不走外部 API。具体来说：用脚本把 evidence 打印你、你一条条读、一条条判，再写入结果文件；跑的时候注意上下文长度、自动清理，会话里不用报告任何结果（防止上下文过长）、只要保存结果即可 ----- 如果需要判定的量非常大，尝试开 sub agents 加速
+    - 人工（LLM）阅读 evidence_text，并且回答[xx]信息的值（或依旧无法判断）。强调一下：要的是你（WorkBuddy 代理，本身就是 LLM）直接读 evidence 并推断，不走外部 API。具体来说：用脚本把 evidence 打印你、你一条条读、一条条判，再写入结果文件；**跑的时候注意上下文长度、自动清理，会话里不用报告任何结果（防止上下文过长）、只要保存结果即可 ----- 如果需要判定的量非常大，尝试开 sub agents 加速**
 
 3. 对于以上两步依旧无法判定的，用户会在对话中提供消息，由LLM阅读判定（必要时联网搜索）、规范化至资源文件‘manual_check_[country/data/host].json’）以供复用
 
 4. 合并，优先级A：`confidence` high > medium > low; 保证优先级A的前提下、优先级B：`source` manual > LLM > rule
-
-
-## 步骤 4  
-
-现在，这些 project级 信息可以作为清洗 raw.metagenomic_wgs.csv 的参考
-
-### 4.1 
-
-
-对于 raw 中的每一条 Run，我们先核验：
-
-1. 看看有多少 
-
-
 
 
 

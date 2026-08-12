@@ -128,7 +128,7 @@
      - **四策略**（按序回退、`exact` 命中即短路）：`exact`（引号包完整标题短语）→ `loose`（标题实词去停用词/通用词）→ `loose_desc`（描述实词）→ `author`（`AUTHOR:"姓" 主题词`，姓取自 center 里的作者姓氏）。合并去重成候选池，并记录每篇由哪个策略命中（`tag_of`）。
      - **单位匹配**：候选论文抽作者单位，与项目"强机构 token"（≥4 字母、排除地理州名如 Japan/China 与**学科词**如 Medicine/Anatomy/Biology，避免假阳性）比对；`center_name` 提取的强机构 token 在 paper 作者单位里命中 → 视为关联(linked)。
      - **定型（仅 free-text 分支）**：
-       - 单位对上 **或** `author` 策略命中（linked）**且** 标题/摘要含 `metagenome/metagenomic/metagenomes/metagenomics/metatranscriptome/metatranscriptomic/metaproteome/metaproteomic` **且非 Review**（标题含 `review` 词 / 摘要含 `in this review`）→ **`high`**（确属本项目的真·宏基因组论文，自动采纳）；
+       - 单位对上 **或** `author` 策略命中（linked）**且** 标题/摘要含 `metagenome/metagenomic/metagenomes/metagenomics/metatranscriptome/metatranscriptomic/metaproteome/metaproteomic` **且非 Review 或 meta-analysis**（标题含 `review`/`meta-analysis`/`meta-analytic` 词 / 摘要含 `in this review`/`meta-analysis`/`meta-analytic`；忽略大小写、'-'）→ **`high`**（确属本项目的真·宏基因组论文，自动采纳）；
        - linked 但（**无 metagenome 关键词 或 是 Review**）→ **`linkauthor`**（低质量：同一批作者/机构对同一样本做了非宏基因组研究，或综述而非本项目具体样本研究；宏基因组论文可能尚未发布）；
        - 有单位信息但与项目期望单位**完全无重叠** → **`missing`**（噪声，丢弃）；
        - 无单位信息 → **`low`**（进人工）。
