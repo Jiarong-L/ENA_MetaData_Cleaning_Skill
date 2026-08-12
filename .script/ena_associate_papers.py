@@ -5,17 +5,22 @@ ENA 项目 → 关联论文 采集 + PaperSource 标注 + 全文下载  (Replan.
 =====================================================================================
 通用脚本, 实现 Replan.md 步骤 2 的三小节:
   §2.1  爬取 ENA study 自述 (study_title / center_name / study_description) —— 强源
-  §2.2  搜索关联论文 + 标注 PaperSource (high / linkauthor / low / missing)
+  §2.2  搜索关联论文 + 标注 PaperSource (high / candidate / linkauthor / low / missing)
          · 先用项目编号查 Europe PMC (指名道姓, 命中即 high, 仅此分支产生 high 强源)
          · 查不到才用 study_title/description 做 free-text 搜 EPMC
            (精确短语 → 关键词 → 描述关键词 → 作者名 四策略顺序回退, 首个有命中即合并候选)
          · free-text 候选过"作者单位过滤":
-             对上 且 摘要含 metagenome 关键词              = high      (真·宏基因组论文)
+             对上 且 摘要含 metagenome 关键词              = (先判) 真·宏基因组论文
              对上/作者策略命中 但 摘要无 metagenome 关键词 = linkauthor (低质量: 同一批作者/机构但非宏基因组论文)
              有单位但不对                                  = missing   (丢弃)
              无单位信息                                    = low       (交人工)
            (强 token 已排除学科/院系通用词, 避免 Medicine/Anatomy 等造成 high 假阳性)
            linkauthor 仅由 free-text 分支产生, 质量视作 low, 不进入 §2.3 全文下载(high-only)
+         · 对题性闸门 (topic alignment, 非LLM): free-text 判出的"真·宏基因组论文"还须与
+           ENA study 共享 >=1 个 IDF 稀有签名 token 才确认 = high; 对不上则降 candidate
+           (召回且单位/作者对得上, 但主题非同一研究, 不进 §3.1 / §2.3)。
+           解决"通用 token(King/Craig/Environmental)+metagenome 关键词"导致的整片误关联,
+           见 .workbuddy/memory/2026-08-12.md。
          · 每篇论文同时捕获 fullTextUrlList -> full_text_urls / full_text_available (供 §2.3)
   §2.3  全文下载 (可选, **默认关**)
          · 从 project_literature.jsonl 取 high 论文, 下载 EPMC free 全文
@@ -69,6 +74,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+from collections import Counter
 from datetime import datetime
 
 # ---------------------------------------------------------------- 路径默认
@@ -144,6 +150,75 @@ INST_KW = ("university","institute","college","hospital","center","centre",
 META_KW = ("metagenome", "metagenomic", "metagenomes", "metagenomics",
            "metatranscriptome", "metatranscriptomic",
            "metaproteome", "metaproteomic")
+
+# ---------------------------------------------------------------- 对题性校验 (topic alignment, 非LLM)
+# free-text 判出的 high 论文, 还须与 ENA study 共享 >=1 个"稀有签名 token" 才确认对题,
+# 否则降为 candidate (召回且单位/作者对得上, 但主题并非同一研究, 不进 §3.1 / §2.3)。
+# 机制: 纯规则无 LLM —— ENA 签名 = study_title+description 剔除通用词后的实词,
+#   再用 IDF(DF) 自校准: 一个 token 只有在全语料(全部项目 study 文本)里够罕见
+#   (DF<=TOPIC_DF_MAX) 才算有效签名, 从而 were/identified/consortium 等普通科研词(DF 高)
+#   被自动剔除, mendota/ganga/leprae 等特异词(DF 低)保留。校准与案例见 memory/2026-08-12.md。
+TOPIC_DF_MAX = 15
+
+# 基础通用词 (与 IDF 叠加): 组学/方法/样品类型/泛生物医学词 + 过程/临床类漏网词(DF 9-15 仍偏通用)。
+TOPIC_STOP = {
+    # 宏基因组 / 组学 / 测序方法
+    "metagenome","metagenomes","metagenomic","metagenomics","microbiome","microbiomes",
+    "microbiota","microbial","microbe","microbes","bacteria","bacterial","bacterium",
+    "archaea","archaeal","fungal","fungi","virus","viruses","viral","virome",
+    "community","communities","diversity","structure","composition","abundance","profile","profiling",
+    "sequencing","sequence","sequences","sequenced","shotgun","illumina","miseq","hiseq","novaseq",
+    "nanopore","pacbio","reads","read","analysis","analyses","analyze","analytical","study","studies",
+    "studied","research","investigation","genome","genomes","genomic","genomics","gene","genes",
+    "genetic","genetics","dna","rna","cdna","16s","18s","its","rrna","amplicon","amplicons",
+    "sample","samples","sampling","collected","collection","project","projects","accession",
+    "species","strain","strains","isolate","isolates","taxa","taxonomic","taxonomy","phylogenetic",
+    "functional","function","functions","metabolic","metabolism","pathway","pathways",
+    # 样品类型 / 生境 (过泛, 不能作为"同一研究"证据)
+    "soil","soils","sediment","sediments","feces","faeces","faecal","fecal","stool","gut","guts",
+    "intestinal","intestine","water","waters","marine","freshwater","seawater","ocean","aquatic",
+    "air","airborne","aerosol","wastewater","sewage","sludge","effluent","environment","environmental",
+    "environments","plant","plants","animal","animals","crop","crops","rice","wheat","maize",
+    # 泛生物 / 医学 / 通用动词形容词
+    "human","humans","health","healthy","disease","diseases","clinical","patient","patients","host","hosts",
+    "associated","association","reveals","revealed","reveal","insights","characterization","characterized",
+    "novel","new","approach","approaches","method","methods","technique","techniques","tool","tools",
+    "framework","pipeline","using","use","used","based","via","within","between","among","across",
+    "from","with","without","under","over","into","onto","results","data","dataset","datasets",
+    "compared","comparison","control","group","groups","china","chinese","india","indian","japan","japanese",
+    # 过程 / 临床类漏网词 (DF 9-15, 仍会蒙混 -> 显式剔除, 不必再降阈值)
+    "consortium","consortia","degrading","degradation","degrade","activated","activation","clinically",
+    "resident","residents","media","medium","identified","identify","observed","observation",
+    "corresponding","determined","determine","enriched","enrichment","biomass","inoculum",
+}
+
+
+def _topic_tokens(text):
+    """对题签名词干: 小写去标点, 取 len>=4 且非通用词的实词集合。"""
+    t = re.sub(r"[^a-z0-9 ]+", " ", (text or "").lower())
+    return {w for w in t.split() if len(w) >= 4 and w not in TOPIC_STOP}
+
+
+def build_topic_signatures(meta, df_max=TOPIC_DF_MAX):
+    """对每个项目计算对题签名 (稀有 token 集合)。
+    DF 在传入的 meta 全量上统计, 因此 --acc-file 只处理子集时签名仍稳定一致。"""
+    df = Counter()
+    ptext = {}
+    for acc, m in meta.items():
+        tk = _topic_tokens((m.get("study_title") or "") + " " + (m.get("study_description") or ""))
+        ptext[acc] = tk
+        for w in tk:
+            df[w] += 1
+    return {acc: {w for w in tk if df[w] <= df_max} for acc, tk in ptext.items()}
+
+
+def topic_aligned(paper, sig):
+    """论文(原始 EPMC dict)是否与 ENA study 对题: 共享 >=1 个稀有签名 token。
+    sig 为空集 -> False (无特异词可供校验, 保守起见不认对题)。"""
+    if not sig:
+        return False
+    text = (paper.get("title") or "") + " " + re.sub(r"<[^>]+>", " ", paper.get("abstractText") or "")
+    return bool(sig & _topic_tokens(text))
 
 
 def has_metagenome_kw(paper):
@@ -448,7 +523,7 @@ def paper_record(p, papersource, matched=None, aff=None):
     }
 
 
-def process_one(acc, meta, freetext_n):
+def process_one(acc, meta, freetext_n, topic_sig=None):
     rec = {"project_accession": acc, "strategy": "", "accession_hit": False,
            "query": "", "hitCount": 0, "papers": []}
     # ---- 1) accession-first (最准, 指名道姓) ----
@@ -499,6 +574,7 @@ def process_one(acc, meta, freetext_n):
     desc_ph = desc_inst_entities(desc)
     surnames = author_surnames(center)   # 修复B: 供 author 召回真实性校验
     high = low = missing = linkauthor = 0
+    candidate = 0                      # free-text 判为宏基因组但对题不符 (topic gate) 降级的篇数
     synthesis_demoted = 0
     author_unverified = 0                # author 召回但姓氏不在真实作者列表 (查询退化) 的篇数
     for p in candidates:
@@ -520,7 +596,12 @@ def process_one(acc, meta, freetext_n):
             #    meta-analytic/meta analytic/metaanalytic 任一子串) → 真·宏基因组论文, high
             # 否则(无关键词 | 是 Review | 是 meta-analysis 含 meta-analytic 等同族) → 降 linkauthor(低质量, 二次文献非具体样本研究)
             if mk and not is_non_primary(p):
-                ps = "high"; high += 1
+                # 对题性闸门: free-text 判出的 high 还须与 ENA study 主题对齐 (共享稀有签名 token),
+                # 否则降 candidate (topic_sig=None 表示未启用闸门, 向后兼容旧调用)。
+                if topic_sig is None or topic_aligned(p, topic_sig):
+                    ps = "high"; high += 1
+                else:
+                    ps = "candidate"; candidate += 1
             else:
                 if is_non_primary(p) and mk:
                     synthesis_demoted += 1
@@ -530,21 +611,29 @@ def process_one(acc, meta, freetext_n):
         else:
             ps = "low"; low += 1              # 无单位信息 → 无法验证, 交人工
         rec["papers"].append(paper_record(p, ps, matched=(tok if ok else None), aff=affils))
-    rec["_counts"] = {"high": high, "low": low, "missing": missing,
+    rec["_counts"] = {"high": high, "low": low, "missing": missing, "candidate": candidate,
                       "linkauthor": linkauthor, "synthesis_demoted": synthesis_demoted,
                       "author_unverified": author_unverified, "used": used}
     return rec
 
 
-def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
+def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20,
+              topic_gate=True, topic_df_max=TOPIC_DF_MAX):
     """§2.2 关联论文 + PaperSource 标注。
 
     accs: 显式传入要处理的 accession 集合/列表 (来自 --acc-file 或 --batch-date 解析)。
           - 传入时, 严格只处理这些 accession (修复旧版忽略 --acc-file、只遍历 meta 的 bug);
           - 不传 (None) 时, 回退为遍历 meta 全部 key (向后兼容旧调用方式)。
     无论哪种情况, 处理顺序内部仍为 meta 顺序; meta 仅用于查 study 自述 (title/desc/center)。
+
+    topic_gate: 是否启用"对题性闸门" (free-text 判出的 high 须与 ENA study 主题对齐,
+                否则降 candidate)。签名在 meta 全量上用 IDF(DF<=topic_df_max) 预计算,
+                因此处理子集时签名稳定一致。topic_gate=False 则退回旧行为 (不过滤)。
     """
     log("=== §2.2 EPMC + 作者单位过滤 ===")
+    topic_sigs = build_topic_signatures(meta, topic_df_max) if topic_gate else None
+    if topic_sigs is not None:
+        log("  对题性闸门: 启用 (DF<=%d), 已计算 %d 个项目的稀有签名" % (topic_df_max, len(topic_sigs)))
     lit_path = os.path.join(out_dir, "project_literature.jsonl")
     # 断点续跑: 已存在的 project_accession 跳过
     done = set()
@@ -564,7 +653,7 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
     if limit:
         accs = accs[:limit]
     stats = {"projects": 0, "accession_hit": 0, "freetext": 0, "with_hits": 0,
-             "high_total": 0, "low_total": 0, "missing_total": 0,
+             "high_total": 0, "candidate_total": 0, "low_total": 0, "missing_total": 0,
              "linkauthor_total": 0, "author_unverified_total": 0, "errs": 0}
     if not accs:
         log("  全部已处理, 无需重跑")
@@ -572,7 +661,8 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
     with open(lit_path, "a", encoding="utf-8") as fo:
         for acc in accs:
             try:
-                rec = process_one(acc, meta.get(acc, {}), freetext_n)
+                rec = process_one(acc, meta.get(acc, {}), freetext_n,
+                                  topic_sig=(topic_sigs.get(acc, set()) if topic_sigs is not None else None))
             except Exception as e:
                 rec = {"project_accession": acc, "strategy": "ERR",
                        "error": str(e)[:200], "papers": []}
@@ -586,6 +676,7 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
             c = rec.get("_counts")
             if c:
                 stats["high_total"] += c["high"]
+                stats["candidate_total"] += c.get("candidate", 0)
                 stats["low_total"] += c["low"]
                 stats["missing_total"] += c["missing"]
                 stats["linkauthor_total"] += c.get("linkauthor", 0)
@@ -593,9 +684,9 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20):
             if rec.get("strategy") == "ERR":
                 stats["errs"] += 1
             cc = c or {}
-            log("  %s strat=%s hit=%s papers=%d high=%s low=%s missing=%s linkauthor=%s aunv=%s" % (
+            log("  %s strat=%s hit=%s papers=%d high=%s cand=%s low=%s missing=%s linkauthor=%s aunv=%s" % (
                 acc, rec.get("strategy"), rec.get("hitCount"),
-                len(rec.get("papers", [])), cc.get("high", "-"),
+                len(rec.get("papers", [])), cc.get("high", "-"), cc.get("candidate", "-"),
                 cc.get("low", "-"), cc.get("missing", "-"), cc.get("linkauthor", "-"),
                 cc.get("author_unverified", "-")))
             rec.pop("_counts", None)   # 内部计数, 不写入交付 schema
@@ -757,6 +848,10 @@ def main():
     ap.add_argument("--fulltext-scope", choices=["high", "any"], default="high",
                     help="§2.3 全文下载范围: high=仅 high 论文(默认, linkauthor 视作低质量不进入); any=含 low/missing 中可用的(测试用)")
     ap.add_argument("--fulltext-limit", type=int, default=5, help="§2.3 全文下载上限 (测试用)")
+    ap.add_argument("--no-topic-gate", action="store_true",
+                    help="关闭对题性闸门 (free-text high 不再要求与 ENA study 主题对齐), 退回旧行为")
+    ap.add_argument("--topic-df-max", type=int, default=TOPIC_DF_MAX,
+                    help="对题性签名的 IDF 阈值: token 在全语料中出现项目数 <= 该值才算稀有签名 (默认 15)")
     args = ap.parse_args()
     _replan_log("ena_associate_papers --phase %s --src %s --out %s"
                 % (args.phase, args.src, args.out))
@@ -796,7 +891,8 @@ def main():
 
     if args.phase in ("lit", "all"):
         # 把 --acc-file / --batch-date 解析出的 accs 真正传进 phase_lit (修复旧版忽略 --acc-file)
-        phase_lit(meta, args.out, accs=accs_items, limit=args.limit, freetext_n=args.freetext_n)
+        phase_lit(meta, args.out, accs=accs_items, limit=args.limit, freetext_n=args.freetext_n,
+                  topic_gate=(not args.no_topic_gate), topic_df_max=args.topic_df_max)
 
 
 if __name__ == "__main__":
