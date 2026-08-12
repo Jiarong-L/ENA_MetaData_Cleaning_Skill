@@ -273,6 +273,37 @@ def is_non_primary(paper):
     return False
 
 
+# 方法学/工具论文的"方法类词" (标题/摘要判定共用)
+_METHOD_WORDS = (r"(?:method|tool|algorithm|pipeline|software|database|web[- ]?server|"
+                 r"framework|package|platform|workflow|approach|protocol|model)")
+_METHOD_TITLE = re.compile(r":\s*a[n]?\s+[\w-]{0,25}\s" + _METHOD_WORDS + r"\b", re.I)
+_METHOD_ABS = re.compile(
+    r"\b(?:we|here we|in this (?:paper|study|work)[,]? we)\s+"
+    r"(?:present|have developed|developed|develop|introduce|describe|propose|"
+    r"constructed|built|created|designed|implemented)\b[^.]{0,110}?\b" + _METHOD_WORDS + r"\b", re.I)
+_METHOD_AVAIL = re.compile(
+    r"\b(?:is (?:freely |publicly )?available (?:at|as|on)|source code (?:is )?available|"
+    r"implemented in (?:r|python)|an? r package|web server)\b", re.I)
+
+
+def is_method_tool(paper):
+    """方法学/工具论文(核心贡献是方法/软件/数据库本身, 非本项目具体样本研究), 降级 linkauthor。
+    高查准、宁漏勿错(大子集219篇实测: on_topic 误伤 0/137, off_topic 捕获 TRACS 等)。
+    判定: 标题 'X: a tool/method/... for Y'; 或摘要开头自称 present/develop ... method/tool;
+          或含 'available at/source code/web server' 且开头自称 present/develop。"""
+    title = (paper.get("title") or "").lower()
+    abstract = re.sub(r"<[^>]+>", " ", paper.get("abstractText") or "").lower()
+    if _METHOD_TITLE.search(title):
+        return True
+    if _METHOD_ABS.search(abstract[:450]):
+        return True
+    if _METHOD_AVAIL.search(abstract) and re.search(
+            r"\b(?:we|here we)\s+(?:present|developed|develop|introduce|describe|propose)\b",
+            abstract[:450]):
+        return True
+    return False
+
+
 def log(*a):
     print("[%s] %s" % (time.strftime("%H:%M:%S"), " ".join(str(x) for x in a)), flush=True)
 
@@ -571,13 +602,16 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
             rec["strategy"] = "accession"
             rec["query"] = "%s:%s" % (fld, acc)
             rec["hitCount"] = len(res)
-            a_high = a_link = a_synth = 0
+            a_high = a_link = a_synth = a_method = 0
             for p in res_sorted:
                 mk = has_metagenome_kw(p)
-                if is_non_primary(p):
-                    # 综述/荟萃分析: 直接关联本项目也非具体样本研究 → linkauthor (弱信号)
+                if is_non_primary(p) or is_method_tool(p):
+                    # 综述/荟萃分析/方法学工具: 直接关联本项目也非具体样本研究 → linkauthor (弱信号)
                     if mk:
-                        a_synth += 1
+                        if is_method_tool(p) and not is_non_primary(p):
+                            a_method += 1
+                        else:
+                            a_synth += 1
                     rec["papers"].append(paper_record(p, "linkauthor", matched="(accession-linked)"))
                     a_link += 1
                 else:
@@ -585,7 +619,8 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
                     a_high += 1
             # accession 分支提前返回, 须显式设置 _counts 供 §2.2 汇总与日志
             rec["_counts"] = {"high": a_high, "low": 0, "missing": 0,
-                              "linkauthor": a_link, "synthesis_demoted": a_synth, "used": "accession"}
+                              "linkauthor": a_link, "synthesis_demoted": a_synth,
+                              "method_demoted": a_method, "used": "accession"}
             return rec
     # ---- 2) free-text (多策略检索 + 单位过滤 + linkauthor) ----
     title = meta.get("study_title", "")
@@ -602,6 +637,7 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
     high = low = missing = linkauthor = 0
     candidate = 0                      # free-text 判为宏基因组但对题不符 (topic gate) 降级的篇数
     synthesis_demoted = 0
+    method_demoted = 0                 # 方法学/工具论文 (is_method_tool) 降 linkauthor 的篇数
     author_unverified = 0                # author 召回但姓氏不在真实作者列表 (查询退化) 的篇数
     for p in candidates:
         pid = p.get("pmid") or p.get("id") or json.dumps(p, sort_keys=True)[:60]
@@ -621,7 +657,7 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
             #   (标题含 review 词, 或摘要含 'in this review', 或标题/摘要含 meta-analysis/meta analysis/metaanalysis/
             #    meta-analytic/meta analytic/metaanalytic 任一子串) → 真·宏基因组论文, high
             # 否则(无关键词 | 是 Review | 是 meta-analysis 含 meta-analytic 等同族) → 降 linkauthor(低质量, 二次文献非具体样本研究)
-            if mk and not is_non_primary(p):
+            if mk and not is_non_primary(p) and not is_method_tool(p):
                 # 对题性闸门: free-text 判出的 high 还须与 ENA study 主题对齐 (共享稀有签名 token),
                 # 否则降 candidate (topic_sig=None 表示未启用闸门, 向后兼容旧调用)。
                 if topic_sig is None or topic_aligned(p, topic_sig):
@@ -631,6 +667,8 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
             else:
                 if is_non_primary(p) and mk:
                     synthesis_demoted += 1
+                elif is_method_tool(p) and mk:
+                    method_demoted += 1
                 ps = "linkauthor"; linkauthor += 1
         elif affils:
             ps = "missing"; missing += 1      # 有单位但完全对不上 → 噪声, 丢弃
@@ -639,6 +677,7 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
         rec["papers"].append(paper_record(p, ps, matched=(tok if ok else None), aff=affils))
     rec["_counts"] = {"high": high, "low": low, "missing": missing, "candidate": candidate,
                       "linkauthor": linkauthor, "synthesis_demoted": synthesis_demoted,
+                      "method_demoted": method_demoted,
                       "author_unverified": author_unverified, "used": used}
     return rec
 
@@ -682,7 +721,7 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20,
         accs = accs[:limit]
     stats = {"projects": 0, "accession_hit": 0, "freetext": 0, "with_hits": 0,
              "high_total": 0, "candidate_total": 0, "low_total": 0, "missing_total": 0,
-             "linkauthor_total": 0, "author_unverified_total": 0, "errs": 0}
+             "linkauthor_total": 0, "method_demoted_total": 0, "author_unverified_total": 0, "errs": 0}
     if not accs:
         log("  全部已处理, 无需重跑")
         return stats
@@ -708,15 +747,16 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20,
                 stats["low_total"] += c["low"]
                 stats["missing_total"] += c["missing"]
                 stats["linkauthor_total"] += c.get("linkauthor", 0)
+                stats["method_demoted_total"] += c.get("method_demoted", 0)
                 stats["author_unverified_total"] += c.get("author_unverified", 0)
             if rec.get("strategy") == "ERR":
                 stats["errs"] += 1
             cc = c or {}
-            log("  %s strat=%s hit=%s papers=%d high=%s cand=%s low=%s missing=%s linkauthor=%s aunv=%s" % (
+            log("  %s strat=%s hit=%s papers=%d high=%s cand=%s low=%s missing=%s linkauthor=%s method=%s aunv=%s" % (
                 acc, rec.get("strategy"), rec.get("hitCount"),
                 len(rec.get("papers", [])), cc.get("high", "-"), cc.get("candidate", "-"),
                 cc.get("low", "-"), cc.get("missing", "-"), cc.get("linkauthor", "-"),
-                cc.get("author_unverified", "-")))
+                cc.get("method_demoted", "-"), cc.get("author_unverified", "-")))
             rec.pop("_counts", None)   # 内部计数, 不写入交付 schema
             fo.write(json.dumps(rec, ensure_ascii=False) + "\n")
             time.sleep(0.3)
