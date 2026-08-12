@@ -158,7 +158,20 @@ META_KW = ("metagenome", "metagenomic", "metagenomes", "metagenomics",
 #   再用 IDF(DF) 自校准: 一个 token 只有在全语料(全部项目 study 文本)里够罕见
 #   (DF<=TOPIC_DF_MAX) 才算有效签名, 从而 were/identified/consortium 等普通科研词(DF 高)
 #   被自动剔除, mendota/ganga/leprae 等特异词(DF 低)保留。校准与案例见 memory/2026-08-12.md。
-TOPIC_DF_MAX = 15
+TOPIC_DF_MAX = 10  # 两轮 CV(54+219篇)确认: DF10 严格支配 DF15(同召回、更高精度), 推荐值
+# 通用英语词频阈值 (治 FP 成因A): 对题签名 token 的通用英语词频 zipf > 此值即视为
+# "通用词"剔除——它只是在该 study 里碰巧低频(DF 低), 并非语义特异。两轮 CV 实测:
+# 真专词 zipf 全<=2.9, 通用漏网词 zipf>=4.2, 甜点 4.5 零误伤、精度 73->77。
+# 依赖 wordfreq (纯数据包); 未安装则自动跳过本过滤、退回仅 IDF(DF) 行为(向后兼容)。
+TOPIC_ZIPF_MAX = 4.5
+try:
+    from wordfreq import zipf_frequency as _zipf_frequency
+    _HAS_WORDFREQ = True
+except Exception:  # wordfreq 未装 -> 关闭词频过滤
+    _HAS_WORDFREQ = False
+
+    def _zipf_frequency(word, lang="en"):
+        return 0.0
 
 # 基础通用词 (与 IDF 叠加): 组学/方法/样品类型/泛生物医学词 + 过程/临床类漏网词(DF 9-15 仍偏通用)。
 TOPIC_STOP = {
@@ -199,9 +212,11 @@ def _topic_tokens(text):
     return {w for w in t.split() if len(w) >= 4 and w not in TOPIC_STOP}
 
 
-def build_topic_signatures(meta, df_max=TOPIC_DF_MAX):
+def build_topic_signatures(meta, df_max=TOPIC_DF_MAX, zipf_max=TOPIC_ZIPF_MAX):
     """对每个项目计算对题签名 (稀有 token 集合)。
-    DF 在传入的 meta 全量上统计, 因此 --acc-file 只处理子集时签名仍稳定一致。"""
+    DF 在传入的 meta 全量上统计, 因此 --acc-file 只处理子集时签名仍稳定一致。
+    zipf_max: 再叠加通用英语词频过滤——签名 token 若 zipf>zipf_max(太通用)则剔除;
+              None 或 wordfreq 缺失则跳过(退回仅 IDF 行为)。"""
     df = Counter()
     ptext = {}
     for acc, m in meta.items():
@@ -209,7 +224,18 @@ def build_topic_signatures(meta, df_max=TOPIC_DF_MAX):
         ptext[acc] = tk
         for w in tk:
             df[w] += 1
-    return {acc: {w for w in tk if df[w] <= df_max} for acc, tk in ptext.items()}
+    sigs = {acc: {w for w in tk if df[w] <= df_max} for acc, tk in ptext.items()}
+    if zipf_max is not None and _HAS_WORDFREQ:
+        cache = {}
+
+        def _z(w):
+            v = cache.get(w)
+            if v is None:
+                v = _zipf_frequency(w, "en")
+                cache[w] = v
+            return v
+        sigs = {acc: {w for w in s if _z(w) <= zipf_max} for acc, s in sigs.items()}
+    return sigs
 
 
 def topic_aligned(paper, sig):
@@ -618,7 +644,7 @@ def process_one(acc, meta, freetext_n, topic_sig=None):
 
 
 def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20,
-              topic_gate=True, topic_df_max=TOPIC_DF_MAX):
+              topic_gate=True, topic_df_max=TOPIC_DF_MAX, topic_zipf_max=TOPIC_ZIPF_MAX):
     """§2.2 关联论文 + PaperSource 标注。
 
     accs: 显式传入要处理的 accession 集合/列表 (来自 --acc-file 或 --batch-date 解析)。
@@ -631,9 +657,11 @@ def phase_lit(meta, out_dir, accs=None, limit=None, freetext_n=20,
                 因此处理子集时签名稳定一致。topic_gate=False 则退回旧行为 (不过滤)。
     """
     log("=== §2.2 EPMC + 作者单位过滤 ===")
-    topic_sigs = build_topic_signatures(meta, topic_df_max) if topic_gate else None
+    topic_sigs = build_topic_signatures(meta, topic_df_max, topic_zipf_max) if topic_gate else None
     if topic_sigs is not None:
-        log("  对题性闸门: 启用 (DF<=%d), 已计算 %d 个项目的稀有签名" % (topic_df_max, len(topic_sigs)))
+        log("  对题性闸门: 启用 (DF<=%d, zipf<=%s%s), 已计算 %d 个项目的稀有签名"
+            % (topic_df_max, topic_zipf_max,
+               "" if _HAS_WORDFREQ else " [wordfreq缺失,词频过滤已跳过]", len(topic_sigs)))
     lit_path = os.path.join(out_dir, "project_literature.jsonl")
     # 断点续跑: 已存在的 project_accession 跳过
     done = set()
@@ -851,7 +879,11 @@ def main():
     ap.add_argument("--no-topic-gate", action="store_true",
                     help="关闭对题性闸门 (free-text high 不再要求与 ENA study 主题对齐), 退回旧行为")
     ap.add_argument("--topic-df-max", type=int, default=TOPIC_DF_MAX,
-                    help="对题性签名的 IDF 阈值: token 在全语料中出现项目数 <= 该值才算稀有签名 (默认 15)")
+                    help="对题性签名的 IDF 阈值: token 在全语料中出现项目数 <= 该值才算稀有签名 (默认 10)")
+    ap.add_argument("--topic-zipf-max", type=float, default=TOPIC_ZIPF_MAX,
+                    help="对题性签名的通用英语词频上限: token 的 zipf > 该值视为通用词剔除 (默认 4.5, 需 wordfreq)")
+    ap.add_argument("--no-zipf-gate", action="store_true",
+                    help="关闭对题性签名的通用词频过滤 (退回仅 IDF/DF 过滤)")
     args = ap.parse_args()
     _replan_log("ena_associate_papers --phase %s --src %s --out %s"
                 % (args.phase, args.src, args.out))
@@ -892,7 +924,8 @@ def main():
     if args.phase in ("lit", "all"):
         # 把 --acc-file / --batch-date 解析出的 accs 真正传进 phase_lit (修复旧版忽略 --acc-file)
         phase_lit(meta, args.out, accs=accs_items, limit=args.limit, freetext_n=args.freetext_n,
-                  topic_gate=(not args.no_topic_gate), topic_df_max=args.topic_df_max)
+                  topic_gate=(not args.no_topic_gate), topic_df_max=args.topic_df_max,
+                  topic_zipf_max=(None if args.no_zipf_gate else args.topic_zipf_max))
 
 
 if __name__ == "__main__":
