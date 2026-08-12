@@ -7,12 +7,13 @@ ena_infer_31.py — §3.1 规则 + 字典基线（确定性，优先跑）
 papersource=high 的 literature: title/abstract）用规则 + 字典推断
 country / date / host。
 
-输出每条推断带两个互相独立的质控标签 + evidence（对齐 Replan §3.0）：
-  - content_reliability (标签 A): 匹配内容本身的可信度 high/medium/low
-  - source             (标签 B): study_meta / literature
-  - confidence: high / medium / low / NotCountry / unknown  （字段推断等级）
-  - method: 命中规则 (rule_demonym / rule_place / rule_open_ocean /
-            rule_region / rule_multi_country / rule_host_* / rule_date_* / none)
+输出每条推断的全部字段均为列表、与 value 逐值对齐（对齐 Replan §3.0/§3.1）：
+  - confidence: 列表(逐值)，CTX_SAMPLE 采集上下文判定 high/medium/NotCountry/unknown
+  - tax_confidence: 列表(逐值)，仅 host，is_high_evidence 证据窗口强共现判定 high/medium
+  - source: 列表(逐值)，study_meta / literature
+  - method: 列表(逐值)，命中规则 (rule_demonym / rule_place / rule_open_ocean /
+            rule_region / rule_host_* / rule_date_* / none)
+  - evidence / matched_tokens: 列表 / 列表的列表（逐值）
   - evidence: 命中片段 + 上下文
 
 用法：
@@ -394,12 +395,13 @@ taxonomic phylogenetic diversity abundance community communities amplicon illumi
 shotgun nanopore reads
 """.split())
 
-# 采样/地点上下文词（命中附近出现 -> content_reliability 提为 high）
+# 采样/地点上下文词（命中附近出现 -> confidence 提为 high）
+# 仅保留明确采样动作/场所词；去掉 from/in/site/region/city/country/population/sample 等泛词
 CTX_SAMPLE = [
-    "collected", "sample", "sampled", "sampling", "from", "in", "recruited",
-    "cohort", "located", "site", "origin", "originat", "obtained",
-    "isolated", "harvest", "resident", "population", "city", "country",
-    "region", "hospital", "clinic",
+    "collected", "sampled", "sampling", "recruited", "enrolled",
+    "cohort", "obtained", "isolated", "harvest", "biopsy",
+    "located", "origin", "originat", "resident",
+    "hospital", "clinic",
 ]
 
 YEAR_RE = re.compile(r"\b(19|20)\d{2}\b")
@@ -428,19 +430,20 @@ def _word_boundary_find(text, keys):
 
 
 def _ctx_reliable(snippet, token):
-    """标签 A 基础：命中片段是否处于采样/地点上下文。"""
+    """命中片段是否处于采样/地点上下文（confidence 判定依据）。"""
     s = _norm(snippet)
     return any(w in s for w in CTX_SAMPLE)
 
 
-def _reliability(sub_source, snippet):
-    """标签 A：结合 sub_source 与上下文给出 high/medium/low。"""
-    base = "medium"
-    if sub_source in ("study_description", "study_title", "literature_abstract", "literature_title"):
-        base = "high"
-    if _ctx_reliable(snippet, None):
-        base = "high"
-    return base
+_CONF_RANK = {"high": 0, "NotCountry": 0, "medium": 1, "low": 2, "unknown": 3}
+
+def _top_conf(conf):
+    """从 confidence（列表或单值）取代表值（最高置信）用于统计。"""
+    if isinstance(conf, list):
+        if not conf:
+            return "unknown"
+        return min(conf, key=lambda c: _CONF_RANK.get(c, 3))
+    return conf
 
 
 def source_of(sub_source):
@@ -454,21 +457,22 @@ def source_of(sub_source):
 # ----------------------------------------------------------------------------
 
 def infer_country(sources):
-    """sources: list of (sub_source, text)。返回 best record 或 None。"""
-    countries = {}      # norm_country -> list of (sub_source, snippet, method)
-    regions = {}        # region_word -> snippet
-    ocean = []          # snippets
+    """sources: list of (sub_source, text)。返回 best record 或 None。
+    所有字段均为列表，与 value 逐值对齐；无记录级标签。"""
+    countries = {}      # norm_country -> list of (sub_source, snippet, method, token)
+    regions = {}        # region_word -> (sub_source, snippet)
+    ocean = []          # (sub_source, snippet)
     for sub, text in sources:
         if not text:
             continue
         # demonym
         for (k, v), snips in _word_boundary_find(text, DEMONYM).items():
             for s in snips:
-                countries.setdefault(v, []).append((sub, s, "rule_demonym"))
+                countries.setdefault(v, []).append((sub, s, "rule_demonym", k))
         # place
         for (k, v), snips in _word_boundary_find(text, PLACE).items():
             for s in snips:
-                countries.setdefault(v, []).append((sub, s, "rule_place"))
+                countries.setdefault(v, []).append((sub, s, "rule_place", k))
         # region
         for (k, _v), snips in _word_boundary_find(text, {r: None for r in REGION}).items():
             for s in snips:
@@ -481,51 +485,43 @@ def infer_country(sources):
 
     if countries:
         vals = sorted(countries.keys())
-        # confidence：有任何匹配处于采集上下文 → high，否则 medium
-        has_ctx = any(
-            _ctx_reliable(s, None)
-            for c in vals
-            for _sub, s, _m in countries[c]
-        )
-        rep_sub, rep_snip, rep_method = countries[vals[0]][0]
-        reli = _reliability(rep_sub, rep_snip)
-        conf = "high" if has_ctx else "medium"
-        method = "rule_multi_country" if len(vals) > 1 else rep_method
-        # 拼接 evidence（每国一个片段）
-        ev_bits = []
+        value_list, conf_list, src_list, method_list, ev_list, tok_list = [], [], [], [], [], []
         for c in vals:
-            sub, s, _m = countries[c][0]
-            ev_bits.append(f"[{c}|{sub}] …{s}…")
+            hits = countries[c]
+            sub, s, m, tok = hits[0]
+            value_list.append(c)
+            conf_list.append("high" if any(_ctx_reliable(s2, None) for _, s2, _, _ in hits) else "medium")
+            src_list.append(source_of(sub))
+            method_list.append(m)
+            ev_list.append({"value": c, "sub_source": sub, "snippet": s})
+            tok_list.append(sorted(set(t for _, _, _, t in hits)))
         return {
-            "value": vals,
-            "confidence": conf,
-            "content_reliability": reli,
-            "source": source_of(rep_sub),
-            "method": method,
-            "evidence": " ; ".join(ev_bits)[:400],
-            "matched_tokens": vals,
+            "value": value_list,
+            "confidence": conf_list,
+            "source": src_list,
+            "method": method_list,
+            "evidence": ev_list,
+            "matched_tokens": tok_list,
         }
     if ocean and not regions:
         sub0, s0 = ocean[0]
         return {
-            "value": "NotCountry",
-            "confidence": "NotCountry",
-            "content_reliability": "high",
-            "source": source_of(sub0),
-            "method": "rule_open_ocean",
-            "evidence": " ; ".join(f"[{sub}] …{s}…" for sub, s in ocean)[:300],
-            "matched_tokens": ["open_ocean"],
+            "value": ["NotCountry"],
+            "confidence": ["NotCountry"],
+            "source": [source_of(sub0)],
+            "method": ["rule_open_ocean"],
+            "evidence": [{"value": "NotCountry", "sub_source": sub, "snippet": s} for sub, s in ocean],
+            "matched_tokens": [["open_ocean"]],
         }
     if regions:
-        rep_sub = next(iter(regions.values()))[0]
+        rks = sorted(regions.keys())
         return {
-            "value": sorted(regions.keys()),
-            "confidence": "medium",
-            "content_reliability": "medium",
-            "source": source_of(rep_sub),
-            "method": "rule_region",
-            "evidence": " ; ".join(f"[{k}|{sub}] …{s}…" for k, (sub, s) in regions.items())[:300],
-            "matched_tokens": sorted(regions.keys()),
+            "value": rks,
+            "confidence": ["medium"] * len(rks),
+            "source": [source_of(regions[k][0]) for k in rks],
+            "method": ["rule_region"] * len(rks),
+            "evidence": [{"value": k, "sub_source": regions[k][0], "snippet": regions[k][1]} for k in rks],
+            "matched_tokens": [[k] for k in rks],
         }
     return None
 
@@ -614,76 +610,91 @@ def infer_host(sources):
 
     human_present = bool(hit_human)
     animal_word = hit_animal[0][3] if hit_animal else None
-    animal_species = hit_animal[0][2] if hit_animal else None
-    site_word = hit_site[0][2] if hit_site else None
-    env_word = hit_env[0][2] if hit_env else None
-    soft_word = hit_soft[0][2] if hit_soft else None
-
-    matched = []
-    for _, _, w in hit_human:
-        matched.append(w)
-    for _, _, _, w in hit_animal:
-        matched.append(w)
-    for _, _, w in hit_site:
-        matched.append(w)
-    for _, _, w in hit_env:
-        matched.append(w)
-    if soft_word:
-        matched.append(soft_word)
-
+    # 肠道类 site 词（animal + 肠道 -> "X gut metagenome" 组合判定用）
     GUT_SITE = ("gut", "fecal", "faeces", "stool", "feces", "intestinal",
                 "intestine", "colorectal", "colon")
+    # 整段是否含 HOST_CTX 共存词（soft 俗名触发门槛）
     ctx_present = any(any(w in _norm(t) for w in HOST_CTX) for _, t in sources)
 
-    value, method = None, None
-    if site_word:
-        entry = HOST_SITE[site_word]
+    # 收集所有可能的值（不再只取每类第一个命中）
+    all_vals = []  # list of (value, method, sub, snip, token)
+
+    # 1. site 命中（human/animal 参与组合，每个 site 词一个值）
+    for s_sub, s_snip, s_w in hit_site:
+        entry = HOST_SITE[s_w]
         generic, human_name = entry[0], entry[1]
         require_human = entry[2] if len(entry) > 2 else False
         if human_present and human_name:
-            value, method = human_name, "rule_host_human"
-        elif (animal_word and site_word in GUT_SITE
+            all_vals.append((human_name, "rule_host_human", s_sub, s_snip, s_w))
+        elif (animal_word and s_w in GUT_SITE
               and animal_word in ANIMAL_GUT_NAME):
-            value, method = ANIMAL_GUT_NAME[animal_word], "rule_host_animal"
+            all_vals.append((ANIMAL_GUT_NAME[animal_word], "rule_host_animal", s_sub, s_snip, s_w))
         elif generic and not require_human:
-            method = "rule_host_human" if human_present else "rule_host_env"
-            value, method = generic, method
+            m = "rule_host_human" if human_present else "rule_host_env"
+            all_vals.append((generic, m, s_sub, s_snip, s_w))
         # require_human 且无人源触发 -> 不妄判，留空
-    if value is None:
+
+    # 2. human / animal（无 site 时独立生成）
+    if not hit_site:
         if human_present:
-            value, method = "Homo sapiens", "rule_host_human"
-        elif animal_species:
-            value, method = animal_species, "rule_host_animal"
-        elif env_word:
-            value, method = HOST_ENV[env_word], "rule_host_env"
-        elif soft_word and ctx_present:
-            value, method = HOST_ANIMAL_SOFT[soft_word], "rule_host_soft"
+            for h_sub, h_snip, h_w in hit_human:
+                all_vals.append(("Homo sapiens", "rule_host_human", h_sub, h_snip, h_w))
+        for a_sub, a_snip, a_species, a_word in hit_animal:
+            all_vals.append((a_species, "rule_host_animal", a_sub, a_snip, a_word))
 
-    if value is None:
+    # 3. env（每个 env 词一个值，无论有无 site）
+    for e_sub, e_snip, e_word in hit_env:
+        all_vals.append((HOST_ENV[e_word], "rule_host_env", e_sub, e_snip, e_word))
+
+    # 4. soft
+    if ctx_present:
+        for s_sub, s_snip, s_word in hit_soft:
+            all_vals.append((HOST_ANIMAL_SOFT[s_word], "rule_host_soft", s_sub, s_snip, s_word))
+
+    if not all_vals:
         return None
 
-    rep = next((x[0] for x in (hit_site, hit_human, hit_animal, hit_env, hit_soft) if x), None)
-    if rep is None:
-        return None
-    sub, snip = rep[0], rep[1]
-    rec = _host_rec(value, "medium", sub, snip, method, matched)
-    if is_high_evidence(value, method, rec["evidence"]):
-        rec["confidence"] = "high"
-    if method == "rule_host_soft":
-        rec["needs_review"] = True
-    return rec
+    # 去重（按 value）
+    seen = set()
+    unique_vals = []
+    for v, m, s, sn, tok in all_vals:
+        if v not in seen:
+            seen.add(v)
+            unique_vals.append((v, m, s, sn, tok))
 
+    # 全部列表化，与 value 逐值对齐
+    value_list, conf_list, tax_conf_list, src_list, method_list, ev_list, tok_list = [], [], [], [], [], [], []
+    for v, m, s, sn, tok in unique_vals:
+        value_list.append(v)
+        # confidence：采集上下文（与 country/date 一致，看 CTX_SAMPLE）
+        conf_list.append("high" if _ctx_reliable(sn, None) else "medium")
+        # tax_confidence：证据窗口强共现（host 专属，看 is_high_evidence）
+        if m == "rule_host_soft":
+            tax_conf_list.append("medium")
+        elif is_high_evidence(v, m, sn):
+            tax_conf_list.append("high")
+        else:
+            tax_conf_list.append("medium")
+        src_list.append(source_of(s))
+        method_list.append(m)
+        ev_list.append({"value": v, "sub_source": s, "snippet": sn})
+        tok_list.append([tok])
 
-def _host_rec(value, conf, sub, snip, method, tokens):
-    return {
-        "value": value,
-        "confidence": conf,
-        "content_reliability": _reliability(sub, snip),
-        "source": source_of(sub),
-        "method": method,
-        "evidence": f"[{sub}] …{snip}…",
-        "matched_tokens": tokens,
+    rec = {
+        "value": value_list,
+        "confidence": conf_list,
+        "tax_confidence": tax_conf_list,
+        "source": src_list,
+        "method": method_list,
+        "evidence": ev_list,
+        "matched_tokens": tok_list,
     }
+
+    # soft → needs_review
+    if any(m == "rule_host_soft" for _, m, _, _, _ in unique_vals):
+        rec["needs_review"] = True
+
+    return rec
 
 
 def infer_date(sources):
@@ -697,22 +708,30 @@ def infer_date(sources):
                 years.append((y, sub, text[max(0, m.start() - 30): m.end() + 30].strip()))
     if not years:
         return None
-    ys = sorted(set(y for y, _, _ in years))
-    rep_sub, rep_snip = years[0][1], years[0][2]
-    if len(ys) >= 2 and max(ys) - min(ys) >= 2:
-        val = f"{min(ys)}-{max(ys)}"
-        method = "rule_date_range"
-    else:
-        val = str(ys[0])
-        method = "rule_date_year"
+    # 按年份去重（每年保留第一个命中）
+    year_best = {}
+    for y, sub, snip in years:
+        if y not in year_best:
+            year_best[y] = (sub, snip)
+    ys = sorted(year_best.keys())
+    val = [str(y) for y in ys]
+    method = "rule_date"
+    # 全部列表化，与 value 逐值对齐
+    conf_list, src_list, method_list, ev_list, tok_list = [], [], [], [], []
+    for y in ys:
+        sub, snip = year_best[y]
+        conf_list.append("high" if _ctx_reliable(snip, None) else "medium")
+        src_list.append(source_of(sub))
+        method_list.append(method)
+        ev_list.append({"value": str(y), "sub_source": sub, "snippet": snip})
+        tok_list.append([str(y)])
     return {
         "value": val,
-        "confidence": "high",
-        "content_reliability": _reliability(rep_sub, rep_snip),
-        "source": source_of(rep_sub),
-        "method": method,
-        "evidence": f"[{rep_sub}] …{rep_snip}…",
-        "matched_tokens": [str(y) for y in ys],
+        "confidence": conf_list,
+        "source": src_list,
+        "method": method_list,
+        "evidence": ev_list,
+        "matched_tokens": tok_list,
     }
 
 
@@ -752,17 +771,19 @@ def build_sources(acc, meta, lit):
 
 
 def blank_record(acc, field):
-    return {
+    rec = {
         "project_accession": acc,
         "field": field,
         "value": None,
-        "confidence": "unknown",
-        "content_reliability": None,
-        "source": None,
-        "method": "none",
-        "evidence": "",
+        "confidence": ["unknown"],
+        "source": [None],
+        "method": ["none"],
+        "evidence": [],
         "matched_tokens": [],
     }
+    if field == "host":
+        rec["tax_confidence"] = ["unknown"]
+    return rec
 
 
 def main():
@@ -803,7 +824,7 @@ def main():
             if r:
                 rec.update(r)
             out_files[f].write(json.dumps(rec, ensure_ascii=False) + "\n")
-            stats[f][rec["confidence"]] = stats[f].get(rec["confidence"], 0) + 1
+            stats[f][_top_conf(rec["confidence"])] = stats[f].get(_top_conf(rec["confidence"]), 0) + 1
 
     for f in fields:
         out_files[f].close()

@@ -9,7 +9,7 @@
   - 会话内不报告任何结果，只落盘（防上下文膨胀）。
 
 阶段：
-  batch   抽取 §3.1 残差（content_reliability != high 或 value=unknown/null），
+  batch   抽取 §3.1 残差（confidence 列表空 或 任一值非 high），
           组装 evidence_text，写入 agent_residual_<field>.jsonl；
           对话里只打印摘要（数量 / 文件路径 / 已完成跳过数），不打印 evidence。
           支持断点续跑：已完成集合（ena_llm_infer_<field>.jsonl + agent_llm_<field>.jsonl
@@ -21,9 +21,10 @@
 
 约定：
   - 代理判定文件 agent_llm_<field>.jsonl 每行一条：
-      {"project_accession","field","value","confidence","content_reliability","source","method":"llm_agent","note"}
-    value: 国名(str)/国名列表(list)/NotCountry(str)/年(str)/宿主(str)/null(无法判断)
-    confidence: high|medium|low|unknown|NotCountry
+      {"project_accession","field","value","confidence","source","method","note"}
+    value/confidence/source/method 均为列表、逐值对齐；host 另含 tax_confidence 列表。
+    value: 国名列表/NotCountry/年列表/宿主列表/null(无法判断)
+    confidence: 逐值 high|medium|low|unknown|NotCountry
   - 本脚本只读输入、不改任何源文件；所有产物落在 --out-dir（默认 .tmp）。
 """
 import os
@@ -86,16 +87,19 @@ def load_literature(path):
 # ---- 残差判定 -------------------------------------------------------------
 
 def is_residual(rec):
-    """§3.2 路由：仅 country/host 进残差；content_reliability 不足（!=high）或 value 未知 → 残差。"""
+    """§3.2 路由：仅 country/host 进残差。
+    confidence 列表为空（规则没抓到值）→ 进；任一值非 high → 进；全部 high → 不进。
+    rec is None → 不进（3.1 应全量跑，若 None 需重跑 3.1）。"""
     if rec is None:
-        return True
+        return False
     if rec.get("field") not in ("country", "host"):
         return False
-    if rec.get("value") in (None, "unknown", []):
+    conf_list = rec.get("confidence", [])
+    if isinstance(conf_list, str):  # 兼容旧单值格式
+        conf_list = [conf_list]
+    if not conf_list:
         return True
-    if rec.get("content_reliability") != "high":
-        return True
-    return False
+    return any(c != "high" for c in conf_list)
 
 # ---- evidence 组装 --------------------------------------------------------
 
@@ -122,10 +126,16 @@ def build_evidence(acc, study_meta, lit_rec, infer_rec, cap_desc=2000, cap_abs=1
                 parts.append(f"[lit_abstract] {ab[:cap_abs]}")
     # §3.1 基线（供 LLM 参考：规则找到了什么、为什么没升 high）
     if infer_rec and infer_rec.get("method") not in (None, "none"):
-        rp = (f"method={infer_rec.get('method')} | value={infer_rec.get('value')} "
-              f"| content_reliability={infer_rec.get('content_reliability')} "
+        rp = (f"value={infer_rec.get('value')} "
+              f"| confidence={infer_rec.get('confidence')} "
+              f"| method={infer_rec.get('method')} "
               f"| matched={infer_rec.get('matched_tokens')}")
         parts.append(f"[rule_partial] {rp}")
+        # 逐值证据（供 LLM 逐值判定 confidence）
+        ev_list = infer_rec.get("evidence")
+        if isinstance(ev_list, list):
+            for ev in ev_list:
+                parts.append(f"[rule_evidence] value={ev.get('value')} | src={ev.get('sub_source')} | {ev.get('snippet')}")
     return "\n".join(parts)
 
 # ---- 阶段：batch ----------------------------------------------------------
@@ -165,6 +175,9 @@ def phase_batch(args):
             skipped_none += 1
             continue
         rec = infer.get(acc)
+        if rec is None:
+            _replan_log(f"WARNING: {acc} missing from {field}_infer.jsonl — rerun §3.1")
+            continue
         if not is_residual(rec):
             continue
         ev = build_evidence(acc, study_meta, lit.get(acc), rec)
@@ -174,7 +187,6 @@ def phase_batch(args):
             "rule_partial": {
                 "value": (rec or {}).get("value"),
                 "confidence": (rec or {}).get("confidence"),
-                "content_reliability": (rec or {}).get("content_reliability"),
                 "source": (rec or {}).get("source"),
                 "method": (rec or {}).get("method"),
                 "matched_tokens": (rec or {}).get("matched_tokens"),
@@ -199,22 +211,18 @@ def phase_batch(args):
 # ---- 阶段：merge ----------------------------------------------------------
 
 def _normalize(rec, field):
-    """校验/补全代理判定记录，强制 method=llm_agent。"""
+    """校验/补全代理判定记录。value/confidence/source/method 均为列表，逐值对齐。"""
     out = {
         "project_accession": rec["project_accession"],
         "field": rec.get("field", field),
         "value": rec.get("value"),
         "confidence": rec.get("confidence"),
-        "content_reliability": rec.get("content_reliability"),
-        "source": rec.get("source", "study_meta"),
-        "method": "llm_agent",
+        "source": rec.get("source"),
+        "method": rec.get("method"),
         "note": rec.get("note", ""),
     }
-    # content_reliability 缺省由 confidence 推导
-    if out["content_reliability"] in (None, ""):
-        c = out["confidence"]
-        out["content_reliability"] = {"high": "high", "medium": "medium",
-                                      "low": "low", "NotCountry": "high"}.get(c, None)
+    if out["field"] == "host":
+        out["tax_confidence"] = rec.get("tax_confidence")
     return out
 
 def phase_merge(args):

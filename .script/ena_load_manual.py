@@ -21,11 +21,10 @@ Schema of each object in manual_check_<field>.json:
   field               str   (required) country | date | host  (MUST match filename field)
   value               list  (required) e.g. ["Gambia"] or ["Indonesia","Fiji"];
                                  for date: ["2019"]; for host: ["soil"]
-  confidence          str   (required) manual entries are forced "high"
-  source              str   (required) "manual"
-  method              str   (required) "manual"
-  content_reliability str   (optional) "high" (direct) | "medium"
-                                 (institution_inferred, weaker); axis-A label
+  confidence          list  (required) manual entries forced ["high"]*len(value)
+  source              list  (required) ["manual"]*len(value)
+  method              list  (required) ["manual"]*len(value)
+  tax_confidence      list  (optional, host only) forced ["high"]*len(value)
   evidence_basis      str   (optional) "direct" | "institution_inferred"
   note                str   (optional) English evidence chain (provenance)
 
@@ -100,10 +99,13 @@ def main():
                 raise SystemExit(f"{p}[{i}] field={o['field']!r} != filename field {fld!r}")
             if not isinstance(o["value"], list):
                 o["value"] = [o["value"]]
-            # normalize optional fields
-            o.setdefault("source", "manual")
-            o.setdefault("method", "manual")
-            o.setdefault("content_reliability", "high")
+            n = len(o["value"])
+            # normalize：value/confidence/source/method 全部列表化、与 value 逐值对齐
+            o["confidence"] = ["high"] * n
+            o["source"] = ["manual"] * n
+            o["method"] = ["manual"] * n
+            if fld == "host":
+                o["tax_confidence"] = ["high"] * n
             o.setdefault("evidence_basis", "direct")
             acc = o["project_accession"]
             if acc in by_field[fld]:

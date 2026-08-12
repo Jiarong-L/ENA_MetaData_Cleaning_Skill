@@ -60,6 +60,24 @@ def src_rank(method):
 def conf_tier(c):
     return CONF_TIER.get(c, 3)  # 未知置信度按 unknown 兜底
 
+def _rep_conf(rec):
+    """从 confidence 列表中取最高值用于排序（兼容旧单值 str）。"""
+    conf_list = rec.get("confidence", [])
+    if isinstance(conf_list, str):
+        return conf_list
+    if not conf_list:
+        return "unknown"
+    return min(conf_list, key=lambda c: CONF_TIER.get(c, 3))
+
+def _rep_method(rec):
+    """从 method 列表中取最高 rank 用于排序（兼容旧单值 str）。"""
+    method_list = rec.get("method", [])
+    if isinstance(method_list, str):
+        return method_list
+    if not method_list:
+        return "unknown"
+    return min(method_list, key=lambda m: src_rank(m))
+
 def load_jsonl(path):
     recs = {}
     if not os.path.exists(path):
@@ -98,7 +116,7 @@ def merge_field(field, out_dir):
             continue
 
         def key(r):
-            return (conf_tier(r.get("confidence")), src_rank(r.get("method")))
+            return (conf_tier(_rep_conf(r)), src_rank(_rep_method(r)))
 
         ranked = sorted(cands, key=key)
         winner = ranked[0]
@@ -112,33 +130,43 @@ def merge_field(field, out_dir):
             how = "axis_B"
         stats["resolved_by"][how] += 1
 
-        conf = winner.get("confidence")
+        rep_c = _rep_conf(winner)
         val = winner.get("value")
-        # 仅有 unknown（无任何信号）→ value 置 null
-        if conf_tier(conf) == 3:  # unknown tier
+        if conf_tier(rep_c) == 3:  # unknown tier
             val = None
-            conf = "unknown"
-            cr = None
+            conf = ["unknown"]
         else:
-            cr = winner.get("content_reliability")
+            conf = winner.get("confidence", [])
+
+        # note：优先 note 字段，否则从 evidence 列表拼接
+        note = winner.get("note")
+        if not note:
+            ev = winner.get("evidence")
+            if isinstance(ev, str):
+                note = ev
+            elif isinstance(ev, list):
+                note = " ; ".join(f"[{e.get('value')}|{e.get('sub_source')}] {e.get('snippet')}" for e in ev)
+            else:
+                note = ""
 
         out = {
             "project_accession": acc,
             "field": field,
             "value": val,
             "confidence": conf,
-            "content_reliability": cr,
             "source": winner.get("source"),
             "method": winner.get("method"),
             "evidence_basis": winner.get("evidence_basis"),
-            "note": winner.get("note") or winner.get("evidence") or "",
+            "note": note,
             "n_candidates": len(cands),
             "won_by": how,
         }
+        if field == "host":
+            out["tax_confidence"] = winner.get("tax_confidence")
         final.append(out)
-        stats["by_confidence"][conf] += 1
-        stats["by_method"][winner.get("method")] += 1
-        if conf == "unknown":
+        stats["by_confidence"][rep_c] += 1
+        stats["by_method"][_rep_method(winner)] += 1
+        if rep_c == "unknown":
             stats["truly_unknown"] += 1
 
     outp = os.path.join(out_dir, f"final_{field}.jsonl")

@@ -5,7 +5,7 @@
 
 ## 路径设置 
 
-先约定，本流程以 `./` 为根目录：脚本放在 `.script/` 中，用户补判资源（manual_check_*.json）放在 `.manual/`，稳定复用资源（taxid_type.tsv）放在 `.reuse/`，运行日志放在 `.log/`，其它一切中间流程产物放在 `.tmp/`。脚本通过 `ROOT = 父目录/.` 解析这些目录，不依赖 `.` 之外的文件。 
+先约定，本流程以 `./` 为根目录：脚本放在 `.script/` 中，用户补判资源（manual_check_*.json）放在 `.manual/`，稳定复用资源（taxid_type.tsv）放在 `.reuse/`，运行日志放在 `.log/`，其它一切中间流程产物放在 `.tmp/`。脚本通过 `ROOT = 父目录/.` 解析这些目录，不依赖 `.` 之外的文件。  
 
 ## 步骤 1 
 
@@ -52,7 +52,7 @@
 参考两个 INFERENCE_METHOD 里的规则和坑，生成我们自己的 INFERENCE_METHOD ，根据我的指示改
 
 1. 用规则 + 字典从文本推出 `country` / `date` / `host` 等信息。对于每一个推断的值，
-    - 记录 `confidence`（上下文含有采集关键词：high/medium）+ `source`（文本来源：study_meta/literature）。对于 `host` 额外 `tax_confidence`（taxa关键词是否都在文本中：high/medium）
+    - 记录 `confidence`（上下文含有采集关键词：high/medium）+ `source`（文本来源：study_meta/literature）。对于 `host` 额外 `tax_confidence`（taxa 关键词是否在同一条 evidence 片段 ±30 字窗口内强共现：high/medium）
     - 记录相关上下文，作为推断的evidence
 
 2. 对于规则判断结果中质量不佳者（从 `confidence` 列表判定。仅 country/host；date 豁免），人工（LLM）阅读 evidence_text，并且回答[xx]信息的值（或依旧无法判断）。强调一下：要的是你（WorkBuddy 代理，本身就是 LLM）直接读 evidence 并推断，不走外部 API。具体来说：用脚本把 evidence 打印你、你一条条读、一条条判，再写入结果文件；**跑的时候注意上下文长度、自动清理，会话里不用报告任何结果（防止上下文过长）、只要保存结果即可 ----- 如果需要判定的量非常大，尝试开 sub agents 加速**
@@ -66,47 +66,55 @@
 ```bash
 infer_host(sources)
 │
-│  sources = [study_title, study_description, literature_title, literature_abstract]
-│
-├─ 1. 对每段文本，用 5 类词表匹配（_find_words，词边界+可选复数 s?）
-│   ├─ HOST_HUMAN_TRIGGER  → hit_human[]   # "human", "patient", ...
-│   ├─ HOST_ANIMAL         → hit_animal[]  # "cattle"→Bos taurus, ...
-│   ├─ HOST_ENV            → hit_env[]     # "soil"→soil metagenome, ...
-│   ├─ HOST_SITE           → hit_site[]    # "gut", "oral", "lung"(require_human), ...
-│   └─ HOST_ANIMAL_SOFT    → hit_soft[]    # "monkey", "shrimp", ...
-│
-├─ 2. 组合规则，生成所有可能的值（遍历所有命中）
+├─ 0. 扫描所有文本，五类词表命中
+│   │   ├─ HOST_HUMAN_TRIGGER（human/homo sapiens…）   → hit_human
+│   │   ├─ HOST_ANIMAL（动物俗名→物种 bos taurus/cow…）→ hit_animal
+│   │   ├─ HOST_ENV（生境 soil/marine/sediment…）      → hit_env
+│   │   ├─ HOST_SITE（部位 gut/oral/skin/fecal…）      → hit_site
+│   │   └─ HOST_ANIMAL_SOFT（俗名 昆虫/灵长…）         → hit_soft
 │   │
-│   ├─ site 命中（逐 site 词）
-│   │   ├─ human + site → "human X metagenome"       # rule_host_human
-│   │   ├─ animal + gut site → "X gut metagenome"    # rule_host_animal
-│   │   └─ site only → "X metagenome"                # rule_host_env
+│   ├─ human_present = 有 hit_human？
+│   ├─ animal_word   = 首个动物俗名
+│   ├─ GUT_SITE      = 肠道类 site 词集合
+│   └─ ctx_present   = 整段是否含 HOST_CTX 共存词（soft 门槛）
+│
+├─ 1. site 命中组合（每个 site 词一个候选值）
+│   │   ├─ 有人源 + 该 site 有 human_name → "human X metagenome" (rule_host_human)
+│   │   ├─ 否则：动物俗名 + site∈GUT_SITE + 动物∈ANIMAL_GUT_NAME
+│   │   │        → "X gut metagenome" (rule_host_animal)
+│   │   ├─ 否则：generic 且非 require_human → "X metagenome"
+│   │   │        （有人源→rule_host_human，无→rule_host_env）
+│   │   └─ require_human 但无人源 → 不妄判，跳过（留 §3.2）
 │   │
-│   ├─ human 独立（无 site 时）→ "Homo sapiens"
-│   ├─ animal 独立（无 site 时，逐动物）→ "Bos taurus", ...
-│   ├─ env（逐 env 词）→ "soil metagenome", "aquatic metagenome", ...
-│   └─ soft（须整段含 HOST_CTX）→ "monkey", "shrimp", ...
+├─ 2. 无 site 时，human/animal 独立成值（仅当 hit_site 为空）
+│   │   ├─ 有人源 → "Homo sapiens" (rule_host_human)
+│   │   └─ 每个动物 → 物种 scientific_name (rule_host_animal)
+│   │
+├─ 3. env 命中（每个 env 词一个值，与 site 无关）
+│   │   对每个 hit_env → "X metagenome" (rule_host_env)
+│   │
+├─ 4. soft 命中（仅当 ctx_present）
+│   │   对每个 hit_soft → 俗名值 (rule_host_soft，待 §3.2 精炼)
+│   │
+├─ 5. all_vals 空 → return None（交 blank_record / §3.2 补漏）
 │
-├─ 3. 去重 → unique_vals
+├─ 6. 按 value 去重 → unique_vals
 │
-├─ 4. 逐值 confidence（列表，与 value 对齐）：
-│   │   对每个值 v（及其命中片段 snippet）：
-│   │   ├─ confidence：snippet 含 CTX_SAMPLE（collected/sampled/...）→ "high"；否则 "medium"
-│   │   ├─ tax_confidence（仅 host）：
-│   │   │   ├─ method=rule_host_soft → 恒 "medium"
-│   │   │   ├─ is_high_evidence(v, method, snippet)：
-│   │   │   │   ├─ 规则1：三字名 host词+site词同在 → high
-│   │   │   │   ├─ 规则2：二字名 两词同在 → high
-│   │   │   │   └─ 拉丁二名法（Bos taurus）→ 恒 medium
-│   │   │   └─ 不满足 → medium
-│   │   conf_list = ["high", "medium"]
-│   │   tax_list  = ["high", "medium"]
-│   │   method（列表）：逐值 method；多值可取 "rule_multi_host" 兜底
-│   │   evidence = [ {"value":...,"sub_source":...,"snippet":...}, ... ]
-│   │   含 soft → needs_review=True
-│   └─ 返回 rec
-│
-└─ 无命中 → None
+└─ 7. 逐值组装（与 value 对齐）
+    │   对每个值 v（及其 method/snippet）：
+    │   ├─ confidence:     snippet 含 CTX_SAMPLE？ high : medium
+    │   ├─ tax_confidence: method=rule_host_soft → 恒 medium
+    │   │                  is_high_evidence(v,method,snippet)？
+    │   │                    ├─ 三字名 host词+site词同窗 → high
+    │   │                    ├─ 二字名 两词同窗           → high
+    │   │                    └─ 拉丁二名法/不满足         → medium
+    │   ├─ source:         study_meta / literature
+    │   ├─ method:         rule_host_human/animal/env/soft（逐值，无 rule_multi_host）
+    │   ├─ evidence:       {"value":v, …}
+    │   └─ matched_tokens: [命中词]
+    │
+    └─ 含 rule_host_soft → needs_review=True
+       返回 rec
 ```
 
 
@@ -116,35 +124,27 @@ infer_host(sources)
 ```bash
 infer_date(sources)
 │
-│  sources = [study_title, study_description, literature_title, literature_abstract]
+├─ 1. 扫描所有文本，正则找 4 位年份（限 1900<=y<=2100）
+│   │   对每个 (sub_source, text)：
+│   │   YEAR_RE 命中 → years.append((年份, sub, snippet±30字))
+│   └─ 无命中 → return None（交 blank_record / §3.2 补漏）
 │
-├─ 1. 对每段文本，YEAR_RE 抓所有 1900-2099 的 4 位数
-│   │   每个命中记录 (年份, sub_source, ±30字片段)
-│   │   按年份去重（每年保留第一个命中）
-│   │
-│   └─ 无命中 → None（unknown）
+├─ 2. 按年份去重（year_best：每年保留第一个命中片段）
+│   ys = 排序后的唯一年份列表
 │
-├─ 2. 汇总
-│   │   ys = sorted(去重年份)        # [2018, 2020]
-│   │   val = ["2018", "2020"]       # 年列表
-│   │   method: 单年→rule_date_year  多年→rule_date_range
-│   │
-│   │   逐值 confidence（列表）：对每个值 v（及其命中片段 snippet）
-│   │   ：
-│   │   ├─ confidence：snippet 含 CTX_SAMPLE（collected/sampled/...）→ "high"；否则 "medium"
-│   │   └─ conf_list = ["high", "medium"]
-│   │   method（列表）：单年→["rule_date_year"]  多年→["rule_date_range"]
-│   │
-│   │   记录级 confidence = "high"（有年份一律 high，不受 value_confidence 影响）
-│   │
-│   │   evidence = [                          # 结构化列表，每年一段
-│   │       {"value":"2018", "sub_source":"study_title", "snippet":"…collected in 2018…"},
-│   │       {"value":"2074", "sub_source":"literature_abstract", "snippet":"…2074 genera…"}
-│   │   ]
-│   │
-│   └─ 返回 rec
-│
-└─ 返回 rec 或 None
+└─ 3. 逐值组装（每年一个值，与 value 对齐）
+    │   method 固定 "rule_date"（所有年份同，不再分单年/范围）
+    │   对每个年份 y：
+    │   ├─ value:          str(y)
+    │   ├─ confidence:     该年片段含 CTX_SAMPLE？ high : medium
+    │   │                  "samples collected in 2018" → high
+    │   │                  "2074 genera constituted"   → medium
+    │   ├─ source:         study_meta / literature
+    │   ├─ method:         "rule_date"
+    │   ├─ evidence:       {"value":y, "sub_source":…, "snippet":…}
+    │   └─ matched_tokens: [str(y)]
+    │
+    └─ 返回 rec（date 豁免 §3.2，不进残差）
 ```
 
 
@@ -153,50 +153,39 @@ infer_date(sources)
 ```bash
 infer_country(sources)
 │
-│  sources = [study_title, study_description, literature_title, literature_abstract]
-│
-├─ 1. 对每段文本，用 4 类词表匹配（_word_boundary_find，词边界）
-│   ├─ DEMONYM    → 国籍形容词→国     # "american"→United States
-│   ├─ PLACE      → 地名/国名→国      # "beijing"→China, "germany"→Germany
-│   ├─ REGION     → 区域词            # "europe", "pacific"
-│   └─ OPEN_OCEAN → 公海/深海         # "open ocean", "abyssal"
-│
-├─ 2. 汇总判定（优先级：countries > ocean > regions）
+├─ 1. 扫描所有文本，四类词表分别命中
+│   │   对每个 (sub_source, text)：
+│   │   ├─ DEMONYM（居民/形容词 cypriot→Cyprus）→ countries[v] += rule_demonym
+│   │   ├─ PLACE（国名/地名 cyprus→Cyprus）     → countries[v] += rule_place
+│   │   ├─ REGION（区域词 europe/pacific）       → regions[word]
+│   │   └─ OPEN_OCEAN（公海/深海）               → ocean.append(…)
 │   │
-│   ├─ 有国家命中：
-│   │   │   vals = sorted(所有抓到的国家)     # ["Cyprus", "Germany"]
-│   │   │
-│   │   │   逐值 confidence（value_confidence）:
-│   │   │   ├─ 对每个国家 c：检查其命中片段是否含 CTX_SAMPLE 词
-│   │   │   │   "samples collected from Cyprus" → high
-│   │   │   │   "compared to data from Germany" → medium
-│   │   │   └─ per_val_conf = {"Cyprus": "high", "Germany": "medium"}
-│   │   │
-│   │   │   记录级 confidence = 取最高（任一 high → high）
-│   │   │
-│   │   │   method: 单国→rule_demonym/rule_place  多国→rule_multi_country
-│   │   │
-│   │   │   evidence = [                          # 结构化列表，每值一段
-│   │   │       {"value":"Cyprus",  "sub_source":"study_title", "snippet":"…collected…"},
-│   │   │       {"value":"Germany", "sub_source":"literature_abstract", "snippet":"…compared…"}
-│   │   │   ]
-│   │   │
+├─ 2. 分支判定（优先级 countries > ocean > regions > None）
+│   │
+│   ├─【A】countries 非空（最常见）── 逐值组装
+│   │   │   vals = 排序后的国家列表；对每个国家 c：
+│   │   │   ├─ value:          c（规范国名）
+│   │   │   ├─ confidence:     c 任一命中片段含 CTX_SAMPLE？ high : medium
+│   │   │   │                  "collected from Cyprus"         → high
+│   │   │   │                  "compared to data from Germany" → medium
+│   │   │   ├─ source:         study_meta / literature
+│   │   │   ├─ method:         rule_demonym / rule_place（逐值，无 rule_multi_country）
+│   │   │   ├─ evidence:       {"value":c, …}
+│   │   │   └─ matched_tokens: 该国命中原始词集合 [["cyprus","cypriot"]]
 │   │   └─ 返回 rec
 │   │
-│   ├─ 无国家但有公海命中（且无区域词）：
-│   │   └─ value="NotCountry", confidence="NotCountry"（high 否定判定）
-│   │       value_confidence = {"NotCountry": "high"}
+│   ├─【B】countries 空 + ocean 非空 + regions 空 → 公海
+│   │   └─ value=["NotCountry"]  confidence=["NotCountry"]
+│   │       method=["rule_open_ocean"]  matched_tokens=[["open_ocean"]]
 │   │
-│   ├─ 无国家但有区域词：
-│   │   └─ value=["europe","pacific"], confidence=medium
-│   │       value_confidence = {"europe": "medium", "pacific": "medium"}
+│   ├─【C】countries 空 + regions 非空 → 区域词（无法定位到国）
+│   │   └─ value=["europe","pacific"]  confidence=["medium","medium"]
+│   │       method=["rule_region","rule_region"]
 │   │
-│   └─ 无命中 → None（unknown）
-│
-└─ 返回 rec 或 None
+│   └─【D】全空 → return None（交 blank_record / §3.2 补漏）
 ```
 
-### 步骤流程
+### 整体流程
 
 对每个 project_accession，先用规则匹配 （3.1 规则步）
 
