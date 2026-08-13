@@ -26,7 +26,7 @@
 │   ├── ena_load_manual.py    # 步骤 3.3：读 .manual/ 资源落库
 │   └── ena_final_merge.py    # 步骤 3.4：三源合并
 ├── .manual/                  # 用户补判资源（跨项目复用库）
-│   └── manual_check_country.json   # manual_check_*.json（glob；仅 country 已生成 17 条）
+│   └── manual_check_country.json   # manual_check_*.json（glob；N 条，随库更新）
 ├── .reuse/                   # 跨步骤复用、非中间产物的稳定资源
 │   └── taxid_type.tsv        # tax_id → scientific_name/type（步骤 1.2 产出，稳定复用）
 ├── .log/                     # 运行日志
