@@ -364,10 +364,12 @@
   2. LLM 值集合**字面包含于**规则值列表（规则值先剥 `:折射前` 后缀；date 用 XX 通配比较）→ 标 `consistent`；
   3. 否则 → 标 `conflict`，**送 LLM 裁决语义等价**（多数 conflict 是命名/规范差异，如 `Sus scrofa gut metagenome` 不在 `[pig, human, pig metagenome, Sus scrofa]` 但同义）：等价 → 改标 `consistent`（仍取 LLM）；真不同 → 保持 `conflict`；
   4. 可选轻量归一预过滤（去 `metagenome`/部位词/大小写）先滤掉明显规范匹配，残余再送 LLM 裁决。
-- **产物**：`final_<field>.jsonl` + `final_<field>_stats.json`。
+- **产物**：`final_<field>.jsonl` + `final_<field>_stats.json` + `final_conflict_<field>.jsonl`（conflict 裁决队列）。
 - **与 §3.2 reconcile 的关系**：`reconcile` 做规则 × LLM 两源合并（`reconciled_<field>.jsonl`）；本步产出三源终态 `final_<field>.jsonl`（文件名已区分，无覆盖风险）。
 - **字段范围**：`country` / `date` / `host`；**`location` 字段取消**。
-- **脚本**：`ena_final_merge.py`（`--field country|date|host|all`）。**注意**：该脚本当前仍是旧「双轴优先级」实现且读 `agent_llm_<field>.jsonl`（平行架构不产出该文件），需按上述新政策重写后方可使用。
+- **脚本**：`ena_final_merge.py`（`--field country|date|host|all`，两阶段）：
+  - `merge`（默认）：读 `<field>_infer.jsonl`（规则）+ `ena_llm_infer_<field>.jsonl`（LLM）+ `ena_manual_<field>.jsonl`（manual，先跑 `ena_load_manual.py` 落库）→ 写 final + stats + conflict 队列。
+  - `apply-verdicts`：读 LLM 裁决 `final_verdicts_<field>.jsonl`（每行 `{"project_accession","field","equivalent":true|false,"note"}`），把 `equivalent=true` 的 conflict 改标 `consistent`（`consistency_via=llm_adjudicated`），重写 final（首次备份 `final_<field>.pre_verdicts.jsonl`，幂等）。
 - **易错点**：项目级 `location` 生境 ≠ 样本级经纬度坐标，勿互填。
 - **输出 schema（`final_<field>.jsonl`，每行一项目·字段最终裁定）**：
 
@@ -377,7 +379,10 @@
   | `value` / `confidence` / `tax_confidence` / `source` / `method` | 胜者（逐值列表；host 附 tax_confidence 透传） |
   | `evidence_basis` | 仅 manual 有：`direct` / `institution_inferred` |
   | `note` | 胜者证据链 |
-  | `consistency` | `consistent` / `conflict`（规则×LLM 一致性标签；conflict 经 LLM 裁决语义等价后可能改标 consistent） |
+  | `decided_by` | `manual` / `llm_preferred` / `rule_only` |
+  | `consistency` | `manual` / `consistent` / `conflict` / `rule_only` / `llm_only` |
+  | `consistency_via` | `literal` / `light` / `llm_adjudicated` / null |
+  | `n_sources` | 有值的源数量 |
 
   配套 `final_<field>_stats.json`。
 

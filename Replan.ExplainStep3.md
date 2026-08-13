@@ -61,22 +61,28 @@ ena_agent_parallel.py  ── LLM 与规则平行，一次读取判 (country,dat
             → reconciled_<field>.jsonl + review_<field>.jsonl
 ```
 
-完成后，再由 §3.4 final_merge 把 manual 并入成三源终态：
+完成后，再由 §3.4 final_merge 把 manual 并入成三源终态（`ena_final_merge.py`）：
 ```bash
 对每个字段每个项目:
   if manual 有值: final_value = manual 值      # 用户背书，最高档
   else:
       final_value = LLM 值                      # 优先取 LLM
-      if LLM值 ⊆ 规则值(字面, 规则先剥:后缀): label = consistent
+      if LLM值 ⊆ 规则值(字面, 规则先剥:后缀): label = consistent (via=literal)
       else:
-          if LLM值 ⊆ 规则值(轻量归一后): label = consistent   # 可选预过滤
+          if LLM值 ⊆ 规则值(轻量归一后): label = consistent (via=light)   # 预过滤
           else: 送 LLM 裁决
-                  ├ 语义等价 → label = consistent (仍取 LLM)
+                  ├ 语义等价 → label = consistent (via=llm_adjudicated，仍取 LLM)
                   └ 真不同   → label = conflict    (仍取 LLM)
-```
 
-> 注：`ena_final_merge.py` 目前仍是旧「双轴优先级」实现且读 `agent_llm_<field>.jsonl`
-> （平行架构不产出该文件），需按上述政策重写后方可使用。
+仅规则有值 → 取规则值(label=rule_only)；仅 LLM 有值 → label=llm_only；三源均无 → 不写 final
+
+阶段：
+  merge（默认）   三源合并 → final_<field>.jsonl + final_<field>_stats.json
+                 + final_conflict_<field>.jsonl（conflict 裁决队列，供 LLM 读）
+  apply-verdicts  读 final_verdicts_<field>.jsonl（LLM 写的 equivalent=true/false）
+                 → equivalent=true 的 conflict 改标 consistent，重写 final
+                 （首次备份 final_<field>.pre_verdicts.jsonl，幂等）
+```
 
 
 
