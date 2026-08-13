@@ -180,7 +180,7 @@ PLACE = {
     "fiji": "Fiji", "papua new guinea": "Papua New Guinea",
 }
 
-# 公海/深海 -> NotCountry（明确无主权国）
+# 公海/深海 -> NotCountry（明确无主权国）；折射后缀 -> 'NotCountry:命中关键词'（用户定 2026-08-13）
 OPEN_OCEAN = [
     "open ocean", "open-ocean", "high seas", "deep sea", "deep-sea",
     "abyssal", "abyssopelagic", "pelagic", "mid-ocean", "midwaters",
@@ -478,7 +478,7 @@ def infer_country(sources):
     所有字段均为列表，与 value 逐值对齐；无记录级标签。"""
     countries = {}      # norm_country -> list of (sub_source, snippet, method, token)
     regions = {}        # region_word -> (sub_source, snippet)
-    ocean = []          # (sub_source, snippet)
+    ocean = []          # (sub_source, snippet, kw)   # kw=命中的 open-ocean 关键词（折射后缀用）
     for sub, text in sources:
         if not text:
             continue
@@ -496,11 +496,11 @@ def infer_country(sources):
         for (k, _v), snips in _word_boundary_find(text, {r: None for r in REGION}).items():
             for s in snips:
                 regions.setdefault(k, (sub, s))
-        # open ocean
+        # open ocean（折射：NotCountry:命中关键词）
         low = _norm(text)
         for kw in OPEN_OCEAN:
             for m in re.finditer(r"\b" + re.escape(kw) + r"\b", low):
-                ocean.append((sub, text[max(0, m.start() - 30): m.end() + 30].strip()))
+                ocean.append((sub, text[max(0, m.start() - 30): m.end() + 30].strip(), kw))
 
     if countries:
         vals = sorted(countries.keys())
@@ -523,19 +523,23 @@ def infer_country(sources):
             "matched_tokens": tok_list,
         }
     if ocean and not regions:
-        sub0, s0 = ocean[0]
+        sub0, s0, kw0 = ocean[0]
+        ocean_kws = sorted(set(k for _, _, k in ocean))
         return {
-            "value": ["NotCountry"],
+            "value": [_with_orig("NotCountry", kw0)],
             "confidence": ["NotCountry"],
             "source": [source_of(sub0)],
             "method": ["rule_open_ocean"],
-            "evidence": [{"value": "NotCountry", "sub_source": sub, "snippet": s} for sub, s in ocean],
-            "matched_tokens": [["open_ocean"]],
+            "evidence": [{"value": _with_orig("NotCountry", k), "sub_source": sub, "snippet": s} for sub, s, k in ocean],
+            "matched_tokens": [ocean_kws],
         }
     if regions:
         rks = sorted(regions.keys())
+        # region 值即命中词本身（如 pacific）：按 _with_orig 约定 value==token 不加后缀
+        # （与 demonym/soft/国名本身一致）。若要把 europe/european、worldwide/world-wide
+        # 等变体归并出 'Canon:raw' 后缀，需另加 canonical 映射表——属独立改动，未在此做。
         return {
-            "value": rks,
+            "value": [_with_orig(k, k) for k in rks],
             "confidence": ["medium"] * len(rks),
             "source": [source_of(regions[k][0]) for k in rks],
             "method": ["rule_region"] * len(rks),

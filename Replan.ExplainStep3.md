@@ -207,56 +207,13 @@ infer_country(sources)
 │   │   │   └─ matched_tokens: 该值命中原始词集合 [["cyprus","cypriot"]]
 │   │   └─ 返回 rec
 │   │
-│   ├─【B】countries 空 + ocean 非空 + regions 空 → 公海
-│   │   └─ value=["NotCountry"]  confidence=["NotCountry"]
-│   │       method=["rule_open_ocean"]  matched_tokens=[["open_ocean"]]
+│   ├─【B】countries 空 + ocean 非空 + regions 空 → 公海（2026-08-13 起带折射后缀）
+│   │   └─ value=["NotCountry:open ocean"]  confidence=["NotCountry"]
+│   │       method=["rule_open_ocean"]  matched_tokens=[["deep sea","open ocean"]]（实际命中词）
 │   │
 │   ├─【C】countries 空 + regions 非空 → 区域词（无法定位到国）
 │   │   └─ value=["europe","pacific"]  confidence=["medium","medium"]
-│   │       method=["rule_region","rule_region"]
+│   │       method=["rule_region","rule_region"]   ← 走 _with_orig 但 value==命中词→无后缀
 │   │
 │   └─【D】全空 → return None（交 blank_record / §3.2 补漏）
 ```
-
-
-
-
-### 结果文件示意 
-
-产物由 `ena_final_merge.py` 生成 `final_country.jsonl`、`final_date.jsonl`、`final_host.jsonl`（均位于 `.tmp/`）。
-
-
-| # | 字段 | 类型 | 含义 | 示例 |
-|---|---|---|---|---|
-| 1 | `project_accession` | str | 项目编号 | `PRJDB5121` |
-| 2 | `field` | str | 字段名 | `host` / `country` / `date` |
-| 3 | `value` | list[str] | **最终采纳值**（优先 LLM；仅规则单边时带 `:orig` 折射后缀） | `["Homo sapiens"]` / `["Japan:Tokyo"]` / `["2019-03-15"]` |
-| 4 | `confidence` | list[str] | 与 `value` 逐值对齐的置信度，∈ `high/medium/low/unknown` | `["high"]` |
-| 5 | `source` | list[str] | 值的来源系统 | `["llm_agent"]` / `["study_meta"]` |
-| 6 | `method` | list[str] | 具体规则/判定方法 | `["llm_agent"]` / `["rule_host_env"]` |
-| 7 | `evidence_basis` | null/str | 判定依据（当前实现基本为 `null`） | `null` |
-| 8 | `note` | str | 人类可读说明（含 规则值 vs LLM值 对照、裁决理由） | `rule=['gut metagenome','monkey'] vs llm=['paradoxurus hermaphroditus']...` |
-| 9 | `decided_by` | str | 取值决策方 | `llm_preferred` / `rule_only` / `manual` |
-| 10 | `consistency` | str | 规则×LLM 一致性状态，见下 | `consistent` / `conflict` / `rule_only` / `llm_only` / `manual` |
-| 11 | `consistency_via` | str/null | 一致性如何判定 | `literal` / `light` / `llm_adjudicated` / `null` |
-| 12 | `n_sources` | int | 参与比较的来源数（1=单边，2=规则+LLM） | `1` / `2` |
-| **13** | `tax_confidence` | list[str] | **host 专属**：分类学置信度，∈ `high/medium/unknown` | `["high"]` |
-
-
-### `consistency`（5 态）
-- `consistent`：规则与 LLM 值语义等价（字面包含 / 轻量归一 / LLM 裁决通过）。
-- `conflict`：规则与 LLM 实质不同意，值仍取 LLM，待人工复核。
-- `rule_only`：仅规则给值、LLM 无值，无法比较。
-- `llm_only`：仅 LLM 给值、规则无值，无法比较。
-- `manual`：走了 manual 手工值（最高优先）。
-
-### `consistency_via`（仅 consistent 有值；conflict 与单边为 `null`）
-- `literal`：LLM 值字面⊆规则值列表。
-- `light`：轻量归一（host 去 `metagenome`/部位词、小写）后匹配。
-- `llm_adjudicated`：硬冲突送 LLM 裁决，裁定语义等价。
-
-### `decided_by`
-- `llm_preferred`：无 manual 时取 LLM 值（final_merge 政策：优先 LLM）。
-- `rule_only`：仅规则有值。
-- `manual`：manual 值优先。
-

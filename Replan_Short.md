@@ -68,7 +68,7 @@
 1. 用规则 + 字典从文本推出 `country` / `date` / `host` 等信息。对于每一个推断的值，
     - 记录 `confidence`（上下文含有采集关键词：high/medium）+ `source`（文本来源：study_meta/literature）。对于 `host` 额外 `tax_confidence`（taxa 关键词是否在同一条 evidence 片段 ±30 字窗口内强共现：high/medium）
     - 记录相关上下文，作为推断的evidence
-    - **输出值格式（折射保留）**：值 = `映射值:折射前原值`，下游匹配只看冒号前。country 子地名→`Country:Place`（Japan:Tokyo）；date 每年最细粒度 `YYYY-MM-DD`/`YYYY-MM-XX`/`YYYY-XX-XX`；host→`pig gut metagenome:Sus scrofa`（原词已含在值中则不加）
+    - **输出值格式（折射保留）**：值 = `映射值:折射前原值`，下游匹配只看冒号前。country 子地名→`Country:Place`（Japan:Tokyo）；date 每年最细粒度 `YYYY-MM-DD`/`YYYY-MM-XX`/`YYYY-XX-XX`；host→`pig gut metagenome:Sus scrofa`（原词已含在值中则不加）；open_ocean→`NotCountry:命中关键词`（如 `NotCountry:open ocean`），region 值即命中词本身故无后缀（2026-08-13 改，未重跑）
 
 2. LLM 推断：对所有有可信论文的项目，你（WorkBuddy 代理，本身就是 LLM）**一次读入该项目全部 evidence，同判 country/date/host 三字段**，并在同一次读取里**先做论文主题甄别**（不符主题的 high 论文标 `aligned=false`，后续降级 candidate）。LLM 结果写**独立文件**（不覆盖 §3.1 规则输出），两者一致性由 reconcile 核对。
     - 强调：要你直接读 evidence 推断，**不走外部 API**。脚本把 evidence 打印你、你一条条读、一条条判，再写入结果文件；**跑的时候注意上下文长度、自动清理，会话里不用报告任何结果（防止上下文过长）、只要保存结果即可 ----- 如果需要判定的量非常大，尝试开 sub agents 加速**
@@ -80,4 +80,30 @@
 4. 合并：先在 §3.2 内做**规则×LLM reconcile**（比较前规则值剥 `:后缀`、date 用 XX 通配；agree→high；仅一方→取该方；disagree 且置信相当→flag review；disagree 分高低→取高置信方），再由 §3.4 final_merge 把 manual 并入。final_merge：**manual 优先；无 manual 取 LLM 值**；LLM 值字面包含于规则值列表→标 `consistent`，否则标 `conflict` 并送 LLM 裁决语义等价（等价→改标 consistent，仍取 LLM；真不同→保持 conflict）。
 
 > 规则三函数（infer_country/infer_date/infer_host）与 §3.2 四阶段的流程示意见 **auto.explain3.md**。
+
+
+## 步骤 4 Clean metagenomic_wgs.typed.csv 
+
+
+现在，这些 project级 信息可以作为清洗 metagenomic_wgs.typed.csv 的参考
+
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · country · location 至 tmp.country.csv
+
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · collection_date · first_public 至 tmp.date.csv
+
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · type · scientific_name · tax_id · host · host_tax_id 至 tmp.host.csv
+
+
+tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列
+
+tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列
+
+tmp.date.csv，依照 project_accession从 final_date.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列
+
+tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录最早发表的 `high` paper 的时间和title
+
+
+然后，看看 infer 对原表的相应字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突
+
+对于冲突的条目，我们可以返回
 

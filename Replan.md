@@ -227,11 +227,12 @@
 - **脚本**：`.script/ena_infer_31.py`（可复用、参数化路径、自含字典 baseline、只读输入不改动任何文件）。
   - 用法：`python ena_infer_31.py`（默认读 `.tmp/` 下两输入）｜`--fields country,host`｜`--limit N`｜`--only PRJEBxxx`。
   - 输入：§2.1 `project_study_meta.json` + §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
-- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；更大语料中未进字典的宿主落 `unknown`（漏检而非错判），需扩字典或换策略。
+- **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry:命中关键词`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；更大语料中未进字典的宿主落 `unknown`（漏检而非错判），需扩字典或换策略。
 - **输出值格式（折射保留）**：规则值 = `映射值:折射前原值`，仍是逐值列表、单值更详细。**下游一切规则匹配只看冒号前部分**（`_base_val` / `is_high_evidence` 入口剥后缀）：
   - **country**：`rule_place` 命中子地名 → `Country:Place`（`Japan:Tokyo`、`United Kingdom:London`、缩写大写 `United Kingdom:UK`）；命中词即国名本身（china→China）不加后缀；`rule_demonym` 不加。
   - **date**：每年保留最细粒度——完整日期 `YYYY-MM-DD` → 缺日 `YYYY-MM-XX` → 缺月 `YYYY-XX-XX`（`DATE_FULL_RE` / `DATE_YM_RE` / `YEAR_RE`，按粒度 3>2>1 升级）。
   - **host**：`_with_orig(映射值, 原token)`——动物+肠道取 `HOST_ANIMAL` 学名后缀（`pig gut metagenome:Sus scrofa`）；无部位动物 `Sus scrofa:pig`；原词已含在映射值中则不加（`gut metagenome` 无后缀）；`rule_host_soft` 俗名恒等不加。
+  - **open_ocean / region**：`rule_open_ocean` → `NotCountry:命中关键词`（`NotCountry:open ocean`/`NotCountry:deep sea`，value≠命中词故真带后缀）；`rule_region` 同样走 `_with_orig`，但 region 值即命中词本身（`pacific`），value==token 按约定**不加后缀**（同 demonym/soft/国名本身）。若要把 `europe/european`、`worldwide/world-wide` 等变体归并出 `Canon:raw` 后缀，需另加 canonical 映射表（独立改动，未做）。
 - **置信度判定标准**：
   - **country**：匹配到国名且附近有**采集上下文** → `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词 → `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
   - **date**：提取到年份或年份合集 → `high`；无年份 → `unknown`。
