@@ -82,4 +82,34 @@
 > 规则三函数（infer_country/infer_date/infer_host）与 §3.2 四阶段的流程示意见 **auto.explain3.md**。
 
 
+## 步骤 4 Clean metagenomic_wgs.typed.csv 
+
+
+现在，这些 project级 信息可以作为清洗 metagenomic_wgs.typed.csv 的参考
+
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · country · location 至 tmp.country.csv
+
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · collection_date · first_public 至 tmp.date.csv
+
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · type · scientific_name · tax_id · host · host_tax_id 至 tmp.host.csv
+
+
+
+tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，content_reliability，source，method，note） 字段增加相应 ‘infer_[]’ 列
+
+tmp.date.csv，依照 project_accession从 final_date.jsonl 的 （value，confidence，content_reliability，source，method，note） 字段增加相应 ‘infer_[]’ 列
+
+tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，
+
+
+### 4.1  Check country
+
+tmp.country.csv中，对于 raw 中的每一条 Run，我们先看看 country 和 infer_value 有多少同时存在？ infer_value 对 country 的缺失值可以覆盖多少？对于同时存在的run，查看 country 是否被 infer_value 提及或包含？
+
+
+在 tmp.country.csv 加一列 ‘suggested’ （规则：先取 country 填，然后用 infer_value 填）, 加一列 ‘status’ 记录：'varified'(country 被 infer_value 提及或包含), 'conflict'(country值与infer_value有真实冲突), 'infer'(country缺失、数据来自infer_value), 'missing'(country、infer_value 都缺失)
+
+在 tmp.country.csv 加一列 ‘suggested’ 
+
+
 
