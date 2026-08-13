@@ -15,6 +15,7 @@
 ./
 ├── Replan.md                 # 完整方法论
 ├── Replan_Short.md           # 精简版说明
+├── Replan.ExplainStep3.md    # 步骤 3 详解（record 示例 + infer_* 流程示意）
 ├── .script/                  # 所有可复用脚本
 │   ├── ena_fetch_runs.py     # 步骤 1：ENA 数据拉取
 │   ├── ena_taxid_type.py     # 步骤 1.2：tax_id → type/scientific_name 解析
@@ -227,6 +228,10 @@
   - 用法：`python ena_infer_31.py`（默认读 `.tmp/` 下两输入）｜`--fields country,host`｜`--limit N`｜`--only PRJEBxxx`。
   - 输入：§2.1 `project_study_meta.json` + §2.2 `project_literature.jsonl`（仅 `papersource=high` 论文的 title/abstract）。
 - **字典基线**（内建，可继续扩充）：`DEMONYM`（国籍形容词→国）/ `PLACE`（地名+国家全名+缩写→国，含 HK/TW/MO 主权归一）/ `OPEN_OCEAN`（公海/深海→`NotCountry`）/ `REGION`（洲/洋/南极/北海/地中海→medium）/ `HOST_*`（human/animal/env/soft 词表）。**注**：`HOST_*` 为手写字典，规模瓶颈在字典覆盖率；更大语料中未进字典的宿主落 `unknown`（漏检而非错判），需扩字典或换策略。
+- **输出值格式（折射保留）**：规则值 = `映射值:折射前原值`，仍是逐值列表、单值更详细。**下游一切规则匹配只看冒号前部分**（`_base_val` / `is_high_evidence` 入口剥后缀）：
+  - **country**：`rule_place` 命中子地名 → `Country:Place`（`Japan:Tokyo`、`United Kingdom:London`、缩写大写 `United Kingdom:UK`）；命中词即国名本身（china→China）不加后缀；`rule_demonym` 不加。
+  - **date**：每年保留最细粒度——完整日期 `YYYY-MM-DD` → 缺日 `YYYY-MM-XX` → 缺月 `YYYY-XX-XX`（`DATE_FULL_RE` / `DATE_YM_RE` / `YEAR_RE`，按粒度 3>2>1 升级）。
+  - **host**：`_with_orig(映射值, 原token)`——动物+肠道取 `HOST_ANIMAL` 学名后缀（`pig gut metagenome:Sus scrofa`）；无部位动物 `Sus scrofa:pig`；原词已含在映射值中则不加（`gut metagenome` 无后缀）；`rule_host_soft` 俗名恒等不加。
 - **置信度判定标准**：
   - **country**：匹配到国名且附近有**采集上下文** → `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词 → `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
   - **date**：提取到年份或年份合集 → `high`；无年份 → `unknown`。
@@ -245,7 +250,7 @@
 |---|---|
 | `project_accession` | 项目编号 |
 | `field` | `country` / `date` / `host` |
-| `value` | 推断值列表（country=国名列表或 `NotCountry`；date=年列表；host=宿主列表） |
+| `value` | 推断值列表（country=国名 / `Country:Place` / `NotCountry`；date=`YYYY-MM-DD`/`YYYY-MM-XX`/`YYYY-XX-XX`；host=宿主名，可带 `:折射前原值` 后缀） |
 | `confidence` | **列表（逐值）**：CTX_SAMPLE → `high`/`medium`；公海 `NotCountry`；兜底 `unknown` |
 | `tax_confidence` | **列表（逐值），仅 host**：证据窗口强共现 → `high`/`medium`；空记录兜底 `unknown` |
 | `source` | **列表（逐值）**：`study_meta` / `literature` |
@@ -279,7 +284,13 @@
   - `merge`：读 `agent_llm_parallel.jsonl`（每行=一项目，含 `papers` 裁决 + 三字段子判定）→ 逐字段 `_normalize` 归一 → 分写 `ena_llm_infer_{country,date,host}.jsonl`；同时把 `papers` 裁决写 `agent_paper_verdicts.jsonl`。
   - `apply-demote`：把 `aligned=false` 论文在 literature 里 `high→candidate`（标 `demoted_by=llm_topic`）；**幂等**（首次备份 `_bak/project_literature.pre_demote.jsonl`，之后从备份重算）。降级后 §3.1 只读 high → 不再消费这些论文（如需 §3.1 反映需重跑 `ena_infer_31.py`）。
   - `reconcile`：规则 × LLM 合并（见下）。
+- **判定格式约定（`JUDGE_SPEC` 常量，起判定代理时原样嵌入其指令，单一事实源）**：
+  - **country**：INSDC 国名；证据明确提到城市/州/具体地点时输出 `Country:Place`（如 `Japan:Tokyo`，对齐 typed.csv `X: detail` 约定）；公海 → `["NotCountry"]`。
+  - **date**：尽量最细粒度——`YYYY-MM-DD` / `YYYY-MM-XX` / `YYYY-XX-XX`；不写裸 `YYYY` 或 `YYYY-MM`。
+  - **host**：对齐 `taxid_type.tsv` 中 `is_metagenome=1` 的 scientific_name，词表内选最具体者（同 §3.1 命名约定）；**不加 `:orig` 后缀**（后缀是规则层词典折射标记，LLM 无折射）。
 - **reconcile 策略（逐项目逐字段，取代表值比较、归一小写集合）**：
+  - **比较前规则值先剥 `:折射前` 后缀**（`_base_val`，规则匹配只看冒号前）；
+  - **date 的 agree 用 XX 通配段比较**（`_dates_compatible`：`2019-XX-XX` 兼容 `2019-03-15`，`2019-03-XX` 不兼容 `2019-04-01`）；
   - 取值集合相交（agree）→ 并集，`confidence=high`，`method=agree`；
   - 仅一方有值 → 取该方；
   - **disagree 且置信相当 → flag review**（暂定，`needs_review=True`，暂取规则值；最终选择测试时再定）；
@@ -342,22 +353,22 @@
 
 - **国名规范**：英文 canon；`Hong Kong, China` / `Taiwan, China` / `Macao, China` 主权归一，HK/TW/MO 不可写为独立国家；Korea→`Korea`。
 - **落库流程（脚本化）**：`ena_load_manual.py` 读 `.manual/manual_check_*.json` → 按 `project_accession` 去重 → 写 `ena_manual_<field>.jsonl`。**该脚本只写 `ena_manual_*.jsonl`，不碰 `ena_llm_infer_*`**。
-- **定位**：`manual` 是「final 仅含规则 + LLM 文本裁定」的**唯一明确例外**——用户直接背书、等同正式裁定，在 §3.4 轴 B 中位于来源最高档。
+- **定位**：`manual` 是「final 仅含规则 + LLM 文本裁定」的**唯一明确例外**——用户直接背书、等同正式裁定，在 §3.4 中位于来源最高档（manual 优先）。
 
 ### 3.4 合并
 
-- **目标**：`final_merge` 按优先级合并，输出 final。
-- **双轴优先级**：先保证 **轴 A（置信度）**，同级内再比 **轴 B（来源）**。
-  - **轴 A（主导，由高到低）**：`high` / `NotCountry` > `medium` > `low` > `unknown`。**高置信的规则结果优先于中/低置信的 LLM 或用户结果**。
-  - **轴 B（同置信度内排序）**：`manual`（用户，§3.3）> `llm_agent`（LLM，§3.2）> `rule_*`（规则，§3.1）。
-- **合并步骤（逐项目·逐字段）**：
-  1. 收集该项目该字段全部候选（`<field>_infer.jsonl` 的 `rule_*`；`ena_llm_infer_<field>.jsonl` 的 `llm_agent`；`ena_manual_<field>.jsonl` 的 `manual`）。
-  2. 按 (轴 A tier, 轴 B rank) 升序取最小 = 胜者；候选的 `confidence`/`method` 为逐值列表，比较时各取**最高档代表值**（`_rep_conf`/`_rep_method`）。
-  3. 胜者写入 final；胜者置信度为 `unknown` → `value=null` / `confidence=unknown`。
-- **与 §3.2 reconcile 的关系**：§3.2 `reconcile` 已先做规则 × LLM 两源合并（输出 `reconciled_<field>.jsonl`）；本步 `final_merge` 再从三源把 manual 并入，产出最终 `final_<field>.jsonl`（两者文件名已区分）。
+- **目标**：`final_merge` 合并三源，输出 final。
+- **取值政策**：**manual 优先**（用户背书，最高档）；无 manual 的项目**优先取 LLM 值**（LLM 总体更精确）。值的选择已定，一致性标签仅作状态标注与质量追踪。
+- **一致性闸门（逐项目·逐字段，规则 × LLM）**：
+  1. 取 LLM 值；
+  2. LLM 值集合**字面包含于**规则值列表（规则值先剥 `:折射前` 后缀；date 用 XX 通配比较）→ 标 `consistent`；
+  3. 否则 → 标 `conflict`，**送 LLM 裁决语义等价**（多数 conflict 是命名/规范差异，如 `Sus scrofa gut metagenome` 不在 `[pig, human, pig metagenome, Sus scrofa]` 但同义）：等价 → 改标 `consistent`（仍取 LLM）；真不同 → 保持 `conflict`；
+  4. 可选轻量归一预过滤（去 `metagenome`/部位词/大小写）先滤掉明显规范匹配，残余再送 LLM 裁决。
+- **产物**：`final_<field>.jsonl` + `final_<field>_stats.json`。
+- **与 §3.2 reconcile 的关系**：`reconcile` 做规则 × LLM 两源合并（`reconciled_<field>.jsonl`）；本步产出三源终态 `final_<field>.jsonl`（文件名已区分，无覆盖风险）。
 - **字段范围**：`country` / `date` / `host`；**`location` 字段取消**。
-- **易错点**：项目级 `location` 生境 ≠ 样本级经纬度坐标，勿互填；轴 A 优先保证高置信，**勿因"用户/LLM 更权威"而用中/低置信覆盖高置信规则结果**。
-- **脚本**：`ena_final_merge.py`（`--field country|date|host|all`）；只读三源、原子写、可重跑。
+- **脚本**：`ena_final_merge.py`（`--field country|date|host|all`）。**注意**：该脚本当前仍是旧「双轴优先级」实现且读 `agent_llm_<field>.jsonl`（平行架构不产出该文件），需按上述新政策重写后方可使用。
+- **易错点**：项目级 `location` 生境 ≠ 样本级经纬度坐标，勿互填。
 - **输出 schema（`final_<field>.jsonl`，每行一项目·字段最终裁定）**：
 
   | 字段 | 含义 |
@@ -366,7 +377,7 @@
   | `value` / `confidence` / `tax_confidence` / `source` / `method` | 胜者（逐值列表；host 附 tax_confidence 透传） |
   | `evidence_basis` | 仅 manual 有：`direct` / `institution_inferred` |
   | `note` | 胜者证据链 |
-  | `n_candidates` / `won_by` | 候选源数量 / `sole` / `axis_A` / `axis_B` |
+  | `consistency` | `consistent` / `conflict`（规则×LLM 一致性标签；conflict 经 LLM 裁决语义等价后可能改标 consistent） |
 
   配套 `final_<field>_stats.json`。
 
