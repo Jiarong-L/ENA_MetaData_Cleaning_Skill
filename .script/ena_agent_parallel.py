@@ -25,12 +25,15 @@ evidence → 逐项目判三字段 → 写判定文件。会话内只落盘、�
             high→candidate（幂等，首次备份到 _bak/project_literature.pre_demote.jsonl，
             之后从备份重算）。§3.1 只读 high → 被降级论文自动不再消费。
   reconcile 对每字段，合并 §3.1 规则 + §3.2 LLM：
+              比较前规则值先剥 ':折射前' 后缀（_base_val，规则匹配只看冒号前）；
+              date 的 agree 用 XX 通配段比较（_dates_compatible，
+              如 '2019-XX-XX' 兼容 '2019-03-15'）
               agree(取值集合相交)      → 并集，confidence=high，method=agree
               仅一方有值               → 取该方
               disagree 且置信相当      → **flag review**（暂定，needs_review=True，暂取规则值）
               disagree 且置信分高低    → 取高置信方，method=disagree_<winner>
               双方均 unknown           → unknown
-            写 final_<field>.jsonl + review_<field>.jsonl + reconcile_stats.json。
+            写 reconciled_<field>.jsonl + review_<field>.jsonl + reconcile_stats.json。
 
 代理一次读取要完成两件事（对应用户的「先甄别主题、再判三字段」）：
   ① 对每篇 high 论文判「与 study 主题是否相符」：不符 → aligned=false（该论文将被降级，
@@ -53,6 +56,9 @@ scope（--scope，默认 high-paper）：
   papers：对每篇 high 论文给 aligned（与 study 主题是否相符）；aligned=false 将被降级。
   各字段 value/confidence(/tax_confidence) 为逐值对齐列表；无把握 → value=[] 或 ["unknown"]。
   country 不适用（公海）→ value=["NotCountry"]。
+
+判定格式约定（2026-08-13 用户定，与 §3.1 规则输出对齐）：见下方 JUDGE_SPEC 常量——
+  起判定代理时须把 JUDGE_SPEC 原样放进其指令（单一事实源，勿转述改写）。
 """
 import os
 import json
@@ -70,6 +76,25 @@ FIELDS = ("country", "date", "host")
 _CONF_DOMAIN = {"high", "medium", "low", "unknown", "NotCountry"}
 _TAX_DOMAIN = {"high", "medium", "unknown"}  # host tax_confidence 值域（LLM 写 low 归一为 medium）
 _TIER = {"high": 3, "NotCountry": 3, "medium": 2, "low": 1, "unknown": 0}
+
+# 判定格式约定（2026-08-13 用户定：LLM 与 §3.1 规则输出对齐）——起判定代理时
+# 把本块原样放进其指令（单一事实源，勿转述改写）。
+JUDGE_SPEC = """\
+判定输出格式约定（与规则层 §3.1 对齐，逐条遵守）：
+1. country：INSDC 国名（Japan / United States / China ...）。证据明确提到城市/州/具体地点时，
+   用 'Country:Place' 保留地点细节（如 Japan:Tokyo、United States:California、
+   United Kingdom:London；Place 首字母大写）——对齐 typed.csv 的 'X: detail' 约定。
+   公海/无主权适用 → ["NotCountry"]。
+2. date：尽量给最细粒度——有完整日期 'YYYY-MM-DD'；只知到月 'YYYY-MM-XX'；
+   只知到年 'YYYY-XX-XX'。不要写裸 'YYYY' 或 'YYYY-MM'。
+3. host：value 须对齐 taxid_type.tsv 中 is_metagenome=1 的 scientific_name，词表内尽量选最具体者：
+   生境 → 'X metagenome'（soil/marine/freshwater ...）；人+部位 → 'human X metagenome'；
+   动物+肠道 → 'X gut metagenome'（pig/bovine/mouse gut metagenome ...，X 用词表中已有的 ENA 名）；
+   仅部位无归属 → 'gut/oral/skin/vaginal metagenome'；仅人 → 'Homo sapiens'；
+   词表无对应 ENA 名的动物/宿主 → 物种学名（如 Macaca mulatta）。
+   **不要**给 host 值加 ':orig' 后缀（那是规则层的词典折射标记，LLM 无折射、不用）。
+4. 各字段 value/confidence(/tax_confidence) 为逐值对齐列表；无把握 → value=[] 或 ["unknown"]。
+"""
 
 
 def _replan_log(msg):
@@ -413,14 +438,33 @@ def phase_apply_demote(args):
 
 # ---- 阶段：reconcile（规则 × LLM） ---------------------------------------
 
+def _base_val(v):
+    """规则匹配只看冒号前（用户定 2026-08-13）：规则值可带 ':折射前原值' 后缀
+    （如 'Japan:Tokyo'、'pig gut metagenome:Sus scrofa'），比较时剥掉。"""
+    return str(v).split(":", 1)[0].strip().lower()
+
+
 def _norm_vals(rec):
-    """归一取值集合（小写、去空、剔 unknown/NotCountry 之外的实值）。"""
+    """归一取值集合（小写、去 ':detail' 后缀、去空、剔 unknown）。"""
     if not rec:
         return set()
     vals = rec.get("value") or []
     if isinstance(vals, str):
         vals = [vals]
-    return {str(v).strip().lower() for v in vals if v not in (None, "", "unknown")}
+    return {_base_val(v) for v in vals if v not in (None, "", "unknown")}
+
+
+def _dates_compatible(a, b):
+    """date 粒度通配比较（用户定 2026-08-13）：'XX' 为通配段，
+    '2019-XX-XX' 兼容 '2019'/'2019-03-15'；'2019-03-XX' 兼容 '2019-03-15' 不兼容 '2019-04-01'。"""
+    pa, pb = a.split("-"), b.split("-")
+    for i in range(min(len(pa), len(pb))):
+        xa, xb = pa[i], pb[i]
+        if xa == "xx" or xb == "xx":
+            continue
+        if xa != xb:
+            return False
+    return True
 
 
 def _rep_conf(rec):
@@ -452,7 +496,12 @@ def reconcile_field(field, rule_recs, llm_recs):
             stats["llm_only"] += 1
             continue
         # 双方都有值
-        if rv & lv:  # 取值集合相交 -> agree
+        if field == "date":
+            # date：XX 通配段兼容即 agree（如 2019-XX-XX ~ 2019-03-15）
+            _agree = any(_dates_compatible(a, b) for a in rv for b in lv)
+        else:
+            _agree = bool(rv & lv)  # 取值集合相交 -> agree
+        if _agree:
             vals = list(dict.fromkeys((r.get("value") or []) + (l.get("value") or [])))
             n = len(vals)
             final[acc] = {"project_accession": acc, "field": field, "value": vals,
@@ -490,14 +539,14 @@ def phase_reconcile(args):
         rule = load_jsonl_by_acc(os.path.join(out, f"{f}_infer.jsonl"))
         llm = load_jsonl_by_acc(os.path.join(out, f"ena_llm_infer_{f}.jsonl"))
         final, review, stats = reconcile_field(f, rule, llm)
-        with open(os.path.join(out, f"final_{f}.jsonl"), "w", encoding="utf-8") as fp:
+        with open(os.path.join(out, f"reconciled_{f}.jsonl"), "w", encoding="utf-8") as fp:
             for d in final.values():
                 fp.write(json.dumps(d, ensure_ascii=False) + "\n")
         with open(os.path.join(out, f"review_{f}.jsonl"), "w", encoding="utf-8") as fp:
             for d in review.values():
                 fp.write(json.dumps(d, ensure_ascii=False) + "\n")
         all_stats[f] = dict(stats)
-        print(f"  {f:8}: final={len(final):4} review={len(review):3} | {dict(stats)}")
+        print(f"  {f:8}: reconciled={len(final):4} review={len(review):3} | {dict(stats)}")
     with open(os.path.join(out, "reconcile_stats.json"), "w", encoding="utf-8") as fp:
         json.dump(all_stats, fp, indent=2, ensure_ascii=False)
     print(f"  统计 -> {os.path.join(out, 'reconcile_stats.json')}")

@@ -405,6 +405,11 @@ CTX_SAMPLE = [
 ]
 
 YEAR_RE = re.compile(r"\b(19|20)\d{2}\b")
+# 日期粒度（用户定 2026-08-13）：尽量 YYYY-MM-DD，无日 YYYY-MM-XX，无月 YYYY-XX-XX。
+# 全日期优先于年月、年月优先于年（每年保留最细粒度）。
+DATE_FULL_RE = re.compile(
+    r"\b((?:19|20)\d{2})[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12]\d|3[01])\b")
+DATE_YM_RE = re.compile(r"\b((?:19|20)\d{2})[-/.](0[1-9]|1[0-2])\b")
 
 
 # ----------------------------------------------------------------------------
@@ -456,6 +461,18 @@ def source_of(sub_source):
 # 字段推断
 # ----------------------------------------------------------------------------
 
+def _place_suffix(token, country):
+    """PLACE 折射后缀（用户定 2026-08-13）：城市/州等子地名 -> 'Country:Place'，
+    保留折射前的地名；命中词本身就是国家名（china->China）则不加后缀。
+    下游规则匹配只看冒号前部分。"""
+    t = token.strip()
+    if t.lower() == country.lower():
+        return None
+    if t.isalpha() and len(t) <= 3:  # 缩写大写：usa->USA, uk->UK
+        return t.upper()
+    return " ".join(w.capitalize() for w in t.split())
+
+
 def infer_country(sources):
     """sources: list of (sub_source, text)。返回 best record 或 None。
     所有字段均为列表，与 value 逐值对齐；无记录级标签。"""
@@ -469,10 +486,12 @@ def infer_country(sources):
         for (k, v), snips in _word_boundary_find(text, DEMONYM).items():
             for s in snips:
                 countries.setdefault(v, []).append((sub, s, "rule_demonym", k))
-        # place
+        # place（子地名折射为 'Country:Place'，保留折射前地名）
         for (k, v), snips in _word_boundary_find(text, PLACE).items():
+            suf = _place_suffix(k, v)
+            out_v = "%s:%s" % (v, suf) if suf else v
             for s in snips:
-                countries.setdefault(v, []).append((sub, s, "rule_place", k))
+                countries.setdefault(out_v, []).append((sub, s, "rule_place", k))
         # region
         for (k, _v), snips in _word_boundary_find(text, {r: None for r in REGION}).items():
             for s in snips:
@@ -537,6 +556,16 @@ def _find_words(text, words):
     return out
 
 
+def _with_orig(value, orig):
+    """host 折射后缀（用户定 2026-08-13）：输出 '映射值:折射前原值'，
+    如 'pig gut metagenome:Sus scrofa'；原值已含在映射值中（gut metagenome 含 gut）
+    或二者相同（soft 俗名）则不加。下游规则匹配只看冒号前部分。"""
+    o = (orig or "").strip()
+    if not o or o.lower() in value.lower():
+        return value
+    return "%s:%s" % (value, o)
+
+
 def is_high_evidence(value, method, evidence):
     """用户设定（证据窗口内强共现 -> 标 High、跳过 §3.2 LLM）：只看 evidence 单条 ±30 字片段。
 
@@ -554,7 +583,7 @@ def is_high_evidence(value, method, evidence):
     if method == "rule_host_soft":
         return False
     ev = _norm(evidence)
-    toks = _norm(value).split()
+    toks = _norm(value).split(":", 1)[0].split()  # 规则匹配只看冒号前
     if len(toks) == 3 and toks[-1] == "metagenome":
         host_word, site_word = toks[0], toks[1]
         host_ok = (host_word in ev) or (host_word == "human" and "homo sapiens" in ev)
@@ -625,31 +654,34 @@ def infer_host(sources):
         generic, human_name = entry[0], entry[1]
         require_human = entry[2] if len(entry) > 2 else False
         if human_present and human_name:
-            all_vals.append((human_name, "rule_host_human", s_sub, s_snip, s_w))
+            all_vals.append((_with_orig(human_name, s_w), "rule_host_human", s_sub, s_snip, s_w))
         elif (animal_word and s_w in GUT_SITE
               and animal_word in ANIMAL_GUT_NAME):
-            all_vals.append((ANIMAL_GUT_NAME[animal_word], "rule_host_animal", s_sub, s_snip, s_w))
+            # 动物+肠道：值取 ENA 'X gut metagenome'，后缀保留折射前物种名
+            all_vals.append((_with_orig(ANIMAL_GUT_NAME[animal_word],
+                                        HOST_ANIMAL.get(animal_word, animal_word)),
+                            "rule_host_animal", s_sub, s_snip, s_w))
         elif generic and not require_human:
             m = "rule_host_human" if human_present else "rule_host_env"
-            all_vals.append((generic, m, s_sub, s_snip, s_w))
+            all_vals.append((_with_orig(generic, s_w), m, s_sub, s_snip, s_w))
         # require_human 且无人源触发 -> 不妄判，留空
 
     # 2. human / animal（无 site 时独立生成）
     if not hit_site:
         if human_present:
             for h_sub, h_snip, h_w in hit_human:
-                all_vals.append(("Homo sapiens", "rule_host_human", h_sub, h_snip, h_w))
+                all_vals.append((_with_orig("Homo sapiens", h_w), "rule_host_human", h_sub, h_snip, h_w))
         for a_sub, a_snip, a_species, a_word in hit_animal:
-            all_vals.append((a_species, "rule_host_animal", a_sub, a_snip, a_word))
+            all_vals.append((_with_orig(a_species, a_word), "rule_host_animal", a_sub, a_snip, a_word))
 
     # 3. env（每个 env 词一个值，无论有无 site）
     for e_sub, e_snip, e_word in hit_env:
-        all_vals.append((HOST_ENV[e_word], "rule_host_env", e_sub, e_snip, e_word))
+        all_vals.append((_with_orig(HOST_ENV[e_word], e_word), "rule_host_env", e_sub, e_snip, e_word))
 
-    # 4. soft
+    # 4. soft（俗名即值，_with_orig 相同不加后缀）
     if ctx_present:
         for s_sub, s_snip, s_word in hit_soft:
-            all_vals.append((HOST_ANIMAL_SOFT[s_word], "rule_host_soft", s_sub, s_snip, s_word))
+            all_vals.append((_with_orig(HOST_ANIMAL_SOFT[s_word], s_word), "rule_host_soft", s_sub, s_snip, s_word))
 
     if not all_vals:
         return None
@@ -698,33 +730,47 @@ def infer_host(sources):
 
 
 def infer_date(sources):
-    years = []
+    """按年聚合，每年保留最细粒度（用户定 2026-08-13）：
+    有完整日期 -> 'YYYY-MM-DD'；只到月 -> 'YYYY-MM-XX'；只有年 -> 'YYYY-XX-XX'。"""
+    best = {}  # year -> (granularity, value_str, sub, snippet)
+
+    def _upd(y, gran, val, sub, snip):
+        if not (1900 <= y <= 2100):
+            return
+        cur = best.get(y)
+        if cur is None or gran > cur[0]:
+            best[y] = (gran, val, sub, snip)
+
     for sub, text in sources:
         if not text:
             continue
-        for m in YEAR_RE.finditer(_norm(text)):
-            y = int(m.group(0))
-            if 1900 <= y <= 2100:
-                years.append((y, sub, text[max(0, m.start() - 30): m.end() + 30].strip()))
-    if not years:
+        low = _norm(text)
+        for m in DATE_FULL_RE.finditer(low):
+            y, mo, d = m.group(1), m.group(2), m.group(3)
+            _upd(int(y), 3, "%s-%s-%s" % (y, mo, d), sub,
+                 text[max(0, m.start() - 30): m.end() + 30].strip())
+        for m in DATE_YM_RE.finditer(low):
+            y, mo = m.group(1), m.group(2)
+            _upd(int(y), 2, "%s-%s-XX" % (y, mo), sub,
+                 text[max(0, m.start() - 30): m.end() + 30].strip())
+        for m in YEAR_RE.finditer(low):
+            y = m.group(0)
+            _upd(int(y), 1, "%s-XX-XX" % y, sub,
+                 text[max(0, m.start() - 30): m.end() + 30].strip())
+    if not best:
         return None
-    # 按年份去重（每年保留第一个命中）
-    year_best = {}
-    for y, sub, snip in years:
-        if y not in year_best:
-            year_best[y] = (sub, snip)
-    ys = sorted(year_best.keys())
-    val = [str(y) for y in ys]
+    ys = sorted(best.keys())
+    val = [best[y][1] for y in ys]
     method = "rule_date"
     # 全部列表化，与 value 逐值对齐
     conf_list, src_list, method_list, ev_list, tok_list = [], [], [], [], []
     for y in ys:
-        sub, snip = year_best[y]
+        _, v, sub, snip = best[y]
         conf_list.append("high" if _ctx_reliable(snip, None) else "medium")
         src_list.append(source_of(sub))
         method_list.append(method)
-        ev_list.append({"value": str(y), "sub_source": sub, "snippet": snip})
-        tok_list.append([str(y)])
+        ev_list.append({"value": v, "sub_source": sub, "snippet": snip})
+        tok_list.append([v])
     return {
         "value": val,
         "confidence": conf_list,
