@@ -261,9 +261,9 @@
 
 - **红线**：禁止确定性 resolver 直接写 `llm_infer_*`；本脚本只写 `<field>_infer.jsonl`。
 - **已知规则局限（由 §3.2 LLM 平行复核兜住）**：
-  - `rule_host_human` 跨宿主误判（狗/鼠/母鸡/虎粪 → `human gut metagenome`）：实测 high 层 ~29%、medium 层 ~4% 错。
+  - `rule_host_human` 跨宿主误判（狗/鼠/母鸡/虎粪 → `human gut metagenome`）。
   - `rule_place` 子串碰撞：`new south wales`⊃`wales`→UK、Georgia（美州名）→国家、模糊 "America"→US。
-  - `rule_demonym` 聚簇错：`british columbia`→UK（同项目族 ~31 例）、German Bight 海区、German Shepherd 犬种→Germany。
+  - `rule_demonym` 聚簇错：`british columbia`→UK、German Bight 海区、German Shepherd 犬种→Germany。
   - `rule_region`/`rule_open_ocean`：global/worldwide/pacific/atlantic 等非国家值须重标 `NotCountry`。
   - 机构/试剂/署名产地（Qiagen Germany、PacBio USA）≠ 采样国；**center_name 不参与 §3.1**。
   - **date 基线不区分采集年 vs 出版/检索年**——有年份一律 `high`（已知局限）。
@@ -276,9 +276,9 @@
   1. **论文主题甄别**：对每篇 high 论文判「与 study 主题是否相符」。不符 → `aligned=false`，该论文由 `apply-demote` 降级 `high→candidate`，且判三字段时**不得再以它为据**（此时该项目有效证据只剩 study_meta + 相符论文）。
   2. **三字段判定**：在「study_meta + 相符论文」上判 country/date/host，逐值给 `confidence`（host 另 `tax_confidence`）。
 - **scope（`--scope`，默认 `high-paper`）**：
-  - `high-paper`（默认）：有 ≥1 篇 high 论文的项目（本区间 **467**）——证据最足、LLM 增益最大。
-  - `no-high-paper`（**可选补充档，默认不开**）：没有 high 论文的项目（**~1539**），evidence 仅 study_meta；结果写同一套 `ena_llm_infer_<field>.jsonl`（与 high-paper 不相交、按 acc 去重）。
-  - `all` / `union`：全量（2006）/ high-paper ∪ 残差 unknown。
+  - `high-paper`（默认）：有 ≥1 篇 high 论文的项目——证据最足、LLM 增益最大。
+  - `no-high-paper`（**可选补充档，默认不开**）：没有 high 论文的项目，evidence 仅 study_meta；结果写同一套 `ena_llm_infer_<field>.jsonl`（与 high-paper 不相交、按 acc 去重）。
+  - `all` / `union`：全量 / high-paper ∪ 残差 unknown。
 - **流程（不走外部 API）**：`batch` 拼 evidence → **你（WorkBuddy 代理，本身就是 LLM）逐项目读、逐项目判** → 写 `agent_llm_parallel.jsonl` → `merge` 归一分写 → `apply-demote` 落降级 → `reconcile` 合并规则。工程约束：注意上下文长度、自动清理已读批次、**会话内不报告结果只落盘**；量大开 sub-agents 加速。
 - **四阶段脚本 `.script/ena_agent_parallel.py`**：
   - `batch`：按 scope 拼 evidence（study 标题/描述 + 每篇 high 论文独立分块 `[paper #n | pid=pmid]`）→ `agent_parallel.jsonl`。**evidence 不含 §3.1 规则输出**（保持 LLM 独立、避免锚定）。断点续跑。
