@@ -232,7 +232,7 @@
   - **country**：`rule_place` 命中子地名 → `Country:Place`（`Japan:Tokyo`、`United Kingdom:London`、缩写大写 `United Kingdom:UK`）；命中词即国名本身（china→China）不加后缀；`rule_demonym` 不加。
   - **date**：每年保留最细粒度——完整日期 `YYYY-MM-DD` → 缺日 `YYYY-MM-XX` → 缺月 `YYYY-XX-XX`（`DATE_FULL_RE` / `DATE_YM_RE` / `YEAR_RE`，按粒度 3>2>1 升级）。
   - **host**：`_with_orig(映射值, 原token)`——动物+肠道取 `HOST_ANIMAL` 学名后缀（`pig gut metagenome:Sus scrofa`）；无部位动物 `Sus scrofa:pig`；原词已含在映射值中则不加（`gut metagenome` 无后缀）；`rule_host_soft` 俗名恒等不加。
-  - **open_ocean / region**：`rule_open_ocean` → `NotCountry:命中关键词`（`NotCountry:open ocean`/`NotCountry:deep sea`，value≠命中词故真带后缀）；`rule_region` 同样走 `_with_orig`，但 region 值即命中词本身（`pacific`），value==token 按约定**不加后缀**（同 demonym/soft/国名本身）。若要把 `europe/european`、`worldwide/world-wide` 等变体归并出 `Canon:raw` 后缀，需另加 canonical 映射表（独立改动，未做）。
+  - **open_ocean / region**（2026-08-13 加，已改代码**未重跑**）：`rule_open_ocean` → `NotCountry:命中关键词`（`NotCountry:open ocean`/`NotCountry:deep sea`，value≠命中词故真带后缀）；`rule_region` 同样走 `_with_orig`，但 region 值即命中词本身（`pacific`），value==token 按约定**不加后缀**（同 demonym/soft/国名本身）。若要把 `europe/european`、`worldwide/world-wide` 等变体归并出 `Canon:raw` 后缀，需另加 canonical 映射表（独立改动，未做）。
 - **置信度判定标准**：
   - **country**：匹配到国名且附近有**采集上下文** → `high`；仅提及国名无上下文 → `medium`；公海/深海无主权国 → `NotCountry`（high，否定判定）；仅匹配到区域词 → `medium`；无任何匹配 → `unknown`。**不产生 `low`**。
   - **date**：提取到年份或年份合集 → `high`；无年份 → `unknown`。
@@ -286,7 +286,7 @@
   - `apply-demote`：把 `aligned=false` 论文在 literature 里 `high→candidate`（标 `demoted_by=llm_topic`）；**幂等**（首次备份 `_bak/project_literature.pre_demote.jsonl`，之后从备份重算）。降级后 §3.1 只读 high → 不再消费这些论文（如需 §3.1 反映需重跑 `ena_infer_31.py`）。
   - `reconcile`：规则 × LLM 合并（见下）。
 - **判定格式约定（`JUDGE_SPEC` 常量，起判定代理时原样嵌入其指令，单一事实源）**：
-  - **country**：INSDC 国名；证据明确提到城市/州/具体地点时输出 `Country:Place`（如 `Japan:Tokyo`，对齐 typed.csv `X: detail` 约定）；公海 → `["NotCountry"]`。
+  - **country**：INSDC 国名；证据明确提到城市/州/具体地点时输出 `Country:Place`（如 `Japan:Tokyo`，对齐 typed.csv `X: detail` 约定）；公海/无主权/非地表 → `NotCountry:<地点细节>`（2026-08-13 用户定，与规则层 rule_open_ocean 折射同层级：如 `NotCountry:open ocean`、`NotCountry:Southern Ocean`、`NotCountry:Mid-Atlantic Ridge`；证据给不出更细地点才允许裸 `NotCountry`）。
   - **date**：尽量最细粒度——`YYYY-MM-DD` / `YYYY-MM-XX` / `YYYY-XX-XX`；不写裸 `YYYY` 或 `YYYY-MM`。
   - **host**：对齐 `taxid_type.tsv` 中 `is_metagenome=1` 的 scientific_name，词表内选最具体者（同 §3.1 命名约定）；**不加 `:orig` 后缀**（后缀是规则层词典折射标记，LLM 无折射）。
 - **reconcile 策略（逐项目逐字段，取代表值比较、归一小写集合）**：
@@ -328,7 +328,7 @@
 |---|---|
 | `project_accession` | 项目编号 |
 | `papers` | 主题甄别 `[{"pid","aligned":true/false,"note"}]`；`aligned=false` → 降级 |
-| `country` / `date` / `host` | 各为子对象 `{value[], confidence[], note}`；host 另 `tax_confidence[]`；无把握 → `value=[]` 或 `["unknown"]`；公海 → `value=["NotCountry"]` |
+| `country` / `date` / `host` | 各为子对象 `{value[], confidence[], note}`；host 另 `tax_confidence[]`；无把握 → `value=[]` 或 `["unknown"]`；公海/无主权 → `value=["NotCountry:<地点细节>"]`（2026-08-13 起；给不出细节才裸 `NotCountry`） |
 
 **③ `ena_llm_infer_<field>.jsonl`（最终，仅 merge 写）**：与 ② 子对象同口径，补 `project_accession`/`field`/`source`/`method`，经 `_normalize` 归一。
 

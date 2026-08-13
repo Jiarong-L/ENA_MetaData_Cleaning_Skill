@@ -55,7 +55,7 @@ scope（--scope，默认 high-paper）：
    "host":    {"value":[...], "confidence":[...], "tax_confidence":[...], "note": "..."}}
   papers：对每篇 high 论文给 aligned（与 study 主题是否相符）；aligned=false 将被降级。
   各字段 value/confidence(/tax_confidence) 为逐值对齐列表；无把握 → value=[] 或 ["unknown"]。
-  country 不适用（公海）→ value=["NotCountry"]。
+  country 不适用（公海/无主权）→ value=["NotCountry:<地点细节>"]（给不出细节才裸 "NotCountry"）。
 
 判定格式约定（2026-08-13 用户定，与 §3.1 规则输出对齐）：见下方 JUDGE_SPEC 常量——
   起判定代理时须把 JUDGE_SPEC 原样放进其指令（单一事实源，勿转述改写）。
@@ -84,7 +84,10 @@ JUDGE_SPEC = """\
 1. country：INSDC 国名（Japan / United States / China ...）。证据明确提到城市/州/具体地点时，
    用 'Country:Place' 保留地点细节（如 Japan:Tokyo、United States:California、
    United Kingdom:London；Place 首字母大写）——对齐 typed.csv 的 'X: detail' 约定。
-   公海/无主权适用 → ["NotCountry"]。
+   公海/无主权/非地表适用 → 'NotCountry:<地点细节>'（2026-08-13 用户定：与规则层
+   rule_open_ocean 的折射后缀同层级）：细节 = 具体海域/洋脊/位置，如 NotCountry:open ocean、
+   NotCountry:Southern Ocean、NotCountry:Mid-Atlantic Ridge、NotCountry:high seas；
+   专有名词按常规大写。证据确实给不出更细地点时才允许裸 'NotCountry'。
 2. date：尽量给最细粒度——有完整日期 'YYYY-MM-DD'；只知到月 'YYYY-MM-XX'；
    只知到年 'YYYY-XX-XX'。不要写裸 'YYYY' 或 'YYYY-MM'。
 3. host：value 须对齐 taxid_type.tsv 中 is_metagenome=1 的 scientific_name，词表内尽量选最具体者：
