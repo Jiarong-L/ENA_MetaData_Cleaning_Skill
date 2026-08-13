@@ -1,5 +1,7 @@
 # ENA METAGENOMIC 元数据清洗（可复用模板）
 
+本文档是复用方法模板，不得写死跑批专属数字（项目总数、评估错判率等）
+
 > **数据范围**：`library_source=METAGENOMIC` & `library_strategy=WGS` 的 run。
 > **本项目示例**：`ENA_cleaning`，区间 `yyyy-mm-dd ~ yyyy-mm-dd`。
 > **适用范围**：任何从 ENA 拉取并补全样本元数据（`country` / `date` / `host`）的任务，仅改筛选/区间即可套用。
