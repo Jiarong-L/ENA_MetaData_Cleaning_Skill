@@ -302,7 +302,7 @@ def _normalize(sub, acc, field):
     confidence = _align(_as_list(sub.get("confidence")), n, "unknown", acc, "confidence", repairs)
     source = _align(_as_list(sub.get("source")), n, "llm_agent", acc, "source", repairs)
     method = _align(_as_list(sub.get("method")), n, "llm_agent", acc, "method", repairs)
-    conf_fixed = [c if c in _CONF_DOMAIN else "unknown" for c in confidence]
+    conf_fixed = [c if (isinstance(c, str) and c in _CONF_DOMAIN) else "unknown" for c in confidence]
     if sum(1 for a, b in zip(confidence, conf_fixed) if a != b):
         repairs.append("confidence: out-of-domain -> unknown")
     confidence = conf_fixed
@@ -313,7 +313,7 @@ def _normalize(sub, acc, field):
            "note": sub.get("note", "")}
     if field == "host":
         tax = _align(_as_list(sub.get("tax_confidence")), n, "unknown", acc, "tax_confidence", repairs)
-        tax_fixed = [t if t in _TAX_DOMAIN else "medium" for t in tax]
+        tax_fixed = [t if (isinstance(t, str) and t in _TAX_DOMAIN) else "medium" for t in tax]
         if n == 0 and not tax:
             tax_fixed = ["unknown"]
         out["tax_confidence"] = tax_fixed
