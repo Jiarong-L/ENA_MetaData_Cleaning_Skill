@@ -38,8 +38,8 @@ ena_agent_parallel.py  ── LLM 与规则平行，一次读取判 (country,dat
 │            ① 论文主题甄别：每篇 high 论文判 aligned（与 study 主题是否相符）
 │            ② 在「study_meta+相符论文」上判 country/date/host
 │            输出遵循 JUDGE_SPEC（脚本常量，起代理时原样嵌入指令）：
-│              country 有城市/地点 → 'Country:Place'；date 最细粒度
-│              YYYY-MM-DD/YYYY-MM-XX/YYYY-XX-XX（禁裸 YYYY）；
+│              country 有城市/地点 → 'Country:Place'；公海/无主权 → 'NotCountry:<地点细节>'； 
+│              date 最细粒度 YYYY-MM-DD/YYYY-MM-XX/YYYY-XX-XX（规范格式写法）；
 │              host 对齐 taxid_type 词表、不加 :orig 后缀
 │            → agent_llm_parallel.jsonl（每行一项目：papers 裁决 + 三字段子判定）
 │
@@ -50,14 +50,16 @@ ena_agent_parallel.py  ── LLM 与规则平行，一次读取判 (country,dat
 ├─ apply-demote  aligned=false 论文 high→candidate（标 demoted_by=llm_topic）
 │            幂等：首次备份 _bak/，之后从备份重算。（§3.1 只读 high → 自动不消费）
 │
-└─ reconcile 规则 × LLM 合并（逐项目逐字段）：
-            比较前规则值先剥 ':折射前' 后缀（_base_val，只看冒号前）
+└─ reconcile 规则 × LLM 合并（逐项目逐字段；§3.2 中间产物，§3.4 不读它，另行从原始 rule+LLM 重算）
+            比较前两侧值都经 _base_val 剥冒号后缀 + 小写（只看冒号前）：
+              规则剥 ':折射前'（Japan:Tokyo→japan）；LLM 剥 ':Place' 细节（China:Hong Kong→china）
             date 用 XX 通配段比较（_dates_compatible：2019-XX-XX 兼容 2019-03-15）
-            agree(取值集合相交)     → 并集 + high
+            双方 unknown          → 不写（unknown）
             仅一方有值            → 取该方
-            disagree 且置信相当    → flag review（暂定，暂取规则值）
-            disagree 置信分高低    → 取高置信方
-            双方 unknown          → unknown
+            双方都有值：
+              agree(取值集合相交)     → 并集 + high（并集保留原始值含后缀，confidence 强制 high）
+              disagree 且置信相当    → flag review（暂定，暂取规则值）
+              disagree 置信分高低    → 取高置信方
             → reconciled_<field>.jsonl + review_<field>.jsonl
 ```
 
@@ -67,7 +69,7 @@ ena_agent_parallel.py  ── LLM 与规则平行，一次读取判 (country,dat
   if manual 有值: final_value = manual 值      # 用户背书，最高档
   else:
       final_value = LLM 值                      # 优先取 LLM
-      if LLM值 ⊆ 规则值(字面, 规则先剥:后缀): label = consistent (via=literal)
+      if LLM值 ⊆ 规则值(字面, 两侧都经_base_val剥冒号后缀+小写): label = consistent (via=literal)
       else:
           if LLM值 ⊆ 规则值(轻量归一后): label = consistent (via=light)   # 预过滤
           else: 送 LLM 裁决
