@@ -23,11 +23,15 @@ ToDo：或许我可以将LLM的推断结果用作训练标签，重新设计匹�
 
 对比原表和infer_value之间的冲突条目。对于冲突的条目，我们暂时以原表为主，但需要人工查看一下情况。
 
-* country：忽略写法、粒度差异，真实冲突样本所属的项目 [country.realconflict_projects.csv](./Result_20100101_20260801/stat/country.realconflict_projects.csv) 提示: `fully_disjoint` 错误可能来自 `study_meta-rule_` 以及错误的literature匹配（有15个关联了 `"aligned": false`的论文）
+* country：忽略写法、粒度差异，真实冲突样本所属的项目 [country.realconflict_projects.csv](./Result_20100101_20260801/stat/country.realconflict_projects.csv) 提示: `fully_disjoint` 错误可能来自 `study_meta-rule_` 、错误的literature匹配（有15个关联了 `"aligned": false`的论文）、LLM-agent 过度发散的臆测（约占四分之三）
 
 
 
 * date：绝大多数infer_value是幻觉年份，因此或许不能过于相信用它补足的原表。[date.genuine_conflict_projects.csv](./Result_20100101_20260801/stat/date.genuine_conflict_projects.csv)
+
+
+
+
 
 * host：[host.realconflict_projects.csv](./Result_20100101_20260801/stat/host.realconflict_projects.csv)
 
