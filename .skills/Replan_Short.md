@@ -85,27 +85,43 @@
 ## 步骤 4 Clean metagenomic_wgs.typed.csv 
 
 
-现在，这些 project级 信息可以作为清洗 metagenomic_wgs.typed.csv 的参考
+我们已经得到了 final_{country/date/host}.jsonl，这些 project级 信息可以作为清洗 metagenomic_wgs.typed.csv 的参考
 
-提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · country · location 至 tmp.country.csv
+-------------------------------
+```bash
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · country · location 至 tmp.country.csv    
+tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列    
 
-提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · collection_date · first_public 至 tmp.date.csv
+对于所有 infer_value 的 **NotCountry 值，我们只保留 多国/全球聚合、海洋/公海 这两类**，其余设定为空
 
-提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · type · scientific_name · tax_id · host · host_tax_id 至 tmp.host.csv
+**然后，看看 infer 对原表country字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
+
+对于country的冲突条目，请逐行检查是写法不一还是真实冲突；然后对于这些真矛盾的项目：聚合每个项目的原国家分布（按总表）、项目级 infer 值、以及误判来源
+```
+-------------------------------
+```bash
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · collection_date · first_public 至 tmp.date.csv   
+tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列    
+
+对于所有 infer_value ， 将 NotDate 值设定为空
+
+**然后，看看 infer 对原表collection_date字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
+
+对于collection_date真年份冲突条目所对应的项目：聚合每个项目的原日期分布（按总表）、项目级 infer 值、冲突类别、冲突值来自LLM还是rule
+```
+-------------------------------
+```bash
+提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · type · scientific_name · tax_id · host · host_tax_id 至 tmp.host.csv   
+tmp.date.csv，依照 project_accession从 final_date.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列   
+tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录最早发表的 `high` paper 的时间和title   
+
+对于所有 infer_value ， 将 infer 无/NotHost 值设定为空
+
+**然后，看看 infer 对原表scientific_name字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
+
+对于host的冲突条目，请逐行检查是写法不一还是真实冲突；然后对于这些真矛盾的项目：聚合每个项目的原host分布（按总表）、项目级 infer 值、以及误判来源
+```
 
 
-tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列
 
-tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列
-
-tmp.date.csv，依照 project_accession从 final_date.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列
-
-tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录最早发表的 `high` paper 的时间和title
-
-
-然后，看看 infer 对原表的相应字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突
-
-
-
-对于冲突的条目，我们暂时以原表为主，但需要人工查看一下情况
 
