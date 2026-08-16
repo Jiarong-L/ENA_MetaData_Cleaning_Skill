@@ -103,11 +103,17 @@ tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value�
 提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · collection_date · first_public 至 tmp.date.csv   
 tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列    
 
-对于所有 infer_value ， 将 NotDate 值设定为空
+对于所有 infer_value ， 将 NotDate 值设定为空。注意，如果infer是多值的话，它对应的是个采样区间（最早-最晚，而且日期都应该不晚于2026年8月1日）。
 
-**然后，看看 infer 对原表collection_date字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
+**然后，看看 infer 对原表collection_date字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致（包括：原表年份落在infer的区间）、有多少与原表冲突**，注意原表中 零值占位符 '0000-00-00' 等异常值应视为缺失
 
 对于collection_date真年份冲突条目所对应的项目：聚合每个项目的原日期分布（按总表）、项目级 infer 值、冲突类别、冲突值来自LLM还是rule
+
+对于 原表，告诉我时间跨度 ≥10 年 或者 ≥5 年 的项目有多少、这些项目都是研究什么的（类别、数量、含义 / 典型研究）？有多少是真的长跨度、有哪些可能是某个样本标错（比如：样本年份的分布是不是有离群值）
+
+对于 infer_value，告诉我时间跨度 ≥10 年 或者 ≥5 年 的项目有多少、都是研究什么的？
+
+另外，告诉我：原表缺失而 infer_value 有的run中，有多少是单值、有多少是区间
 ```
 -------------------------------
 ```bash
