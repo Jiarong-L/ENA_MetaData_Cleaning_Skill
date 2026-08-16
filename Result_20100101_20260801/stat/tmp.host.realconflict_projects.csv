@@ -1,7 +1,7 @@
 project_accession,n_runs_in_project,n_conflict_rows,conflict_ratio,orig_sentinel_count,orig_real_hosts,orig_distinct_real,infer_value_projlevel,conflict_concept_pair,misjudge_source,infer_source_detail,infer_method_detail
 PRJNA858101,587,392,0.6678,0,mus musculus:392; homo sapiens:195,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:392,llm_agent:392
-PRJNA779404,369,368,0.9973,0,swine:341; sus scrofa domesticus:27; msa-2002_mock-community;msa-2002 mock-community:1,3,milk metagenome,"orig={'pig'} -> infer={'human', 'bovine'}",llm,llm_agent:368,llm_agent:368
-PRJEB42019,2800,362,0.1293,1611,myodes glareolus:330; atta colombica:46; bankia setacea:44; phyllospora comosa:44; tetragonisca angustula:40; porites lobata:40,89,Homo sapiens:human;soil metagenome,"orig={'rat'} -> infer={'human', 'soil'}",rule,literature;study_meta:362,rule_host_human;rule_host_env:362
+PRJNA779404,369,368,0.9973,0,swine:341; sus scrofa domesticus:27; msa-2002_mock-community;msa-2002 mock-community:1,3,milk metagenome,"orig={'pig'} -> infer={'bovine', 'human'}",llm,llm_agent:368,llm_agent:368
+PRJEB42019,2800,362,0.1293,1611,myodes glareolus:330; atta colombica:46; bankia setacea:44; phyllospora comosa:44; tetragonisca angustula:40; porites lobata:40,89,Homo sapiens:human;soil metagenome,"orig={'rat'} -> infer={'soil', 'human'}",rule,literature;study_meta:362,rule_host_human;rule_host_env:362
 PRJNA450709,243,243,1.0,0,mouse:243,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:243,llm_agent:243
 PRJNA1413407,343,221,0.6443,14,mus musculus:221; homo sapiens:108,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:221,llm_agent:221
 PRJEB44552,151,151,1.0,0,pan troglodytes:151,1,human gut metagenome;mouse gut metagenome,"orig={'primate'} -> infer={'mouse', 'human'}",llm,llm_agent;llm_agent:151,llm_agent;llm_agent:151
@@ -75,7 +75,7 @@ PRJEB9818,331,11,0.0332,320,mus musculus:11,1,human gut metagenome,orig={'mouse'
 PRJNA339659,15,11,0.7333,0,gallus gallus:11; galus galus:4,2,respiratory tract metagenome,"orig={'bird', 'chicken'} -> infer={'human'}",llm,llm_agent:11,llm_agent:11
 PRJNA732170,10,10,1.0,0,sus scrofa:10,1,human lung metagenome,orig={'pig'} -> infer={'human'},llm,llm_agent:10,llm_agent:10
 PRJNA761454,96,10,0.1042,0,homo sapiens:81; water control:10; enviromental control:5,3,human gut metagenome;viral metagenome,orig={'freshwater'} -> infer={'human'},llm,llm_agent;llm_agent:10,llm_agent;llm_agent:10
-PRJEB58189,138,9,0.0652,37,vicia faba:47; triticum aestivum:43; soil metagenome:9; hordeum vulgare:1; avena sativa:1,5,rhizosphere metagenome,"orig={'environment', 'soil'} -> infer={'plant'}",llm,llm_agent:9,llm_agent:9
+PRJEB58189,138,9,0.0652,37,vicia faba:47; triticum aestivum:43; soil metagenome:9; hordeum vulgare:1; avena sativa:1,5,rhizosphere metagenome,"orig={'soil', 'environment'} -> infer={'plant'}",llm,llm_agent:9,llm_agent:9
 PRJNA732769,72,9,0.125,0,c57/bl6 mouse:63; homo sapiens:9,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:9,llm_agent:9
 PRJNA867479,9,9,1.0,0,plant:9,1,soil metagenome,orig={'plant'} -> infer={'soil'},llm,llm_agent:9,llm_agent:9
 PRJNA644399,8,8,1.0,0,mus musculus:8,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:8,llm_agent:8
@@ -122,9 +122,9 @@ PRJNA432129,1,1,1.0,0,zea mays l.:1,1,soil metagenome,orig={'plant'} -> infer={'
 PRJNA435753,86,1,0.0116,0,siderastrea siderea:80; seawater:5; water:1,3,coral metagenome,orig={'freshwater'} -> infer={'marine'},llm,llm_agent:1,llm_agent:1
 PRJNA515569,3,1,0.3333,2,water:1,1,aquaculture metagenome,orig={'freshwater'} -> infer={'fish'},llm,llm_agent:1,llm_agent:1
 PRJNA639909,9,1,0.1111,0,mus musculus:8; homo sapiens:1,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:1,llm_agent:1
-PRJNA644737,1,1,1.0,0,water sample:1,1,aquatic viral metagenome,"orig={'freshwater'} -> infer={'marine', 'human'}",llm,llm_agent:1,llm_agent:1
+PRJNA644737,1,1,1.0,0,water sample:1,1,aquatic viral metagenome,"orig={'freshwater'} -> infer={'human', 'marine'}",llm,llm_agent:1,llm_agent:1
 PRJNA685265,23,1,0.0435,2,homo sapiens:16; homo sapiens neanderthalensis:4; pan troglodytes:1,3,oral metagenome,orig={'primate'} -> infer={'human'},llm,llm_agent:1,llm_agent:1
 PRJNA685390,4,1,0.25,0,betula:2; betula pubescens:1; apis mellifera:1,3,plant metagenome,orig={'bee'} -> infer={'plant'},llm,llm_agent:1,llm_agent:1
 PRJNA700111,2,1,0.5,0,water:1; soil:1,2,lake metagenome,orig={'soil'} -> infer={'freshwater'},llm,llm_agent:1,llm_agent:1
 PRJNA718631,46,1,0.0217,0,canis lupus familiaris:45; equus ferus caballus:1,2,canine metagenome,orig={'horse'} -> infer={'canine'},llm,llm_agent:1,llm_agent:1
-PRJNA775816,1,1,1.0,0,equus caballus:1,1,milk metagenome,"orig={'horse'} -> infer={'human', 'bovine'}",llm,llm_agent:1,llm_agent:1
+PRJNA775816,1,1,1.0,0,equus caballus:1,1,milk metagenome,"orig={'horse'} -> infer={'bovine', 'human'}",llm,llm_agent:1,llm_agent:1

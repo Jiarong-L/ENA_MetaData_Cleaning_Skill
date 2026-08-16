@@ -92,7 +92,7 @@
 提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · country · location 至 tmp.country.csv    
 tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列    
 
-对于所有 infer_value 的 **NotCountry 值，我们只保留 多国/全球聚合、海洋/公海 这两类**，其余设定为空
+对所有 infer_value 的 NotCountry 值，仅依据值描述本身判断类别：描述指向跨国/全球聚合或海洋/公海（含边界地理实体）则保留，否则（明确包含"无地理位置信息"类）清空；不使用项目 evidence note 做兜底匹配。
 
 **然后，看看 infer 对原表country字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
 
@@ -128,6 +128,6 @@ tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录�
 
 -------------------------------
 
-对每个 tmp.{}.csv 新增两列 'selected_value'（优先选择原值，无原值则用infer_value插补） 和 'selected_value_source' （标注：ori_value/infer_value）
+对每个 tmp.{}.csv 新增两列 'selected_value'（优先选择原值，无原值则用infer_value插补，遵循'three_dim_fill_safety_table.md'的建议） 和 'selected_value_source' （标注：ori_value/infer_value），结果保存至 {}.csv
 
-另外，告诉我：用infer_value插补的run中，有多少是单值、有多少是区间  
+另外，告诉我：用infer_value插补的run中，有多少是单值、有多少是区间 ？ 注意，统计country时，不是按结构口径（一个单元格 = 一个值），而是按"值实际代表几个国家/地理实体"的语义口径看
