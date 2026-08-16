@@ -58,7 +58,7 @@ ToDo：我还需要规范化一下每个字段的值，现在它们还不可以�
 
 查看 {country/host/date}.csv 的 selected_value 列:
 
-有多少项目是跨宿主、跨地域、跨时间的？分别列出: [cross_projects.md](./Result_20100101_20260801/stat/cross_projects.md)
+有多少项目是跨宿主、跨地域、跨时间的？分别列出: [cross_projects.md](./Result_20100101_20260801/stat/cross_projects.md)   --- 注意，比如 PRJNA348753 有 6000 多种宿主（事实上是重新组装的MAGs），这类项目并不是真的从宿主身上采样
 
 
 
