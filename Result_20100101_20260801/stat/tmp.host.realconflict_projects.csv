@@ -1,130 +1,347 @@
-project_accession,n_runs_in_project,n_conflict_rows,conflict_ratio,orig_sentinel_count,orig_real_hosts,orig_distinct_real,infer_value_projlevel,conflict_concept_pair,misjudge_source,infer_source_detail,infer_method_detail
-PRJNA858101,587,392,0.6678,0,mus musculus:392; homo sapiens:195,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:392,llm_agent:392
-PRJNA779404,369,368,0.9973,0,swine:341; sus scrofa domesticus:27; msa-2002_mock-community;msa-2002 mock-community:1,3,milk metagenome,"orig={'pig'} -> infer={'bovine', 'human'}",llm,llm_agent:368,llm_agent:368
-PRJEB42019,2800,362,0.1293,1611,myodes glareolus:330; atta colombica:46; bankia setacea:44; phyllospora comosa:44; tetragonisca angustula:40; porites lobata:40,89,Homo sapiens:human;soil metagenome,"orig={'rat'} -> infer={'soil', 'human'}",rule,literature;study_meta:362,rule_host_human;rule_host_env:362
-PRJNA450709,243,243,1.0,0,mouse:243,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:243,llm_agent:243
-PRJNA1413407,343,221,0.6443,14,mus musculus:221; homo sapiens:108,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:221,llm_agent:221
-PRJEB44552,151,151,1.0,0,pan troglodytes:151,1,human gut metagenome;mouse gut metagenome,"orig={'primate'} -> infer={'mouse', 'human'}",llm,llm_agent;llm_agent:151,llm_agent;llm_agent:151
-PRJNA518912,151,151,1.0,0,mus musculus:151,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:151,llm_agent:151
-PRJNA1010707,148,148,1.0,0,mus musculus:148,1,gut metagenome;gut metagenome:intestinal;oral metagenome,orig={'mouse'} -> infer={'human'},rule,literature;literature;literature:148,rule_host_env;rule_host_env;rule_host_env:148
-PRJNA843963,263,112,0.4259,0,homo sapiens:116; ovis aries:38; bos taurus:38; gallus gallus domesticus:36; capra aegagrus hircus:35,5,human gut metagenome,orig={'sheep'} -> infer={'human'},llm,llm_agent:112,llm_agent:112
-PRJNA1025016,367,104,0.2834,0,homo sapiens:263; mus musculus:104,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:104,llm_agent:104
-PRJNA1032744,120,100,0.8333,0,mus musculus:100; homo sapiens:20,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:100,llm_agent:100
-PRJEB37572,86,86,1.0,0,mus musculus:86,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:86,llm_agent:86
-PRJNA1067813,437,86,0.1968,39,mus musculus:312; homo sapiens:86,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:86,llm_agent:86
-PRJNA1145027,81,81,1.0,0,homo sapiens:81,1,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:81,llm_agent:81
-PRJEB42567,71,71,1.0,0,mus musculus:71,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:71,llm_agent:71
-PRJNA828263,70,70,1.0,0,mus musculus:70,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:70,llm_agent:70
-PRJEB48101,68,68,1.0,0,mus musculus:68,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:68,llm_agent:68
-PRJNA1219628,110,64,0.5818,0,mus musculus:64; homo sapiens:46,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:64,llm_agent:64
-PRJNA1171992,61,61,1.0,0,mus musculus:61,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:61,llm_agent:61
-PRJNA578765,60,60,1.0,0,mus musculus:60,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:60,llm_agent:60
-PRJNA741607,59,59,1.0,0,rat:59,1,mouse gut metagenome,orig={'rat'} -> infer={'mouse'},llm,llm_agent:59,llm_agent:59
-PRJNA689595,58,58,1.0,0,rattus norvegicus:58,1,oral metagenome,orig={'rat'} -> infer={'human'},llm,llm_agent:58,llm_agent:58
-PRJNA1092431,53,53,1.0,0,mus musculus:53,1,human gut metagenome:fecal,orig={'mouse'} -> infer={'human'},rule,literature:53,rule_host_human:53
-PRJNA692042,216,52,0.2407,0,pan troglodytes verus:69; homo sapiens sapiens:52; pan troglodytes:36; pan paniscus:13; pan troglodytes schweinfurthii:12; gorilla beringei beringei:11,9,primate metagenome,orig={'human'} -> infer={'primate'},llm,llm_agent:52,llm_agent:52
-PRJNA1182825,51,51,1.0,0,mus musculus:51,1,respiratory tract metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:51,llm_agent:51
-PRJNA336462,48,48,1.0,0,zea mays subsp. mays:48,1,soil metagenome,orig={'plant'} -> infer={'soil'},llm,llm_agent:48,llm_agent:48
-PRJNA435634,47,47,1.0,0,soil:47,1,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:47,llm_agent:47
-PRJNA636365,46,46,1.0,0,dairy cow:46,1,soil metagenome,orig={'bovine'} -> infer={'soil'},llm,llm_agent:46,llm_agent:46
-PRJNA1173239,45,45,1.0,0,homo sapiens:45,1,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:45,llm_agent:45
-PRJNA691978,61,45,0.7377,16,sus scrofa:18; homo sapiens:15; bos taurus:12,3,freshwater metagenome,orig={'pig'} -> infer={'freshwater'},llm,llm_agent:45,llm_agent:45
-PRJNA703330,44,44,1.0,0,mus musculus:44,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:44,llm_agent:44
-PRJNA1256532,40,40,1.0,0,homo sapiens:40,1,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:40,llm_agent:40
-PRJNA357148,59,35,0.5932,0,mice:35; cow:24,2,bovine gut metagenome,orig={'mouse'} -> infer={'bovine'},llm,llm_agent:35,llm_agent:35
-PRJNA776120,34,34,1.0,0,mus musculus:34,1,rat gut metagenome,orig={'mouse'} -> infer={'rat'},llm,llm_agent:34,llm_agent:34
-PRJNA734321,33,33,1.0,0,homo sapiens:33,1,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:33,llm_agent:33
-PRJNA488231,32,32,1.0,0,mus musculus ncbi:10090:32,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:32,llm_agent:32
-PRJNA1159740,31,31,1.0,0,ovis aries:17; cow:11; capra hircus:3,3,Homo sapiens:human,orig={'sheep'} -> infer={'human'},rule,literature:31,rule_host_human:31
-PRJNA454826,138,31,0.2246,0,homo sapiens:107; mus musculus:31,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:31,llm_agent:31
-PRJDB8678,30,30,1.0,0,homo sapiens:30,1,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:30,llm_agent:30
-PRJNA546804,32,30,0.9375,0,bos:16; canine:14; environment:2,3,tick metagenome;viral metagenome,orig={'bovine'} -> infer={'human'},llm,llm_agent;llm_agent:30,llm_agent;llm_agent:30
-PRJNA657953,30,30,1.0,0,mus musculus:30,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:30,llm_agent:30
-PRJNA779554,30,30,1.0,0,apple orchard soil:30,1,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:30,llm_agent:30
-PRJNA637878,112,27,0.2411,0,homo sapiens:85; mus musculus:27,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:27,llm_agent:27
-PRJNA385134,26,26,1.0,0,mus musculus:26,1,viral metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:26,llm_agent:26
-PRJNA904303,24,24,1.0,0,mus musculus:24,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:24,llm_agent:24
-PRJNA783624,60,23,0.3833,0,mus musculus:37; homo sapiens:23,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:23,llm_agent:23
-PRJNA1175865,128,20,0.1562,0,alexandromys fortis:40; rattus norvegicus:30; rattus flavipectus:20; mus musculus:20; apodemus agrarius:18,5,rat gut metagenome,orig={'mouse'} -> infer={'rat'},llm,llm_agent:20,llm_agent:20
-PRJNA930470,20,20,1.0,0,mus musculus:20,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:20,llm_agent:20
-PRJNA1139859,19,19,1.0,0,mus musculus:19,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:19,llm_agent:19
-PRJNA843121,41,19,0.4634,0,mus musculus:22; homo sapiens:19,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:19,llm_agent:19
-PRJNA901878,466,19,0.0408,4,manis javanica:56; rhinolophus pusillus:46; hipposideros armiger:23; rhinolophus sinicus:22; rhinolophus sp.:18; apodemus draco:15,106,wildlife metagenome,orig={'primate'} -> infer={'wildlife'},llm,llm_agent:19,llm_agent:19
-PRJNA1135459,18,18,1.0,0,mus musculus:17; dna-seq of mus musculus: adult female spleen:1,2,rat gut metagenome,orig={'mouse'} -> infer={'rat'},llm,llm_agent:18,llm_agent:18
-PRJNA575186,28,18,0.6429,0,mouse:18; homo sapiens:10,2,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:18,llm_agent:18
-PRJNA596121,18,18,1.0,0,mouse:18,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:18,llm_agent:18
-PRJNA718322,18,18,1.0,0,mus musculus:18,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:18,llm_agent:18
-PRJNA1045597,16,16,1.0,0,mus musculus:16,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:16,llm_agent:16
-PRJNA633324,16,16,1.0,0,homo sapiens:16,1,soil metagenome,orig={'human'} -> infer={'soil'},llm,llm_agent:16,llm_agent:16
-PRJNA664310,43,16,0.3721,0,rhizosphere soil:27; bulk soil:16,2,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:16,llm_agent:16
-PRJNA1219709,15,15,1.0,0,soil of r108:5; soil of spx:5; soil:5,3,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:15,llm_agent:15
-PRJNA814825,15,15,1.0,0,equus przewalskii:8; equus hemionus hemionus:7,2,wildlife metagenome,orig={'horse'} -> infer={'wildlife'},llm,llm_agent:15,llm_agent:15
-PRJNA858171,15,15,1.0,0,mouse:15,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:15,llm_agent:15
-PRJNA300541,570,14,0.0246,168,homo sapiens:382; bos taurus:8; cavia porcellus:4; canis lupus familiaris:4; turtle:2; gallus gallus:2,6,human feces metagenome,orig={'bovine'} -> infer={'human'},llm,llm_agent:14,llm_agent:14
-PRJNA450295,160,14,0.0875,0,setaria italica:146; bulk soil:14,2,root metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:14,llm_agent:14
-PRJNA646934,14,14,1.0,0,pig p6:1; pig c6:1; pig b6:1; pig pe:1; pig s6:1; pig pa5:1,14,feces metagenome,orig={'pig'} -> infer={'human'},llm,llm_agent:14,llm_agent:14
-PRJNA681085,13,13,1.0,0,yak:13,1,bovine metagenome,orig={'yak'} -> infer={'bovine'},llm,llm_agent:13,llm_agent:13
-PRJNA1004743,12,12,1.0,0,homo sapiens:12,1,rhizosphere metagenome,orig={'human'} -> infer={'plant'},llm,llm_agent:12,llm_agent:12
-PRJNA1023210,12,12,1.0,0,ovis aries:9; bos taurus:3,2,skin metagenome,orig={'sheep'} -> infer={'human'},llm,llm_agent:12,llm_agent:12
-PRJNA1146973,12,12,1.0,0,soil:12,1,plant metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:12,llm_agent:12
-PRJNA339480,24,12,0.5,0,bulk soil with straw and earthworms replicate 3:1; rhizosphere replicate 2:1; rhizosphere replicate 3:1; rhizosphere with straw replicate 2:1; rhizosphere with straw and earthworms replicate 2:1; bulk soil with earthworms replicate 2:1,24,soil metagenome,orig={'plant'} -> infer={'soil'},llm,llm_agent:12,llm_agent:12
-PRJNA771179,12,12,1.0,0,gallus gallus:12,1,lung metagenome,"orig={'bird', 'chicken'} -> infer={'human'}",llm,llm_agent:12,llm_agent:12
-PRJNA784453,12,12,1.0,0,equus ferus przewalskii:6; equus hemionus:6,2,wildlife metagenome,orig={'horse'} -> infer={'wildlife'},llm,llm_agent:12,llm_agent:12
-PRJNA947216,12,12,1.0,0,mus musculus:12,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:12,llm_agent:12
-PRJEB9818,331,11,0.0332,320,mus musculus:11,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:11,llm_agent:11
-PRJNA339659,15,11,0.7333,0,gallus gallus:11; galus galus:4,2,respiratory tract metagenome,"orig={'bird', 'chicken'} -> infer={'human'}",llm,llm_agent:11,llm_agent:11
-PRJNA732170,10,10,1.0,0,sus scrofa:10,1,human lung metagenome,orig={'pig'} -> infer={'human'},llm,llm_agent:10,llm_agent:10
-PRJNA761454,96,10,0.1042,0,homo sapiens:81; water control:10; enviromental control:5,3,human gut metagenome;viral metagenome,orig={'freshwater'} -> infer={'human'},llm,llm_agent;llm_agent:10,llm_agent;llm_agent:10
-PRJEB58189,138,9,0.0652,37,vicia faba:47; triticum aestivum:43; soil metagenome:9; hordeum vulgare:1; avena sativa:1,5,rhizosphere metagenome,"orig={'soil', 'environment'} -> infer={'plant'}",llm,llm_agent:9,llm_agent:9
-PRJNA732769,72,9,0.125,0,c57/bl6 mouse:63; homo sapiens:9,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:9,llm_agent:9
-PRJNA867479,9,9,1.0,0,plant:9,1,soil metagenome,orig={'plant'} -> infer={'soil'},llm,llm_agent:9,llm_agent:9
-PRJNA644399,8,8,1.0,0,mus musculus:8,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:8,llm_agent:8
-PRJNA1196983,7,7,1.0,0,mus musculus:7,1,human skin metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:7,llm_agent:7
-PRJNA595966,146,7,0.0479,0,mus musculus:139; homo sapiens:7,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:7,llm_agent:7
-PRJNA1164810,6,6,1.0,0,water sample:6,1,aquatic metagenome,orig={'freshwater'} -> infer={'marine'},llm,llm_agent:6,llm_agent:6
-PRJNA259179,6,6,1.0,0,mus musculus:6,1,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:6,llm_agent:6
-PRJNA522688,18,6,0.3333,0,mus musculus:12; homo sapiens:6,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:6,llm_agent:6
-PRJNA723631,27,6,0.2222,0,raphanus sativus:21; gallus gallus:6,2,soil metagenome,"orig={'bird', 'chicken'} -> infer={'soil'}",llm,llm_agent:6,llm_agent:6
-PRJNA988937,35,6,0.1714,12,fish:17; gallus gallus:6,2,aquaculture metagenome;fish gut metagenome,"orig={'bird', 'chicken'} -> infer={'fish'}",llm,llm_agent;llm_agent:6,llm_agent;llm_agent:6
-PRJNA392516,30,5,0.1667,5,bovine:20; yak:5,2,bovine gut metagenome,orig={'yak'} -> infer={'bovine'},llm,llm_agent:5,llm_agent:5
-PRJNA655627,8,5,0.625,0,rhizosphere soil:1; zea mays subsp. mays:1; bulk soil 4:1; replica:1; bulk soil 3:1; bulk soil 2:1,8,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:5,llm_agent:5
-PRJNA665129,5,5,1.0,0,ovis aries:4; bos taurus:1,2,feces metagenome,orig={'sheep'} -> infer={'human'},llm,llm_agent:5,llm_agent:5
-PRJNA820553,15,5,0.3333,6,herbivore:4; equus asinus:3; bird:2,3,feces metagenome,orig={'horse'} -> infer={'human'},llm,llm_agent:5,llm_agent:5
-PRJNA853148,5,5,1.0,0,plant:5,1,soil metagenome,orig={'plant'} -> infer={'soil'},llm,llm_agent:5,llm_agent:5
-PRJNA1031997,15,4,0.2667,5,gallus gallus:6; bubalus bubalis:2; sus scrofa:2,3,chicken gut metagenome,"orig={'buffalo', 'bovine'} -> infer={'chicken'}",llm,llm_agent:4,llm_agent:4
-PRJNA661048,19,4,0.2105,0,gorilla:7; homo sapiens:4; pongo abelii:4; pan troglodytes:4,4,primate metagenome,orig={'human'} -> infer={'primate'},llm,llm_agent:4,llm_agent:4
-PRJNA773920,387,4,0.0103,0,homo sapiens:383; water:4,2,clinical metagenome,orig={'freshwater'} -> infer={'human'},llm,llm_agent:4,llm_agent:4
-PRJNA941130,4,4,1.0,0,bubalus bubalis:2; sus scrofa domesticus:2,2,feces metagenome,"orig={'buffalo', 'bovine'} -> infer={'human'}",llm,llm_agent:4,llm_agent:4
-PRJNA217380,3,3,1.0,0,balb/c mice in l group:1; balb/c mice in h group:1; balb/c mice in c group:1,3,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:3,llm_agent:3
-PRJNA447857,14,3,0.2143,11,fish:2; hemichromis guttatus fish:1,2,viral metagenome,orig={'fish'} -> infer={'human'},llm,llm_agent:3,llm_agent:3
-PRJNA510571,1255,3,0.0024,1045,homo sapiens:198; 9606:2; environment:2; gallus gallus:1; alouatta caraya #3:1; papio hamadryas:1,11,human viral metagenome,orig={'primate'} -> infer={'human'},llm,llm_agent:3,llm_agent:3
-PRJNA561510,33,3,0.0909,0,homo sapiens:30; soil:3,2,human gut metagenome,orig={'soil'} -> infer={'human'},llm,llm_agent:3,llm_agent:3
-PRJNA564982,5,3,0.6,0,stray dog:1; opossum:1; procyon lotor:1; canis latrans:1; owned dog:1,5,wildlife metagenome,orig={'canine'} -> infer={'wildlife'},llm,llm_agent:3,llm_agent:3
-PRJNA666664,23,3,0.1304,0,homo sapiens:20; rattus:3,2,human viral metagenome,orig={'rat'} -> infer={'human'},llm,llm_agent:3,llm_agent:3
-PRJNA678469,6,3,0.5,0,bulk soil 3:1; bulk soil 2:1; rhizosphere rep 1:1; rhizosphere rep 3:1; rhizosphere rep 2:1; bulk soil 1:1,6,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:3,llm_agent:3
-PRJNA678475,6,3,0.5,0,bulk soil 3:1; bulk soil 1:1; rhizosphere rep 3:1; rhizosphere rep 2:1; rhizosphere rep 1:1; bulk soil 2:1,6,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:3,llm_agent:3
-PRJNA679303,3,3,1.0,0,homo sapiens:3,1,lake metagenome,orig={'human'} -> infer={'freshwater'},llm,llm_agent:3,llm_agent:3
-PRJNA731454,9,3,0.3333,0,stipagrostis:6; soil:3,2,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:3,llm_agent:3
-PRJNA837707,34,3,0.0882,0,urobatis halleri:16; myliobatis californica:15; water:3,3,fish metagenome,orig={'freshwater'} -> infer={'fish'},llm,llm_agent:3,llm_agent:3
-PRJEB49339,4,2,0.5,0,sus scrofa:2; cervidae:2,2,wildlife metagenome,orig={'pig'} -> infer={'wildlife'},llm,llm_agent:2,llm_agent:2
-PRJNA1184326,2,2,1.0,0,mice:2,1,human gut metagenome:colon;human gut metagenome:colorectal,orig={'mouse'} -> infer={'human'},rule,literature;literature:2,rule_host_human;rule_host_human:2
-PRJNA293004,2,2,1.0,0,soil:2,1,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:2,llm_agent:2
-PRJNA454878,16,2,0.125,0,oncorhynchus mykiss:14; pond water:2,2,fish metagenome,orig={'freshwater'} -> infer={'fish'},llm,llm_agent:2,llm_agent:2
-PRJNA524703,440,2,0.0045,0,homo sapiens:400; enviromental control:36; lambdavirus lambda:2; mus musculus:2,4,human gut metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:2,llm_agent:2
-PRJNA588182,2,2,1.0,0,soil:2,1,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:2,llm_agent:2
-PRJNA588665,2,2,1.0,0,soil:2,1,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:2,llm_agent:2
-PRJNA607213,5,2,0.4,0,rhizosphere soil:2; soil:2; rhizosphere:1,3,rhizosphere metagenome,orig={'soil'} -> infer={'plant'},llm,llm_agent:2,llm_agent:2
-PRJNA685386,15,2,0.1333,0,betula:6; betula pendula:4; betula pubescens:3; apis mellifera:2,4,plant metagenome,orig={'bee'} -> infer={'plant'},llm,llm_agent:2,llm_agent:2
-PRJEB36405,13,1,0.0769,0,homo sapiens:10; cairina moschata:1; canis lupus familiaris:1; anas superciliosa:1,4,human gut metagenome,orig={'canine'} -> infer={'human'},llm,llm_agent:1,llm_agent:1
-PRJNA277211,2,1,0.5,0,water:1; utricularia gibba:1,2,plant metagenome,orig={'freshwater'} -> infer={'plant'},llm,llm_agent:1,llm_agent:1
-PRJNA292888,17,1,0.0588,0,rhinolophus sp.:3; pipistrellus sp.:2; triaenops afer:1; hipposideros caffer:1; rousettus aegyptiacus:1; macroglossus sobrinus:1,14,viral metagenome,orig={'mouse'} -> infer={'human'},llm,llm_agent:1,llm_agent:1
-PRJNA432129,1,1,1.0,0,zea mays l.:1,1,soil metagenome,orig={'plant'} -> infer={'soil'},llm,llm_agent:1,llm_agent:1
-PRJNA435753,86,1,0.0116,0,siderastrea siderea:80; seawater:5; water:1,3,coral metagenome,orig={'freshwater'} -> infer={'marine'},llm,llm_agent:1,llm_agent:1
-PRJNA515569,3,1,0.3333,2,water:1,1,aquaculture metagenome,orig={'freshwater'} -> infer={'fish'},llm,llm_agent:1,llm_agent:1
-PRJNA639909,9,1,0.1111,0,mus musculus:8; homo sapiens:1,2,mouse gut metagenome,orig={'human'} -> infer={'mouse'},llm,llm_agent:1,llm_agent:1
-PRJNA644737,1,1,1.0,0,water sample:1,1,aquatic viral metagenome,"orig={'freshwater'} -> infer={'human', 'marine'}",llm,llm_agent:1,llm_agent:1
-PRJNA685265,23,1,0.0435,2,homo sapiens:16; homo sapiens neanderthalensis:4; pan troglodytes:1,3,oral metagenome,orig={'primate'} -> infer={'human'},llm,llm_agent:1,llm_agent:1
-PRJNA685390,4,1,0.25,0,betula:2; betula pubescens:1; apis mellifera:1,3,plant metagenome,orig={'bee'} -> infer={'plant'},llm,llm_agent:1,llm_agent:1
-PRJNA700111,2,1,0.5,0,water:1; soil:1,2,lake metagenome,orig={'soil'} -> infer={'freshwater'},llm,llm_agent:1,llm_agent:1
-PRJNA718631,46,1,0.0217,0,canis lupus familiaris:45; equus ferus caballus:1,2,canine metagenome,orig={'horse'} -> infer={'canine'},llm,llm_agent:1,llm_agent:1
-PRJNA775816,1,1,1.0,0,equus caballus:1,1,milk metagenome,"orig={'horse'} -> infer={'bovine', 'human'}",llm,llm_agent:1,llm_agent:1
+project_accession,n_runs_in_project,n_conflict_rows,conflict_ratio,orig_sn_dist,orig_distinct_sn,orig_host_dist,infer_value_projlevel,conflict_sn_pair,misjudge_source,infer_source_detail,infer_method_detail
+PRJEB34634,2076,2076,1.0,sediment metagenome:2076,1,,wastewater metagenome;freshwater metagenome,orig=sediment metagenome -> infer=wastewater metagenome freshwater metagenome,llm,llm_agent;llm_agent:2076,llm_agent;llm_agent:2076
+PRJEB42019,2800,678,0.2421,gut metagenome:734; soil metagenome:642; marine sediment metagenome:244; freshwater sediment metagenome:170; sponge metagenome:156; marine metagenome:142; insect metagenome:110; algae metagenome:98,22,myodes glareolus:330; atta colombica:46; bankia setacea:44; phyllospora comosa:44; tetragonisca angustula:40; porites lobata:40; pocillopora damicornis:38; pericharax heteroraphis:26,Homo sapiens:human;soil metagenome,orig=marine sediment metagenome -> infer=homo sapiens human soil metagenome,rule,literature;study_meta:678,rule_host_human;rule_host_env:678
+PRJEB58441,587,587,1.0,feces metagenome:587,1,,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:587,llm_agent:587
+PRJNA217052,8503,312,0.0367,oral metagenome:4783; gut metagenome:3408; soil metagenome:312,3,,human gut metagenome;human oral metagenome;human skin metagenome,orig=soil metagenome -> infer=human gut metagenome human oral metagenome human skin metagenome,llm,llm_agent;llm_agent;llm_agent:312,llm_agent;llm_agent;llm_agent:312
+PRJNA259274,243,243,1.0,gut metagenome:243,1,chlorocebus sabaeus:243,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:243,llm_agent:243
+PRJNA863598,198,198,1.0,oral metagenome:198,1,canis lupus familiaris:198,canine metagenome,orig=oral metagenome -> infer=canine metagenome,llm,llm_agent:198,llm_agent:198
+PRJNA831632,145,145,1.0,gut metagenome:130; feces metagenome:15,2,hoolock tianxing:145,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:145,llm_agent:145
+PRJNA788958,135,135,1.0,gut metagenome:135,1,equus caballus:135,horse metagenome,orig=gut metagenome -> infer=horse metagenome,llm,llm_agent:135,llm_agent:135
+PRJNA880353,113,113,1.0,feces metagenome:113,1,equus caballus:113,horse metagenome,orig=feces metagenome -> infer=horse metagenome,llm,llm_agent:113,llm_agent:113
+PRJNA936782,72,72,1.0,gut metagenome:72,1,canis lupus familiaris:72,canine metagenome,orig=gut metagenome -> infer=canine metagenome,llm,llm_agent:72,llm_agent:72
+PRJNA593850,67,67,1.0,salmonella enterica subsp enterica serovar typhimurium:67,1,lettuce_62;lettuce 62:1; lettuce_51;lettuce 51:1; lettuce_49;lettuce 49:1; lettuce_47;lettuce 47:1; lettuce_46;lettuce 46:1; lettuce_45;lettuce 45:1; lettuce_38;lettuce 38:1; lettuce_35;lettuce 35:1,phyllosphere metagenome,orig=salmonella enterica subsp enterica serovar typhimurium -> infer=phyllosphere metagenome,llm,llm_agent:67,llm_agent:67
+PRJNA491509,55,55,1.0,gut metagenome:55,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:55,llm_agent:55
+PRJNA635116,51,51,1.0,gut metagenome:51,1,human12:1; human11:1; human10:1; gorilla4:1; human6:1; human5:1; human2:1; human1:1,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:51,llm_agent:51
+PRJNA788491,49,49,1.0,gut metagenome:49,1,tympanuchus phasianellus:27; tympanuchus cupido:22,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:49,llm_agent:49
+PRJNA271618,48,48,1.0,gut metagenome:48,1,papio cynocephalus:48,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:48,llm_agent:48
+PRJNA808857,47,47,1.0,sediment metagenome:47,1,,freshwater metagenome;biofilm metagenome,orig=sediment metagenome -> infer=freshwater metagenome biofilm metagenome,llm,llm_agent;llm_agent:47,llm_agent;llm_agent:47
+PRJNA691978,61,45,0.7377,feces metagenome:36; freshwater metagenome:13; gut metagenome:6; human gut metagenome:3; wastewater metagenome:3,5,sus scrofa:18; homo sapiens:15; bos taurus:12,freshwater metagenome,orig=feces metagenome -> infer=freshwater metagenome,llm,llm_agent:45,llm_agent:45
+PRJEB43167,42,42,1.0,gut metagenome:42,1,,horse metagenome,orig=gut metagenome -> infer=horse metagenome,llm,llm_agent:42,llm_agent:42
+PRJEB22765,40,40,1.0,gut metagenome:40,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:40,llm_agent:40
+PRJNA436633,40,40,1.0,gut metagenome:40,1,rhinopithecus roxellana:40,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:40,llm_agent:40
+PRJNA590071,74,40,0.5405,sediment metagenome:40; freshwater metagenome:34,2,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:40,llm_agent:40
+PRJNA843963,263,38,0.1445,human metagenome:116; feces metagenome:61; sheep metagenome:38; bovine gut metagenome:27; goat gut metagenome:20; chicken gut metagenome:1,6,homo sapiens:116; ovis aries:38; bos taurus:38; gallus gallus domesticus:36; capra aegagrus hircus:35,human gut metagenome,orig=sheep metagenome -> infer=human gut metagenome,llm,llm_agent:38,llm_agent:38
+PRJNA533779,56,36,0.6429,groundwater metagenome:36; soil metagenome:16; manure metagenome:4,3,,soil metagenome,orig=groundwater metagenome -> infer=soil metagenome,llm,llm_agent:36,llm_agent:36
+PRJNA548524,35,35,1.0,sediment metagenome:35,1,2d-sediment-110cm:1; 2d-blank-2:1; 1fd-sediment-80cm:1; 1fd-sediment-58cm:1; 1fd-sediment-256cm:1; 1fd-sediment-230cm:1; 2d-sediment-230cm:1; 2d-sediment-140cm:1,soil metagenome,orig=sediment metagenome -> infer=soil metagenome,llm,llm_agent:35,llm_agent:35
+PRJNA723283,35,35,1.0,gut metagenome:35,1,,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:35,llm_agent:35
+PRJNA999692,35,35,1.0,lung metagenome:22; gut metagenome:13,2,mus musculus:35,mouse metagenome,orig=lung metagenome -> infer=mouse metagenome,llm,llm_agent:35,llm_agent:35
+PRJNA837707,34,34,1.0,skin metagenome:31; seawater metagenome:3,2,urobatis halleri:16; myliobatis californica:15; water:3,fish metagenome,orig=skin metagenome -> infer=fish metagenome,llm,llm_agent:34,llm_agent:34
+PRJNA729051,32,32,1.0,gut metagenome:32,1,macaca mulatta:32,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:32,llm_agent:32
+PRJNA1159740,31,31,1.0,soil metagenome:31,1,ovis aries:17; cow:11; capra hircus:3,Homo sapiens:human,orig=soil metagenome -> infer=homo sapiens human,rule,literature:31,rule_host_human:31
+PRJNA297579,31,31,1.0,gut metagenome:31,1,gymnogyps californianus:31,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:31,llm_agent:31
+PRJNA695572,55,31,0.5636,sediment metagenome:31; lake water metagenome:24,2,,freshwater metagenome,orig=sediment metagenome -> infer=freshwater metagenome,llm,llm_agent:31,llm_agent:31
+PRJNA799478,30,30,1.0,gut metagenome:30,1,rhinopithecus roxellana:10; macaca mulatta:10; nomascus annamensis:5; nomascus leucogenys:3; hylobates pileatus:2,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:30,llm_agent:30
+PRJNA546004,29,29,1.0,gut metagenome:29,1,macaca mulatta:29,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:29,llm_agent:29
+PRJNA728365,29,29,1.0,freshwater sediment metagenome:29,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:29,llm_agent:29
+PRJNA718160,28,28,1.0,gut metagenome:28,1,rhinopithecus roxellana:18; macaca mulatta:10,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:28,llm_agent:28
+PRJDB8987,27,27,1.0,feces metagenome:27,1,macaca fuscata:27,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:27,llm_agent:27
+PRJEB81717,27,27,1.0,gut metagenome:27,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:27,llm_agent:27
+PRJNA512046,27,27,1.0,skin metagenome:27,1,bos taurus:27,bovine metagenome,orig=skin metagenome -> infer=bovine metagenome,llm,llm_agent:27,llm_agent:27
+PRJNA157923,74,26,0.3514,marine metagenome:26; human oral metagenome:24; marine sediment metagenome:24,3,,human oral metagenome;sediment metagenome;aquatic metagenome:water,orig=marine metagenome -> infer=human oral metagenome sediment metagenome aquatic metagenome water,rule,study_meta;study_meta;study_meta:26,rule_host_human;rule_host_env;rule_host_env:26
+PRJNA478556,24,24,1.0,gut metagenome:24,1,macaca sp.:24,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:24,llm_agent:24
+PRJNA541010,24,24,1.0,gut metagenome:24,1,macaca mulatta:24,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:24,llm_agent:24
+PRJNA787384,24,24,1.0,gut metagenome:24,1,rhinopithecus bieti:24,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:24,llm_agent:24
+PRJNA419744,23,23,1.0,gut metagenome:23,1,gorilla gorilla gorilla:23,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:23,llm_agent:23
+PRJNA588650,87,22,0.2529,parvovirus nih cqv:20; eel river basin pequenovirus:15; echovirus:7; murine leukemia virus:6; african swine fever virus:6; blattella germanica densovirus 1:5; invertebrate iridescent virus 31:5; invertebrate iridescent virus 22:4,23,homo sapiens:87,human viral metagenome,orig=eel river basin pequenovirus -> infer=human viral metagenome,llm,llm_agent:22,llm_agent:22
+PRJEB43376,20,20,1.0,soil metagenome:20,1,,sediment metagenome,orig=soil metagenome -> infer=sediment metagenome,llm,llm_agent:20,llm_agent:20
+PRJNA794207,23,20,0.8696,gut metagenome:20; metagenome:2; synthetic metagenome:1,3,spheniscus mendiculus:20,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:20,llm_agent:20
+PRJNA925092,43,20,0.4651,urine metagenome:23; skin metagenome:20,2,canis lupus familiaris:43,canine metagenome,orig=skin metagenome -> infer=canine metagenome,llm,llm_agent:20,llm_agent:20
+PRJNA661048,19,19,1.0,gut metagenome:19,1,gorilla:7; homo sapiens:4; pongo abelii:4; pan troglodytes:4,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:19,llm_agent:19
+PRJNA728237,33,19,0.5758,aquatic metagenome:14; soil metagenome:11; sediment metagenome:8,3,,salt lake metagenome,orig=soil metagenome -> infer=salt lake metagenome,llm,llm_agent:19,llm_agent:19
+PRJNA525318,18,18,1.0,gut metagenome:18,1,carpenter bee 1:1; carpenter bee 14:1; carpenter bee 15:1; carpenter bee 16:1; carpenter bee 18:1; carpenter bee 4:1; carpenter bee 5:1; carpenter bee 2:1,bee metagenome,orig=gut metagenome -> infer=bee metagenome,llm,llm_agent:18,llm_agent:18
+PRJNA678545,18,18,1.0,sediment metagenome:18,1,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:18,llm_agent:18
+PRJNA770268,18,18,1.0,sediment metagenome:18,1,,soil metagenome,orig=sediment metagenome -> infer=soil metagenome,llm,llm_agent:18,llm_agent:18
+PRJNA820543,18,18,1.0,gut metagenome:18,1,anser anser:18,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:18,llm_agent:18
+PRJNA853554,18,18,1.0,gut metagenome:18,1,yak(bos grunniens);yak:6,bovine metagenome,orig=gut metagenome -> infer=bovine metagenome,llm,llm_agent:18,llm_agent:18
+PRJNA450906,17,17,1.0,gut metagenome:17,1,lagopus muta:17,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:17,llm_agent:17
+PRJNA748244,17,17,1.0,sediment metagenome:17,1,,freshwater metagenome;hydrocarbon metagenome,orig=sediment metagenome -> infer=freshwater metagenome hydrocarbon metagenome,llm,llm_agent;llm_agent:17,llm_agent;llm_agent:17
+PRJNA272922,17,16,0.9412,plant metagenome:8; phyllosphere metagenome:5; soil metagenome:3; bog metagenome:1,4,populus alba:5; sphagnum sp.:1,terrestrial metagenome;marine metagenome,orig=plant metagenome -> infer=terrestrial metagenome marine metagenome,llm,llm_agent;llm_agent:16,llm_agent;llm_agent:16
+PRJNA590085,16,16,1.0,gut metagenome:16,1,pavo cristatus:1; cygnus atratus:1; ara ararauna:1; struthio camelus:1; bycanistes brevis:1; meleagris gallopavo:1; gallus gallus:1; grus japonensis:1,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:16,llm_agent:16
+PRJNA775881,15,15,1.0,sediment metagenome:15,1,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:15,llm_agent:15
+PRJNA681085,13,13,1.0,oral nasopharyngeal metagenome:13,1,yak:13,bovine metagenome,orig=oral nasopharyngeal metagenome -> infer=bovine metagenome,llm,llm_agent:13,llm_agent:13
+PRJNA997718,13,13,1.0,gut metagenome:13,1,trachypithecus francoisi:13,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:13,llm_agent:13
+PRJEB43337,12,12,1.0,gut metagenome:12,1,macaca mulatta:12,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:12,llm_agent:12
+PRJNA606765,12,12,1.0,feces metagenome:12,1,propithecus diadema:8; indri indri:4,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:12,llm_agent:12
+PRJNA684050,12,12,1.0,feces metagenome:12,1,propithecus coquereli:12,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:12,llm_agent:12
+PRJNA695108,12,12,1.0,gut metagenome:12,1,danio rerio:12,fish metagenome,orig=gut metagenome -> infer=fish metagenome,llm,llm_agent:12,llm_agent:12
+PRJNA776392,25,12,0.48,seawater metagenome:13; sediment metagenome:12,2,,seawater metagenome,orig=sediment metagenome -> infer=seawater metagenome,llm,llm_agent:12,llm_agent:12
+PRJNA815823,12,12,1.0,soil metagenome:12,1,,sediment metagenome,orig=soil metagenome -> infer=sediment metagenome,llm,llm_agent:12,llm_agent:12
+PRJNA1010380,11,11,1.0,soil metagenome:11,1,,sediment metagenome,orig=soil metagenome -> infer=sediment metagenome,llm,llm_agent:11,llm_agent:11
+PRJNA438436,11,11,1.0,gut metagenome:11,1,equus caballus:11,horse metagenome,orig=gut metagenome -> infer=horse metagenome,llm,llm_agent:11,llm_agent:11
+PRJNA574841,11,11,1.0,feces metagenome:11,1,.presbytis femoralis:6; .presbytis percura:4; .presbytis siamensis cf. cana:1,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:11,llm_agent:11
+PRJNA788992,11,11,1.0,sediment metagenome:11,1,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:11,llm_agent:11
+PRJEB12884,10,10,1.0,sediment metagenome:10,1,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:10,llm_agent:10
+PRJNA1084235,10,10,1.0,sediment metagenome:10,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:10,llm_agent:10
+PRJNA574851,10,10,1.0,feces metagenome:10,1,macaca mulatta:10,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:10,llm_agent:10
+PRJNA752361,10,10,1.0,bovine metagenome:10,1,holstein:10,milk metagenome;dairy metagenome,orig=bovine metagenome -> infer=milk metagenome dairy metagenome,llm,llm_agent;llm_agent:10,llm_agent;llm_agent:10
+PRJNA898361,10,10,1.0,soil metagenome:10,1,,freshwater sediment metagenome,orig=soil metagenome -> infer=freshwater sediment metagenome,llm,llm_agent:10,llm_agent:10
+PRJNA303107,8,8,1.0,gut metagenome:8,1,papio kindae:6; papio anubis:2,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA385831,49,8,0.1633,wastewater metagenome:21; freshwater sediment metagenome:20; freshwater metagenome:8,3,,wastewater metagenome;sludge metagenome;sediment metagenome,orig=freshwater metagenome -> infer=wastewater metagenome sludge metagenome sediment metagenome,llm,llm_agent;llm_agent;llm_agent:8,llm_agent;llm_agent;llm_agent:8
+PRJNA430956,8,8,1.0,gut metagenome:8,1,papio kindae:6; papio anubis:2,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA640385,8,8,1.0,sediment metagenome:8,1,sediment:8,human feces metagenome,orig=sediment metagenome -> infer=human feces metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA801405,32,8,0.25,invertebrate metagenome:24; fish metagenome:8,2,poeobius meseres:5; euphausia pacifica:4; acanthamunnopsis milleri:4; eusergestes similis:4; stenobrachius leucopsarus:4; cyclothone atraria:3; munneurycope murrayi:3; vampyroteuthis infernalis:2,marine metagenome,orig=fish metagenome -> infer=marine metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA847753,8,8,1.0,gut metagenome:8,1,seagull:8,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA848403,8,8,1.0,gut metagenome:8,1,seagull:8,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA849401,8,8,1.0,gut metagenome:8,1,seagull:8,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:8,llm_agent:8
+PRJNA860353,24,8,0.3333,wastewater metagenome:8; soil metagenome:8; gut metagenome:8,3,,dairy metagenome;wastewater metagenome;soil metagenome,orig=gut metagenome -> infer=dairy metagenome wastewater metagenome soil metagenome,llm,llm_agent;llm_agent;llm_agent:8,llm_agent;llm_agent;llm_agent:8
+PRJNA367006,7,7,1.0,hypersaline lake metagenome:7,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:7,llm_agent:7
+PRJNA685791,8,7,0.875,gut metagenome:7; metagenome:1,2,cygnus olor:7,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:7,llm_agent:7
+PRJNA728091,7,7,1.0,feces metagenome:7,1,cow-dung:7,cow dung metagenome,orig=feces metagenome -> infer=cow dung metagenome,llm,llm_agent:7,llm_agent:7
+PRJNA792827,7,7,1.0,pond metagenome:7,1,,wetland metagenome;sediment metagenome,orig=pond metagenome -> infer=wetland metagenome sediment metagenome,llm,llm_agent;llm_agent:7,llm_agent;llm_agent:7
+PRJNA825364,7,7,1.0,gut metagenome:7,1,apis mellifera:7,bee metagenome,orig=gut metagenome -> infer=bee metagenome,llm,llm_agent:7,llm_agent:7
+PRJEB34153,6,6,1.0,sediment metagenome:6,1,,groundwater metagenome,orig=sediment metagenome -> infer=groundwater metagenome,llm,llm_agent:6,llm_agent:6
+PRJEB73590,139,6,0.0432,human feces metagenome:81; wastewater metagenome:30; chicken gut metagenome:8; bird metagenome:6; bovine gut metagenome:5; unidentified:3; goat gut metagenome:3; sheep gut metagenome:2,9,,human gut metagenome:stool;aquatic metagenome:water,orig=bird metagenome -> infer=human gut metagenome stool aquatic metagenome water,rule,literature;literature:6,rule_host_human;rule_host_env:6
+PRJEB9403,1624,6,0.0037,gut metagenome:1344; feces metagenome:48; unidentified:9; sediment metagenome:6; prunus scoparia:2; placida verticillata:2; prunus spartioides:2; caliphylla viridis:2,142,,human gut metagenome,orig=sediment metagenome -> infer=human gut metagenome,llm,llm_agent:6,llm_agent:6
+PRJNA367008,6,6,1.0,hypersaline lake metagenome:6,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:6,llm_agent:6
+PRJNA556305,21,6,0.2857,candidatus bathyarchaeota archaeon:15; soil metagenome:6,2,,sediment metagenome,orig=soil metagenome -> infer=sediment metagenome,llm,llm_agent:6,llm_agent:6
+PRJNA723631,27,6,0.2222,soil metagenome:21; feces metagenome:6,2,raphanus sativus:21; gallus gallus:6,soil metagenome,orig=feces metagenome -> infer=soil metagenome,llm,llm_agent:6,llm_agent:6
+PRJNA880745,6,6,1.0,lumpy skin disease virus:6,1,bos indicus:6,bovine metagenome,orig=lumpy skin disease virus -> infer=bovine metagenome,llm,llm_agent:6,llm_agent:6
+PRJNA882225,10,6,0.6,sediment metagenome:6; groundwater metagenome:4,2,,groundwater metagenome,orig=sediment metagenome -> infer=groundwater metagenome,llm,llm_agent:6,llm_agent:6
+PRJNA898587,12,6,0.5,aquatic metagenome:6; soil metagenome:6,2,,sediment metagenome;water metagenome,orig=soil metagenome -> infer=sediment metagenome water metagenome,llm,llm_agent;llm_agent:6,llm_agent;llm_agent:6
+PRJNA367005,5,5,1.0,hypersaline lake metagenome:5,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:5,llm_agent:5
+PRJNA541281,5,5,1.0,salt lake metagenome:5,1,,brine metagenome;volcano metagenome,orig=salt lake metagenome -> infer=brine metagenome volcano metagenome,llm,llm_agent;llm_agent:5,llm_agent;llm_agent:5
+PRJNA573913,5,5,1.0,sediment metagenome:5,1,,salt lake metagenome,orig=sediment metagenome -> infer=salt lake metagenome,llm,llm_agent:5,llm_agent:5
+PRJNA718631,46,5,0.1087,eye metagenome:41; skin metagenome:4; oral metagenome:1,3,canis lupus familiaris:45; equus ferus caballus:1,canine metagenome,orig=skin metagenome -> infer=canine metagenome,llm,llm_agent:5,llm_agent:5
+PRJNA733006,5,5,1.0,gut metagenome:5,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:5,llm_agent:5
+PRJNA950101,17,5,0.2941,seawater metagenome:8; freshwater metagenome:5; viral metagenome:4,3,,seawater metagenome,orig=freshwater metagenome -> infer=seawater metagenome,llm,llm_agent:5,llm_agent:5
+PRJNA1040917,8,4,0.5,sediment metagenome:4; industrial waste metagenome:4,2,,groundwater metagenome,orig=sediment metagenome -> infer=groundwater metagenome,rule,literature:4,rule_host_env:4
+PRJNA1114660,4,4,1.0,gut metagenome:4,1,columba livia:4,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:4,llm_agent:4
+PRJNA988937,35,4,0.1143,fish gut metagenome:17; sludge metagenome:8; chicken gut metagenome:6; freshwater metagenome:4,4,fish:17; gallus gallus:6,aquaculture metagenome;fish gut metagenome,orig=freshwater metagenome -> infer=aquaculture metagenome fish gut metagenome,llm,llm_agent;llm_agent:4,llm_agent;llm_agent:4
+PRJNA205039,18,3,0.1667,homo sapiens:15; soil metagenome:3,2,,human metagenome,orig=soil metagenome -> infer=human metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA255985,9,3,0.3333,freshwater metagenome:3; synthetic metagenome:3; human metagenome:3,3,,human oral metagenome:saliva;aquatic metagenome:water,orig=freshwater metagenome -> infer=human oral metagenome saliva aquatic metagenome water,rule,study_meta;study_meta:3,rule_host_human;rule_host_env:3
+PRJNA276106,5,3,0.6,plant metagenome:3; algae metagenome:2,2,conocephalum conicum:3; chaetosphaeridium globosum:1; coleochaete pulvinata:1,freshwater metagenome,orig=plant metagenome -> infer=freshwater metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA380975,9,3,0.3333,shrimp gut metagenome:3; sediment metagenome:3; aquatic metagenome:3,3,penaeus vannamei:3,shrimp gut metagenome,orig=sediment metagenome -> infer=shrimp gut metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA400642,3,3,1.0,sediment metagenome:3,1,,brine metagenome,orig=sediment metagenome -> infer=brine metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA43449,3,3,1.0,marine metagenome:3,1,,hypersaline lake metagenome,orig=marine metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA556841,8,3,0.375,freshwater sediment metagenome:5; soil metagenome:3,2,,freshwater sediment metagenome,orig=soil metagenome -> infer=freshwater sediment metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA561510,33,3,0.0909,human gut metagenome:30; soil metagenome:3,2,homo sapiens:30; soil:3,human gut metagenome,orig=soil metagenome -> infer=human gut metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA776043,3,3,1.0,sediment metagenome:3,1,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA847603,6,3,0.5,microbial mat metagenome:3; hypersaline lake metagenome:3,2,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA854777,9,3,0.3333,gut metagenome:6; leaf metagenome:3,2,,insect gut metagenome,orig=leaf metagenome -> infer=insect gut metagenome,llm,llm_agent:3,llm_agent:3
+PRJNA868283,7,3,0.4286,soil metagenome:4; freshwater metagenome:3,2,,soil metagenome;water metagenome,orig=freshwater metagenome -> infer=soil metagenome water metagenome,llm,llm_agent;llm_agent:3,llm_agent;llm_agent:3
+PRJDB12486,2,2,1.0,blood metagenome:2,1,bos taurus:2,bovine metagenome,orig=blood metagenome -> infer=bovine metagenome,llm,llm_agent:2,llm_agent:2
+PRJDB4366,2,2,1.0,gut metagenome:2,1,apostichopus japonicus:2,sea cucumber metagenome,orig=gut metagenome -> infer=sea cucumber metagenome,llm,llm_agent:2,llm_agent:2
+PRJEB6102,2,2,1.0,sediment metagenome:2,1,,lake water metagenome,orig=sediment metagenome -> infer=lake water metagenome,llm,llm_agent:2,llm_agent:2
+PRJEB9426,2,2,1.0,gut metagenome:2,1,,marine metagenome,orig=gut metagenome -> infer=marine metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA1184326,2,2,1.0,mouse metagenome:2,1,mice:2,human gut metagenome:colon;human gut metagenome:colorectal,orig=mouse metagenome -> infer=human gut metagenome colon human gut metagenome colorectal,rule,literature;literature:2,rule_host_human;rule_host_human:2
+PRJNA172151,2,2,1.0,groundwater metagenome:2,1,,soil metagenome,orig=groundwater metagenome -> infer=soil metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA316560,2,2,1.0,gut metagenome:2,1,anser indicus:2,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA316570,2,2,1.0,gut metagenome:2,1,anser indicus:2,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA432360,2,2,1.0,clinical metagenome:2,1,porcine:2,pig metagenome,orig=clinical metagenome -> infer=pig metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA454878,16,2,0.125,metagenome:14; pond metagenome:2,2,oncorhynchus mykiss:14; pond water:2,fish metagenome,orig=pond metagenome -> infer=fish metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA493817,2,2,1.0,feces metagenome:2,1,,horse metagenome,orig=feces metagenome -> infer=horse metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA625573,2,2,1.0,soil metagenome:2,1,,pond metagenome,orig=soil metagenome -> infer=pond metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA657304,21,2,0.0952,fossil metagenome:11; feces metagenome:8; soil metagenome:2,3,canis lupus familiaris:11; canis lupus familiaris - sh high protein:1; canis lupus familiaris - br low protein:1; canis lupus familiaris - am high protein:1; canis lupus familiaris - am low protein:1; canis lupus familiaris - sh low protein:1; canis lupus familiaris - ho low protein:1; canis lupus familiaris - br high protein:1,canine gut metagenome,orig=soil metagenome -> infer=canine gut metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA785751,2,2,1.0,marine metagenome:2,1,,human blood metagenome,orig=marine metagenome -> infer=human blood metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA791766,78,2,0.0256,human metagenome:76; soil metagenome:2,2,homo sapiens:78,human oral metagenome,orig=soil metagenome -> infer=human oral metagenome,llm,llm_agent:2,llm_agent:2
+PRJNA851189,2,2,1.0,gut metagenome:2,1,vulpes vulpes:2,canine metagenome,orig=gut metagenome -> infer=canine metagenome,llm,llm_agent:2,llm_agent:2
+PRJEB34475,1,1,1.0,microbial mat metagenome:1,1,,freshwater metagenome,orig=microbial mat metagenome -> infer=freshwater metagenome,llm,llm_agent:1,llm_agent:1
+PRJEB38343,48,1,0.0208,fish gut metagenome:47; seawater metagenome:1,2,,fish gut metagenome,orig=seawater metagenome -> infer=fish gut metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA225657,9,1,0.1111,marine sediment metagenome:4; biofilm metagenome:1; freshwater sediment metagenome:1; activated sludge metagenome:1; anaerobic digester metagenome:1; freshwater metagenome:1,6,,sediment metagenome;biofilm metagenome;sludge metagenome;riverine metagenome;aquatic metagenome:water,orig=freshwater metagenome -> infer=sediment metagenome biofilm metagenome sludge metagenome riverine metagenome aquatic metagenome water,rule,study_meta;study_meta;study_meta;study_meta;study_meta:1,rule_host_env;rule_host_env;rule_host_env;rule_host_env;rule_host_env:1
+PRJNA260488,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA261319,8,1,0.125,fish metagenome:7; freshwater metagenome:1,2,anguilla anguilla:7,fish metagenome,orig=freshwater metagenome -> infer=fish metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA288779,1,1,1.0,oral metagenome:1,1,mus musculus:1,mouse metagenome,orig=oral metagenome -> infer=mouse metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA289372,1,1,1.0,soda lake metagenome:1,1,,alkali sediment metagenome,orig=soda lake metagenome -> infer=alkali sediment metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA290860,21,1,0.0476,soil metagenome:20; lake water metagenome:1,2,soil:9,soil metagenome,orig=lake water metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA335827,1,1,1.0,lung metagenome:1,1,bos taurus:1,bovine metagenome,orig=lung metagenome -> infer=bovine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340483,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340484,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340485,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340486,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340487,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340488,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340489,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340490,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340523,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA340524,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA342744,1,1,1.0,gut metagenome:1,1,,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA365089,1,1,1.0,sediment metagenome:1,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA365090,1,1,1.0,sediment metagenome:1,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA365091,1,1,1.0,sediment metagenome:1,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA365092,1,1,1.0,sediment metagenome:1,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA365093,1,1,1.0,sediment metagenome:1,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA365094,1,1,1.0,sediment metagenome:1,1,,marine metagenome,orig=sediment metagenome -> infer=marine metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366317,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366378,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366469,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366493,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366663,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366664,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA366684,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367003,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367004,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367007,1,1,1.0,hypersaline lake metagenome:1,1,,microbial mat metagenome,orig=hypersaline lake metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367150,1,1,1.0,microbial mat metagenome:1,1,,rhizosphere metagenome,orig=microbial mat metagenome -> infer=rhizosphere metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367347,1,1,1.0,groundwater metagenome:1,1,,soil metagenome,orig=groundwater metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367348,1,1,1.0,groundwater metagenome:1,1,,soil metagenome,orig=groundwater metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367349,1,1,1.0,groundwater metagenome:1,1,,soil metagenome,orig=groundwater metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA367350,1,1,1.0,groundwater metagenome:1,1,,soil metagenome,orig=groundwater metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA369683,1,1,1.0,feces metagenome:1,1,anas:1,bird metagenome,orig=feces metagenome -> infer=bird metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA38467,1,1,1.0,freshwater metagenome:1,1,,microbial mat metagenome,orig=freshwater metagenome -> infer=microbial mat metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405310,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405312,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405313,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405314,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405315,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405316,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405317,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405318,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405319,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405320,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405321,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405322,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405323,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405324,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405325,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405326,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405327,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405328,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405329,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405330,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405331,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405332,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405333,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405334,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405335,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405336,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405337,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405338,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405339,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405340,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405341,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405342,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405343,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405344,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405345,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405346,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405347,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405348,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405349,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405350,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405351,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405352,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405353,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405354,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405355,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405356,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405357,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405358,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405359,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405360,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405361,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405362,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405363,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405364,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405365,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405366,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405367,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405368,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405369,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405370,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405371,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405372,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405373,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405374,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405375,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405415,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405416,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405417,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405418,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405419,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405420,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405421,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405422,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405423,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405424,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405425,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405426,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405427,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405428,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405429,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405430,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405431,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405432,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405433,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405434,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405435,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405436,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405437,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405438,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA405439,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406681,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406682,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406683,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406684,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406685,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406686,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406687,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406688,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406689,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406690,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406691,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406692,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406693,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406694,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406695,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406696,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406697,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406698,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406699,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406700,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406701,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406702,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406703,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406704,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406705,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406706,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406707,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406708,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406709,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406710,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406711,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406712,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406713,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406714,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406715,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA406716,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA419426,1,1,1.0,sediment metagenome:1,1,,soda lake metagenome,orig=sediment metagenome -> infer=soda lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA441982,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA441983,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444011,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444012,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444013,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444014,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444015,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444016,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444017,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444018,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444019,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444020,1,1,1.0,sediment metagenome:1,1,,hypersaline lake metagenome,orig=sediment metagenome -> infer=hypersaline lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444148,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444149,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444150,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444153,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444157,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444158,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444161,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444163,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444164,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444167,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444168,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA444173,1,1,1.0,freshwater sediment metagenome:1,1,,soil metagenome,orig=freshwater sediment metagenome -> infer=soil metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA471753,1,1,1.0,gut metagenome:1,1,wild birds:1,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA471756,1,1,1.0,gut metagenome:1,1,parrot:1,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA596855,1,1,1.0,gut metagenome:1,1,cacatua sanguinea:1,bird metagenome,orig=gut metagenome -> infer=bird metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA597254,2,1,0.5,lake water metagenome:1; soil metagenome:1,2,,lake water metagenome,orig=soil metagenome -> infer=lake water metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA599206,1,1,1.0,gut metagenome:1,1,mandrillus leucophaeus:1,primate metagenome,orig=gut metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA690107,2,1,0.5,sediment metagenome:1; freshwater metagenome:1,2,,sulfur spring metagenome,orig=sediment metagenome -> infer=sulfur spring metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA700111,2,1,0.5,freshwater metagenome:1; soil metagenome:1,2,water:1; soil:1,lake metagenome,orig=soil metagenome -> infer=lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA701711,1,1,1.0,gut metagenome:1,1,equus ferus przewalskii:1,horse metagenome,orig=gut metagenome -> infer=horse metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA743411,1,1,1.0,soil metagenome:1,1,,salt lake metagenome,orig=soil metagenome -> infer=salt lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA772288,3,1,0.3333,soil metagenome:1; feces metagenome:1; pond metagenome:1,3,soil:1; domestic animals:1; water:1,soil metagenome;pond metagenome,orig=feces metagenome -> infer=soil metagenome pond metagenome,llm,llm_agent;llm_agent:1,llm_agent;llm_agent:1
+PRJNA782213,22,1,0.0455,gut metagenome:21; soil metagenome:1,2,eisenia fetida:21; environment:1,invertebrate gut metagenome,orig=soil metagenome -> infer=invertebrate gut metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA783029,5,1,0.2,aquatic metagenome:4; sediment metagenome:1,2,,lake metagenome,orig=sediment metagenome -> infer=lake metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA812273,1,1,1.0,feces metagenome:1,1,nomascus hainanus:1,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA868285,2,1,0.5,soil metagenome:1; freshwater metagenome:1,2,,soil metagenome;water metagenome,orig=freshwater metagenome -> infer=soil metagenome water metagenome,llm,llm_agent;llm_agent:1,llm_agent;llm_agent:1
+PRJNA884830,1,1,1.0,feces metagenome:1,1,,primate metagenome,orig=feces metagenome -> infer=primate metagenome,llm,llm_agent:1,llm_agent:1
+PRJNA900058,1,1,1.0,blood metagenome:1,1,bos taurus:1,bovine metagenome,orig=blood metagenome -> infer=bovine metagenome,llm,llm_agent:1,llm_agent:1

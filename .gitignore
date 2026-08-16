@@ -2,4 +2,4 @@
 .script/*/
 .tmp/
 .log/
-*.gz
+*.tar.gz

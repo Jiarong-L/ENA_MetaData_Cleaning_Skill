@@ -92,7 +92,7 @@
 提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · country · location 至 tmp.country.csv    
 tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列    
 
-对所有 infer_value 的 NotCountry 值，仅依据值描述本身判断类别：描述指向跨国/全球聚合或海洋/公海（含边界地理实体）则保留，否则（明确包含"无地理位置信息"类）清空；不使用项目 evidence note 做兜底匹配。
+对所有 infer_value 的 NotCountry 值，仅依据值描述本身判断类别：描述指向跨国/全球聚合或海洋/公海（含边界地理实体）则保留，其余全部清空；不使用项目 evidence note 做兜底匹配。
 
 **然后，看看 infer 对原表country字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
 
@@ -101,7 +101,8 @@ tmp.country.csv，依照 project_accession 从 final_country.jsonl 的 （value�
 -------------------------------
 ```bash
 提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · collection_date · first_public 至 tmp.date.csv   
-tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列    
+tmp.date.csv，依照 project_accession从 final_date.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列   
+# tmp.date.csv 原文件增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录最早发表的 `high` paper 的时间和title      
 
 对于所有 infer_value ， 将 NotDate 值设定为空。注意，如果infer是多值的话，它对应的是个采样区间（最早-最晚，而且日期都应该不晚于2026年8月1日）。
 
@@ -116,12 +117,11 @@ tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，conf
 -------------------------------
 ```bash
 提取 metagenomic_wgs.typed.csv 的 run_accession · sample_accession · project_accession · type · scientific_name · tax_id · host · host_tax_id 至 tmp.host.csv   
-tmp.date.csv，依照 project_accession从 final_date.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列   
-tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录最早发表的 `high` paper 的时间和title   
+tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，confidence，source，method，note, decided_by, consistency） 字段增加相应 ‘infer_[]’ 列。**注意，final_host.jsonl 实际上提供的是 scientific_name 的推断**
 
 对于所有 infer_value ， 将 infer 无/NotHost 值设定为空
 
-**然后，看看 infer 对原表scientific_name字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突**
+**然后，看看 infer 对原表scientific_name字段补足了多少？有多少原表有信息但infer无？重合的部分里，有多少与原表一致、有多少与原表冲突** 
 
 对于host的冲突条目，请逐行检查是写法不一还是真实冲突；然后对于这些真矛盾的项目：聚合每个项目的原host分布（按总表）、项目级 infer 值、以及误判来源
 ```

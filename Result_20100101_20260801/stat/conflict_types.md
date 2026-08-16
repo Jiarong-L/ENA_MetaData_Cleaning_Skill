@@ -4,7 +4,7 @@
 
 - Country：`tmp.country.genuine_conflict_projects.csv`（1,388 项目）
 - Date：`tmp.date.genuine_conflict_projects.csv`（339 项目）
-- Host：`tmp.host.realconflict_projects.csv`（129 项目）
+- Host：`tmp.host.realconflict_projects.csv`（346 项目）
 
 > 总前提：这些"冲突"全部来自 **infer（项目级推断）与原表字段不一致**，而非原表自身矛盾；
 > 三维度真实冲突 100% 可追溯为 infer 推断错误（原表为权威来源）。
@@ -17,9 +17,9 @@
 | --- | --- | --- | --- | --- |
 | Country | `tmp.country.genuine_conflict_projects.csv` | 1,388（/12,652） | `conflict_type` | `notcountry_kept` / `fully_disjoint` / `incomplete_subset` / `other` |
 | Date | `tmp.date.genuine_conflict_projects.csv` | 339（/2,326） | `conflict_side` | `orig_before_interval` / `orig_after_interval`（含 both） |
-| Host | `tmp.host.realconflict_projects.csv` | 129（/3,983） | `conflict_concept_pair` | 物种↔生境概念错配对（共 45 种） |
+| Host | `tmp.host.realconflict_projects.csv` | 346（/17,892） | `conflict_sn_pair` | scientific_name 错配（原表生境/身体部位宏基因组 ↔ infer 宿主/错置生境） |
 
-> `冲突项目数` = 各 `*_conflict_projects.csv` 的项目数；`重合项目数` = 该项目下**至少 1 条 run 同时有 infer_value 与原表字段有效值**的项目总数（country 12,652 / date 2,326 / host 3,983；三维度均于 2026-08-16 用扩展 PLACEHOLDER 统一判定 orig/infer 两端非空后重跑）。
+> `冲突项目数` = 各 `*_conflict_projects.csv` 的项目数；`重合项目数` = 该项目下**至少 1 条 run 同时有 infer_value 与原表字段有效值**的项目总数（country 12,652 / date 2,326 / host 17,892；三维度均于 2026-08-16 用扩展 PLACEHOLDER 统一判定 orig/infer 两端非空后重跑；host 自 2026-08-16 起以 `scientific_name` 为原表字段）。
 
 ---
 
@@ -87,29 +87,38 @@
 
 ## 3. Host — `tmp.host.realconflict_projects.csv`
 
-> 注：host 本质是**物种名**（orig `host`）vs **生境/生物群系描述**（infer `host`，如 `human gut metagenome`），两套不同本体。
+> 注：2026-08-16 修正——host 维度实际对齐的是 **scientific_name**（`final_host.jsonl` 推断的即 scientific_name，并非 ENA `host` 字段）。冲突 = 原表 `scientific_name` 与 `infer_value`（亦为 scientific_name）不一致。两套均为 scientific_name，**同本体**，故本质全是**推断错误**（infer 把环境/生境宏基因组错标为特定宿主或错置生境），无"物种 vs 生境"的本体差异。
 
-### 3.1 按 `conflict_concept_pair`（orig 概念 → infer 概念）
+### 3.1 规模与误判来源
 
-项目级共 **45 种**错配对。按项目数 Top 12：
+- 冲突项目 **346**（/ 重合 17,892，1.9%）；冲突 run **6,703**。
+- `misjudge_source`：**llm 338（97.7%）** / **rule 8（2.3%）**（rule 含 PRJEB42019、PRJNA593850 等）。
+- 与 country/date 一致：**100% 来自 infer 端错误**，原表（scientific_name）为权威。
 
-| 概念错配 `conflict_concept_pair` | 项目数 | 对应了什么 |
+### 3.2 冲突形态（scientific_name 错配）
+
+原表 scientific_name 多为**环境/生境/身体部位宏基因组**（aquatic 158、body-site 87、marine/sediment 47、soil 19…），infer 却把它错标为**特定宿主**或**错置生境**。Top 错配（按项目数）：
+
+| 原表 scientific_name → infer scientific_name | 项目数 | 含义 |
 | --- | --- | --- |
-| `mouse → human` | 39 | orig 为小鼠，infer 过度归为 human gut —— 最常见错配。 |
-| `soil → plant` | 14 | orig 为土壤环境，infer 归为植物相关 —— 生境粒度差异。 |
-| `human → mouse` | 12 | 反向：orig 为人，infer 归为鼠。 |
-| `plant → soil` | 5 | 反向生境错配。 |
-| `sheep → human` | 4 | 反刍动物（羊）被归为人类。 |
-| `mouse → rat` | 3 | 鼠类内部混淆（小鼠↔大鼠）。 |
-| `freshwater → fish` | 3 | 淡水环境被归为鱼类宿主。 |
-| `rat → human` | 2 | 大鼠被归为人类。 |
-| `human → primate` | 2 | 人被归为灵长类（粒度/分类差异）。 |
-| `bovine → human` | 2 | 牛被归为人类。 |
-| `horse → wildlife` | 2 | 马被归为野生动物（描述粒度差异）。 |
-| `pig → human` | 2 | 猪被归为人类。 |
-| 其余 33 种零散对 | 39 | 其它动物/生境错配（如 `pig→{human,bovine}`、`yak→bovine`、`freshwater→marine` 等），合计 39 项目。 |
+| `freshwater sediment metagenome` → `soil metagenome` | 141 | **最典型误判**：淡水/水生沉积被 LLM 归为土壤（"soil" 成兜底标签） |
+| `gut metagenome` → `primate metagenome` | 34 | 肠道宏基因组被臆测为灵长类宿主 |
+| `gut metagenome` → `bird metagenome` | 17 | 同上，错标为鸟类 |
+| `hypersaline lake metagenome` → `microbial mat metagenome` | 14 | 高盐湖错置为微生物席 |
+| `feces metagenome` → `primate metagenome` | 8 | 粪便宏基因组错标灵长类 |
+| `sediment metagenome` → `lake/marine/groundwater metagenome` | 23 | 沉积环境内部互换（错置生境） |
+| `gut metagenome` → `horse/canine/bovine metagenome` | 11 | 肠道错标为马/犬/牛 |
+| `salmonella …` → `phyllosphere metagenome` | 3 | 具体病原菌错标为植物叶际 |
 
-### 3.2 按 `misjudge_source`
+> 类别级聚合：`Aquatic → Soil` 占 **148** 项目——**"soil metagenome" 被 LLM 当万能兜底**，是 host 维度最大单一误判簇。
 
-- **LLM 124 / rule 5**（rule 含 PRJEB42019、PRJNA1010707、PRJNA1092431 等）。
-- host 真实冲突几乎全是**物种级错配**（infer 把项目整体过度归为 human/mouse gut 等），**100% 来自 infer 错误**。
+### 3.3 代表性示例
+
+- 水生错置土壤：`PRJEB34634`（sediment → wastewater;freshwater，llm）、`PRJNA593850`（salmonella → phyllosphere，llm）。
+- 身体部位错标宿主：`PRJEB58441`（feces → primate）、`PRJNA259274`/`PRJNA831632`（gut → primate）、`PRJNA863598`（oral → canine）、`PRJNA788958`/`PRJNA880353`（gut/feces → horse）。
+- 生境互换：`PRJEB42019`（marine sediment → Homo sapiens:human;soil，rule，混合错标）、`PRJNA217052`（soil → human gut;oral;skin，llm，多值过泛）。
+
+### 3.4 修正建议
+
+- **回查 `final_host.jsonl` 中 346 个冲突项目**：重点 141 个"水生沉积→土壤"与 34+17 个"肠道/粪便→灵长类/鸟类"——几乎全为 LLM 过度归并。
+- 引入**生境词典白名单**（aquatic/marine/sediment/soil/plant/feces/gut…）约束 infer，禁止把已明确生境宏基因组改写为"soil"或具体宿主，可消除绝大部分 346 冲突。
