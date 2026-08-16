@@ -112,8 +112,6 @@ tmp.host.csv，依照 project_accession 从 final_host.jsonl 的 （value，conf
 对于 原表，告诉我时间跨度 ≥10 年 或者 ≥5 年 的项目有多少、这些项目都是研究什么的（类别、数量、含义 / 典型研究）？有多少是真的长跨度、有哪些可能是某个样本标错（比如：样本年份的分布是不是有离群值）
 
 对于 infer_value，告诉我时间跨度 ≥10 年 或者 ≥5 年 的项目有多少、都是研究什么的？
-
-另外，告诉我：原表缺失而 infer_value 有的run中，有多少是单值、有多少是区间
 ```
 -------------------------------
 ```bash
@@ -128,6 +126,8 @@ tmp.date.csv 增加 ‘first_paper_year’ 和 ‘first_paper_title’，记录�
 对于host的冲突条目，请逐行检查是写法不一还是真实冲突；然后对于这些真矛盾的项目：聚合每个项目的原host分布（按总表）、项目级 infer 值、以及误判来源
 ```
 
+-------------------------------
 
+对每个 tmp.{}.csv 新增两列 'selected_value'（优先选择原值，无原值则用infer_value插补） 和 'selected_value_source' （标注：ori_value/infer_value）
 
-
+另外，告诉我：用infer_value插补的run中，有多少是单值、有多少是区间  

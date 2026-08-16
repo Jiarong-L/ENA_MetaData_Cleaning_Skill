@@ -1,0 +1,1531 @@
+project_accession,n_conflict_runs,orig_country_dist,infer_value,infer_norm,conflict_type,misjudge_source,decided_by,consistency
+PRJNA348753,3525,canada:758;china:695;kenya:526;united states:488;australia:200;north sea:166;germany:156;malaysia:107;baltic sea:95;atlantic ocean:62;spain:44;luxembourg:38;pacific ocean:31;denmark:27;united kingdom:17;singapore:17;colombia:16;italy:12;south africa:11;arctic ocean:10;costa rica:8;brazil:7;belize:7;mexico:7;israel:6;bangladesh:5;new caledonia:3;portugal:2;sweden:2;india:2,NotCountry:global SRA compilation,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB42019,2800,united states:1279;ukraine:330;australia:296;costa rica:110;atlantic ocean:102;north pacific ocean:74;spain:70;singapore:64;pacific ocean:62;united kingdom:48;mongolia:46;oceania:46;mexico:44;namibia:40;peru:38;nepal:38;malawi:30;arctic ocean:26;panama:26;canada:20;malaysia:11,NotCountry:global,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB32762,2388,united states:1590;argentina:908;united kingdom:630;spain:168,Argentina:Buenos Aires,argentina,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB17632,2241,kazakhstan:1352;germany:889,asia,asia,fully_disjoint,rule,rule_only,rule_only
+PRJNA480137,1886,united states:639;canada:458;mexico:251;china:190;tonga:164;pacific ocean:81;arctic ocean:65;atlantic ocean:25;russia:12;indian ocean:1,"NotCountry:aggregated MAGs from many studies, no single country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB1220,1704,denmark:948;spain:756,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB40383,1624,malawi:1624,Uganda,uganda,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB6070,1290,france:922;germany:368,Japan:Kyoto,japan,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB33500,993,italy:993,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA656268,971,indian ocean:490;atlantic ocean:348;pacific ocean:117;southern ocean:16,"NotCountry:global ocean, multi-region transects",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA497734,933,finland:616;russia:317;estonia:221,Estonia:Tartu,estonia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA850529,923,poland:923,"NotCountry:European population, country not specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA732392,731,united kingdom:317;united states:205;brazil:68;nigeria:42;chile:25;japan:24;germany:21;colombia:15;new zealand:9;ireland:5,"NotCountry:global 60-city study, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB34871,714,cambodia:483;united kingdom:360;kenya:354,Cambodia,cambodia,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB76661,682,denmark:682,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB76667,646,denmark:646,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB32790,567,singapore:567,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB8347,566,germany:566,United States,united states,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB5224,562,spain:318;denmark:244;china:17,China,china,incomplete_subset,rule_demonym,rule_only,rule_only
+PRJEB43822,543,russia:312;united states:66;canada:58;svalbard:44;greenland:39;norway:24,NotCountry:Arctic,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB38625,522,spain:522,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA290380,504,russia:305;finland:281;estonia:199,Finland,finland,incomplete_subset,llm,llm_preferred,consistent
+PRJNA385854,480,atlantic ocean:295;pacific ocean:185,"NotCountry:Atlantic and Pacific Oceans, no coastal country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1416920,479,india:371;united states:310;united arab emirates:169,India,india,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB28422,444,france:340;germany:104,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB22973,441,china:441,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA510571,428,china:114;united states:67;canada:48;denmark:41;germany:31;russia:19;spain:17;estonia:15;finland:14;singapore:10;italy:9;luxembourg:9;france:9;australia:7;peru:6;japan:2;argentina:2;ethiopia:2;democratic republic of the congo:2;united kingdom:1;el salvador:1;pacific ocean:1;norway:1,Global:>1/3 of world's countries,global,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1207805,406,china:406,"Hong Kong, China","hong kong, china",fully_disjoint,llm,llm_preferred,consistent
+PRJEB6456,400,denmark:400,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB11755,390,france:200;denmark:200;china:190,France,france,incomplete_subset,llm,llm_preferred,consistent
+PRJEB25776,379,united kingdom:379,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB11419,371,united states:1267;jp:148;philippines:85;es:72;labcontrol test:50;united kingdom:6;australia:5;canada:2;japan:2;belgium:1,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJEB22062,364,netherlands:54;belgium:53;italy:51;poland:51;bulgaria:44;germany:42;spain:41;denmark:41;france:40,Belgium,belgium,incomplete_subset,llm,llm_preferred,consistent
+PRJNA983538,363,china:348;united kingdom:9;germany:3;belgium:3,"NotCountry:global study, no single country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB41657,359,norway:359,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB83236,340,bangladesh:275;bangladesh;bangladesh:259;united states:57;usa;usa:24,Bangladesh,bangladesh,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA522654,338,pacific ocean:124;atlantic ocean:116;united states:98,"Mexico:Guaymas Basin, Gulf of California",mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJNA900714,334,paracel islands:334;china:55,China,china,incomplete_subset,llm,llm_preferred,consistent
+PRJEB52822,332,germany:332,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB76668,328,denmark:328,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB41217,321,denmark:321,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1000281,319,united kingdom:115;germany:108;finland:96,Brazil,brazil,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB6337,314,china:314,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB7774,312,austria:312,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB38290,308,north sea:308,Germany,germany,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB52753,308,united kingdom:66;greece:33;estonia:33;germany:33;austria:33;iceland:33;russia:33;sweden:33;spain:11,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA488180,302,atlantic ocean:157;pacific ocean:79;united states:66,"NotCountry:multiple hydrothermal vent sites (Guaymas Basin, Cayman Rise, Lau Basin), no country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA781406,298,switzerland:43;nepal:40;russia:38;kyrgyzstan:38;uganda:30;norway:27;new zealand:24;france:22;ecuador:21;greenland:12;austria:3,NotCountry:multiple countries (Scandinavia to Himalayas),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB18701,288,papua new guinea:75;estonia:26;australia:23;colombia:15;argentina:15;china:12;united states:11;india:11;madagascar:10;russia:9;italy:9;malaysia:8;brazil:6;finland:6;iran:5;sri lanka:4;panama:4;portugal:4;zimbabwe:4;canada:3;cameroon:3;new zealand:3;mexico:2;morocco:2;viet nam:2;democratic republic of the congo:2;france:2;chile:2;norway:2;czechia:1;indonesia:1;sweden:1;botswana:1;germany:1;thailand:1;benin:1;japan:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA561080,284,china:80;norway:72;united states:59;united kingdom:41;sweden:32,"NotCountry:global (multiple cities, MetaSUB gCSD17)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB48269,272,china:272,"Hong Kong, China:Hong Kong","hong kong, china",fully_disjoint,rule_place,rule_only,rule_only
+PRJEB27928,260,germany:260,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB76664,260,denmark:260,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB13831,250,united states:40;canada:15;australia:12;zambia:10;brazil:8;switzerland:7;germany:7;malaysia:7;spain:6;netherlands:5;chad:5;croatia:5;iran:5;kenya:4;botswana:4;macedonia:4;sweden:4;austria:4;georgia:4;bulgaria:4;latvia:4;czechia:3;denmark:3;india:3;iceland:3;poland:3;serbia:3;israel:3;moldova:3;singapore:3;slovenia:3;turkey:3;ecuador:3;finland:3;ireland:3;malta:3;norway:3;albania:3;south africa:3;china:3;cote divoire:3;nigeria:3;tanzania:3;slovakia:2;ethiopia:1;gambia:1;hungary:1;sri lanka:1;nepal:1;togo:1;kosovo:1;cambodia:1;senegal:1;viet nam:1;colombia:1;ghana:1;italy:1;kazakhstan:1;luxembourg:1;new zealand:1;pakistan:1;peru:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB43454,250,united kingdom:510;netherlands:250,United Kingdom,united kingdom,incomplete_subset,llm,llm_preferred,conflict
+PRJNA248889,242,gambia:242,The Gambia,the gambia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA300541,234,el salvador:336;peru:234,El Salvador,el salvador,incomplete_subset,llm,llm_preferred,consistent
+PRJNA776248,234,burkina faso:72;nigeria:68;niger:51;chad:30;ghana:13,NotCountry:spanning 6 African countries,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA509305,226,united states:102;china:56;australia:11;brazil:9;sweden:7;south africa:6;chile:6;germany:5;italy:5;canada:4;singapore:3;uruguay:3;switzerland:3;new zealand:3;colombia:3,Global:23 countries (6 continents),global,fully_disjoint,llm,llm_preferred,consistent
+PRJEB38681,223,finland:113;sweden:68;switzerland:44;canada:30;united states:12,Switzerland,switzerland,incomplete_subset,rule_demonym,rule_only,rule_only
+PRJNA1219970,221,china:221,asia,asia,fully_disjoint,rule,rule_only,rule_only
+PRJEB22863,219,france:219,China,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA287840,215,canada:215,Australia,australia,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB9584,211,united kingdom:211,africa,africa,fully_disjoint,rule,rule_only,rule_only
+PRJEB4413,206,france:206,United Kingdom:UK,united kingdom,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA721828,206,spain:82;portugal:69;russia:27;united kingdom:22;norway:4;netherlands:1;belarus:1,NotCountry:region only (medieval Europe),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA795684,205,atlantic ocean:205;brazil:6,Brazil:Amazon Reef,brazil,incomplete_subset,llm,llm_preferred,consistent
+PRJNA1130109,203,united arab emirates:203,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB34569,202,germany:40;democratic republic of the congo:39;spain:25;cameroon:18;morocco:15;uganda:15;south africa:12;liberia:9;nicaragua:8;italy:6;ethiopia:4;belgium:3;republic of the congo:3;portugal:3;czechia:3;united states:2;serbia:2;france:1,Italy,italy,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA595703,199,singapore:184;united kingdom:14;malaysia:1,NotCountry:international multicenter study (Asian and European cohorts),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB13870,196,china:196,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB27054,195,united states:40;canada:14;australia:10;zambia:10;switzerland:7;brazil:6;spain:6;germany:5;croatia:5;malaysia:5;netherlands:5;chad:5;bulgaria:4;botswana:4;georgia:4;kenya:4;latvia:4;macedonia:4;sweden:4;austria:4;albania:3;czechia:3;denmark:3;ecuador:3;finland:3;india:3;iran:3;iceland:3;israel:3;moldova:3;norway:3;poland:3;singapore:3;cote divoire:3;nigeria:3;slovenia:3;ireland:3;malta:3;serbia:3;turkey:3;south africa:3;slovakia:2;ghana:1;gambia:1;hungary:1;sri lanka:1;togo:1;tanzania:1;italy:1;new zealand:1;peru:1;viet nam:1;china:1;kazakhstan:1;luxembourg:1;pakistan:1;kosovo:1;ethiopia:1;cambodia:1;senegal:1;colombia:1;nepal:1,United States:America,united states,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB44414,195,russia:22;united states:21;iceland:16;brazil:14;romania:12;uganda:12;argentina:10;australia:9;mexico:9;myanmar:9;finland:9;borneo:7;estonia:6;united kingdom:6;colombia:6;kyrgyzstan:6;china:4;morocco:4;new zealand:4;canada:3;spain:3;france:3,NotCountry:global,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB28553,193,germany:193,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB83983,191,united states:37;australia:19;india:15;saudi arabia:13;argentina:13;mexico:10;canada:10;switzerland:10;netherlands:10;china:9;uruguay:9;israel:5;austria:5;singapore:5;italy:2;czechia:2;norway:2;sweden:2;united kingdom:2;belgium:2;poland:2;spain:2;finland:1;cyprus:1;portugal:1;germany:1;malaysia:1,Denmark,denmark,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1175454,186,china:149;indian ocean:30;pacific ocean:7,NotCountry:Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA546135,181,switzerland:181,"NotCountry:Europe (Emys orbicularis range, no specific country stated)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA747761,177,mozambique:177;united states:60,USA:Atlanta,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA590225,176,united kingdom:76;singapore:53;malaysia:25;italy:22,NotCountry:multicenter Asian and European cohort (no single country),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB47976,175,germany:175,Japan:Kyoto,japan,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB49147,173,israel:173,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJEB27621,169,nigeria:9;united states:8;lebanon:7;malaysia:6;canada:5;sri lanka:5;malawi:4;estonia:4;italy:4;australia:4;ecuador:4;cote divoire:4;nicaragua:4;united kingdom:4;tanzania:3;paraguay:3;malta:3;china:3;finland:3;ghana:3;thailand:2;greece:2;iran:2;denmark:2;czechia:2;barbados:2;saint lucia:2;netherlands:2;germany:2;sweden:2;pakistan:2;burkina faso:2;india:2;portugal:2;france:2;latvia:2;iceland:1;luxembourg:1;norway:1;singapore:1;nepal:1;lithuania:1;morocco:1;albania:1;spain:1;slovakia:1;chad:1;peru:1;georgia:1;cameroon:1;kenya:1;brazil:1;new zealand:1;slovenia:1;poland:1;croatia:1;south korea:1;uganda:1;cambodia:1;viet nam:1;ireland:1;israel:1;bosnia and herzegovina:1;saudi arabia:1;togo:1;macedonia:1;uruguay:1;senegal:1;ethiopia:1;botswana:1;south africa:1;guatemala:1;kazakhstan:1;japan:1;switzerland:1;austria:1;serbia:1;mauritius:1;hungary:1;bulgaria:1;philippines:1;montenegro:1;bangladesh:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB52317,169,germany:169,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA982297,161,united kingdom:72;singapore:68;malaysia:10;greece:8;italy:3,"NotCountry:multinational cohort, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB40798,150,denmark:13;democratic republic of the congo:8;united states:5;malaysia:5;japan:5;belgium:5;nigeria:5;finland:5;italy:4;ghana:4;canada:4;united kingdom:3;madagascar:3;china:3;spain:3;france:2;hungary:2;greece:2;portugal:2;india:2;tanzania:2;mauritius:2;south korea:2;pakistan:2;chile:2;barbados:2;serbia:2;poland:2;cote divoire:2;latvia:2;brazil:2;south africa:2;australia:2;germany:2;czechia:2;croatia:1;iceland:1;slovenia:1;turkey:1;cambodia:1;switzerland:1;bangladesh:1;bosnia and herzegovina:1;nepal:1;new zealand:1;greenland:1;thailand:1;botswana:1;bolivia:1;senegal:1;argentina:1;montenegro:1;singapore:1;togo:1;austria:1;sweden:1;chad:1;israel:1;guatemala:1;saudi arabia:1;malta:1;uruguay:1;uganda:1;morocco:1;slovakia:1;mozambique:1;cameroon:1;netherlands:1;united arab emirates:1;colombia:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB40815,148,denmark:11;malawi:7;malaysia:6;belgium:5;canada:5;united states:5;italy:4;estonia:4;united kingdom:4;tanzania:3;cote divoire:3;china:3;finland:3;thailand:2;sweden:2;australia:2;south korea:2;germany:2;hungary:2;india:2;barbados:2;iran:2;chile:2;nigeria:2;portugal:2;greece:2;france:2;burkina faso:2;nepal:2;ghana:2;czechia:2;saint lucia:2;croatia:1;nicaragua:1;south africa:1;bosnia and herzegovina:1;spain:1;uganda:1;chad:1;mauritius:1;luxembourg:1;botswana:1;uruguay:1;ecuador:1;switzerland:1;montenegro:1;benin:1;saudi arabia:1;iceland:1;albania:1;greenland:1;paraguay:1;pakistan:1;ireland:1;bangladesh:1;kuwait:1;cameroon:1;new zealand:1;mozambique:1;austria:1;cambodia:1;guatemala:1;slovenia:1;slovakia:1;norway:1;japan:1;poland:1;colombia:1;togo:1;morocco:1;israel:1;united arab emirates:1;philippines:1;argentina:1;ethiopia:1;senegal:1;viet nam:1;serbia:1;netherlands:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1010707,148,italy:148,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB26585,144,united states:144,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB40816,142,denmark:13;malaysia:7;canada:5;cote divoire:5;united states:5;italy:4;united kingdom:4;china:4;belgium:3;finland:3;australia:3;madagascar:3;brazil:3;tanzania:3;ghana:3;sweden:2;portugal:2;mauritius:2;greece:2;latvia:2;chile:2;saint lucia:2;germany:2;singapore:2;pakistan:2;czechia:2;france:2;south korea:2;netherlands:2;india:2;barbados:2;new zealand:2;macedonia:2;cambodia:1;burkina faso:1;slovenia:1;botswana:1;switzerland:1;norway:1;senegal:1;saudi arabia:1;austria:1;hungary:1;turkey:1;serbia:1;slovakia:1;poland:1;ecuador:1;israel:1;bangladesh:1;kenya:1;paraguay:1;thailand:1;viet nam:1;spain:1;bosnia and herzegovina:1;togo:1;croatia:1;japan:1;bulgaria:1;montenegro:1;kuwait:1;morocco:1;argentina:1;uganda:1;nigeria:1;greenland:1;benin:1;cameroon:1;colombia:1;united arab emirates:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA555077,140,cayman islands:51;united states:35;belize:31;curacao:23,Caribbean,caribbean,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB33717,139,north sea:81;united kingdom:58,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB42304,139,ireland:139,Italy:Rome,italy,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB39813,134,singapore:134,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA494971,132,pacific ocean:92;curacao:40,"NotCountry:coral reefs in the Pacific Ocean and Caribbean, no country named",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA385855,130,pacific ocean:68;atlantic ocean:62,"NotCountry:Station ALOHA (US) and BATS (Bermuda), no single country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB40256,130,united kingdom:130,africa,africa,fully_disjoint,rule,rule_only,rule_only
+PRJNA523619,129,pacific ocean:129,Tonga:Lau Basin hydrothermal vents,tonga,fully_disjoint,llm,llm_preferred,conflict
+PRJEB30611,126,china:126,Japan:Kyoto,japan,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB70300,126,netherlands:126,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB44237,124,netherlands:124,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA527877,123,china:27;switzerland:26;united states:23;sweden:22;india:22;philippines:3,NotCountry:international multi-country transect of WWTPs,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB15371,122,china:122,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA445215,122,ireland:98;nepal:4;spain:4;united states:4;guadeloupe:4;netherlands:4;mongolia:4,NotCountry:globally distributed archaeological samples (no single collection country),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA573045,122,panama:62;united states:60,Bangladesh,bangladesh,fully_disjoint,llm,llm_preferred,consistent
+PRJEB65368,122,united kingdom:122,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB18063,120,canada:120,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1403232,120,china:120,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1428929,120,china:120,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA946291,119,united states:103;germany:32;honduras:16,Germany:River Erpe,germany,incomplete_subset,llm,llm_preferred,consistent
+PRJEB89408,117,australia:117,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB20800,114,denmark:114,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA554847,113,panama:92;united states:21,NotCountry:global study across six continents,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1138429,113,united states:113,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA854341,109,spain:67;germany:26;netherlands:11;united states:5,NotCountry:only region Europe stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB47902,108,netherlands:108,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA738608,107,india:41;laos:33;south africa:23;united states:10,"NotCountry:multiple countries (Laos, India, South Africa, US)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA785545,107,netherlands:107,"NotCountry:Southern Ocean, no country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA855930,105,pacific ocean:99;tonga:6,"NotCountry:only Lau Basin, SW Pacific stated",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1048116,105,australia:105,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB7866,104,pacific ocean:104,NotCountry:Axial Seamount,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB73590,103,tanzania:47;mozambique:36;ethiopia:36;nigeria:20,Ethiopia,ethiopia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA727021,101,south africa:147;gambia:101,South Africa,south africa,incomplete_subset,llm,llm_preferred,consistent
+PRJEB9503,95,united states:95,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB23496,95,united states:12;canada:6;denmark:3;ecuador:3;brazil:3;chad:2;bulgaria:2;zambia:2;finland:2;kenya:2;latvia:2;serbia:2;cote divoire:2;colombia:2;sweden:2;australia:2;spain:1;new zealand:1;viet nam:1;slovenia:1;croatia:1;kazakhstan:1;moldova:1;sri lanka:1;pakistan:1;hungary:1;malaysia:1;tanzania:1;macedonia:1;india:1;austria:1;israel:1;nigeria:1;netherlands:1;albania:1;luxembourg:1;botswana:1;georgia:1;italy:1;poland:1;cambodia:1;ireland:1;gambia:1;iceland:1;peru:1;south africa:1;nepal:1;kosovo:1;germany:1;malta:1;singapore:1;czechia:1;ghana:1;norway:1;ethiopia:1;senegal:1;iran:1;turkey:1;slovakia:1;switzerland:1;china:1;togo:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA358725,94,pacific ocean:94,NotCountry:open-ocean expedition (location not stated in description),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB38000,94,united kingdom:94,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB28384,93,china:93,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB51229,93,china:13;australia:12;cameroon:12;united states:11;malaysia:11;canada:11;tanzania:9;ecuador:8;pakistan:4;greece:2,africa,africa,fully_disjoint,rule,rule_only,rule_only
+PRJNA290729,92,germany:92,India,india,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA545144,92,pacific ocean:92,"NotCountry:North Pacific Subtropical Gyre (HOE-BOE, near Hawaii)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB39685,92,germany:45;france:40;spain:27;netherlands:20,France,france,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA1040445,91,sweden:36;denmark:33;norway:22,atlantic,atlantic,fully_disjoint,rule,rule_only,rule_only
+PRJEB35615,90,switzerland:90,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA1186390,88,united kingdom:82;spain:40;italy:14;greece:10;germany:10;belgium:9;netherlands:5,United Kingdom:UK,united kingdom,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA292471,87,united states:87,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA588650,87,viet nam:87,Vietnam:Ho Chi Minh City,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA667550,85,new zealand:85,China:Inner Mongolia,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA785333,85,atlantic ocean:62;pacific ocean:23,"NotCountry:ocean stations, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA623064,84,netherlands:32;italy:8;france:8;belgium:6;germany:6;bulgaria:6;denmark:6;poland:6;spain:6,NotCountry:multiple European countries,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB68319,82,denmark:105;italy:36;netherlands:28;hungary:18,Denmark:Copenhagen,denmark,incomplete_subset,llm,llm_preferred,consistent
+PRJNA478695,80,united states:80,"NotCountry:coastal seawater, no site named",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB56100,80,madagascar:80;india:63,India,india,incomplete_subset,llm,llm_preferred,consistent
+PRJNA892265,80,spain:80,France,france,fully_disjoint,llm,llm_preferred,consistent
+PRJNA994433,80,israel:80,United Kingdom,united kingdom,fully_disjoint,llm,llm_preferred,consistent
+PRJEB36091,79,atlantic ocean:79,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA395437,77,saudi arabia:77,"NotCountry:Red Sea (transboundary, no specific country)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA526981,76,viet nam:76,Vietnam,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA861836,74,southern ocean:53;falkland islands (islas malvinas):21,Antarctica:Scotia Sea,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1201851,74,pacific ocean:74,NotCountry:tropical Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA281366,73,italy:73,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB14215,73,italy:41;spain:32,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA698754,72,singapore:72,"NotCountry:only 'tropical marine waters' mentioned, no specific country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA777294,72,united states:50;atlantic ocean:18;spain:3;turkey:1,"NotCountry:oceanic provinces, no country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB37577,71,atlantic ocean:71,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA858396,71,china:63;thailand:4;malaysia:4,"NotCountry:global samples, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB49206,69,tanzania:388;nepal:57;united states:12,Tanzania,tanzania,incomplete_subset,llm,llm_preferred,consistent
+PRJEB39681,68,united states:68,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB35640,68,czechia:19;switzerland:17;austria:14;italy:11;japan:7,asia,asia,fully_disjoint,rule,rule_only,rule_only
+PRJNA437202,67,saudi arabia:67,"NotCountry:Red Sea borders multiple countries (Egypt, Saudi Arabia, etc.); no single country named",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB43119,67,united kingdom:98;netherlands:55;spain:12,United Kingdom,united kingdom,incomplete_subset,llm,llm_preferred,consistent
+PRJEB41174,65,greenland:23;svalbard:23;sweden:19,Norway:Svalbard,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJEB26788,65,niger:21;cyprus:20;saudi arabia:12;barbados:11;indian ocean:6;oman:6,Barbados,barbados,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB40312,64,united states:64,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA482655,63,pacific ocean:63,"NotCountry:North Pacific Subtropical Gyre (Station ALOHA), open ocean, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB32411,61,spain:61,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA1158962,61,italy:61,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA528368,60,china:60,Netherlands,netherlands,fully_disjoint,llm,llm_preferred,conflict
+PRJEB23957,59,south korea:59,Korea,korea,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB24557,59,switzerland:59,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB42464,59,spain:22;france:19;poland:18,NotCountry:Europe,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA207724,58,pacific ocean:36;south china sea:22,NotCountry:South China Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA389927,57,united states:124;canada:57,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA658184,57,korea:57,South Korea,south korea,fully_disjoint,llm,llm_preferred,consistent
+PRJEB48656,57,republic of the congo:15;cote divoire:6;cameroon:4;mali:4;algeria:3;guinea:3;morocco:2;gabon:2;senegal:2;france:2;russia:1;china:1;togo:1;benin:1;haiti:1;brazil:1;italy:1;thailand:1;nigeria:1;suriname:1;jordan:1;viet nam:1;cambodia:1;burundi:1,africa,africa,fully_disjoint,rule,rule_only,rule_only
+PRJEB34883,56,baltic sea:56,NotCountry:Baltic Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1225594,56,china:56,asia,asia,fully_disjoint,rule,rule_only,rule_only
+PRJEB4015,55,germany:15;sweden:13;belgium:9;united kingdom:9;denmark:9,Ireland,ireland,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB28687,55,united states:55,Morocco,morocco,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA1013332,55,united states:55,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA725221,54,atlantic ocean:54,Canada:Nova Scotia,canada,fully_disjoint,llm,llm_preferred,conflict
+PRJEB55366,54,china:54,"Taiwan, China","taiwan, china",fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA880762,53,pacific ocean:53;china:3,China,china,incomplete_subset,llm,llm_preferred,consistent
+PRJEB65852,52,germany:52,Iceland,iceland,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB14814,51,denmark:51,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA545004,51,australia:51,Seychelles,seychelles,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA753247,50,pacific ocean:50,NotCountry:deep-sea IODP drill site in Amami-Sankaku Basin (Philippine Sea),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB66489,50,mediterranean sea:50,NotCountry:NW Mediterranean Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB9150,49,bangladesh:49,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB12502,49,canada:49;united states:43,United States:America,united states,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA598881,49,atlantic ocean:25;indian ocean:14;pacific ocean:10,"NotCountry:global ocean surface waters (Atlantic, Indian and Pacific Oceans)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB54621,49,iceland:25;france:17;sweden:7,europe,europe,fully_disjoint,rule,rule_only,rule_only
+PRJNA237344,48,atlantic ocean:48;brazil:48,Brazil,brazil,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA243036,48,denmark:48,United States,united states,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA267173,48,singapore:48,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA288120,48,united states:48,NotCountry:Gulf of Mexico,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB14154,48,arctic ocean:48,NotCountry:Arctic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA504905,48,pacific ocean:48,Kiribati:Southern Line Islands,kiribati,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA381401,48,france:48,"NotCountry:no country stated (Pacific oyster, location unspecified)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA685934,48,netherlands:48,NotCountry:multiple European countries,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA757245,48,saudi arabia:48,NotCountry:no reef location stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA328899,47,mongolia:63;china:47,Mongolia,mongolia,incomplete_subset,llm,llm_preferred,conflict
+PRJNA679177,47,panama:16;mauritania:4;mozambique:4;spain:3;montenegro:3;australia:2;albania:2;jamaica:2;slovenia:2;tunisia:2;costa rica:1;japan:1;mauritius:1;united states:1;united kingdom:1;italy:1;saint martin:1,NotCountry:global sampling across multiple countries,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA408025,47,china:47,NotCountry:no location (global study),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB47975,47,burkina faso:38;benin:35;finland:9,Benin,benin,incomplete_subset,llm,llm_preferred,consistent
+PRJEB12000,46,pacific ocean:46,"NotCountry:Axial Seamount, northeast Pacific Ocean",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB8420,46,canada:89;united states:46,Canada:British Columbia,canada,incomplete_subset,llm,llm_preferred,conflict
+PRJNA484080,46,china:43;united states:1;singapore:1;south africa:1,"NotCountry:global resistome database, no single country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB41171,46,united states:4;spain:2;kosovo:2;nigeria:2;poland:2;peru:2;nepal:2;czechia:2;albania:2;ecuador:2;slovenia:2;brazil:2;ghana:2;pakistan:2;india:2;tanzania:2;germany:2;cote divoire:2;china:2;iceland:2;canada:2;cambodia:2,NotCountry:global,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB52394,46,netherlands:152;spain:26;germany:20,Netherlands,netherlands,incomplete_subset,llm,llm_preferred,consistent
+PRJNA292297,45,united states:45,NotCountry:Gulf of Mexico,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA289734,45,saudi arabia:45,NotCountry:Red Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA946675,45,south korea:45,"NotCountry:multiple/global cave sites, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA16339,44,north pacific ocean gyre:44,NotCountry:North Pacific Subtropical Gyre,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA268964,44,peru:72;united states:44,Peru,peru,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB21582,44,germany:22;poland:15;czechia:6;switzerland:1,europe,europe,fully_disjoint,rule,rule_only,rule_only
+PRJEB21508,44,sweden:15;united kingdom:15;finland:14;italy:14,Italy,italy,incomplete_subset,llm,llm_preferred,consistent
+PRJNA608611,44,singapore:44,"NotCountry:multi-country study (Singapore, Malaysia, Hong Kong, Canada)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA818793,44,united states:44,"NotCountry: Mediterranean grasslands, region not specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1007388,43,united states:43,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB55583,43,spain:17;germany:12;italy:7;belgium:3;serbia:2;czechia:1;france:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA588686,42,antarctica:42,"NotCountry:polar (Arctic and Antarctic marine, no single country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA744034,42,united states:8;sweden:5;new zealand:5;madagascar:5;papua new guinea:5;australia:4;atlantic ocean:3;philippines:2;united kingdom:2;indian ocean:1;indonesia:1;new caledonia:1,NotCountry:no location,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA855637,42,germany:11;netherlands:10;italy:7;croatia:5;switzerland:5;united kingdom:4,Egypt,egypt,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1043252,41,korea:41,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA1070846,41,china:41,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB26919,40,mediterranean sea:40,France,france,fully_disjoint,llm,llm_preferred,consistent
+PRJNA497280,40,united states:40,NotCountry:International Space Station (low Earth orbit built environment) plus crew body sites,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB36976,39,atlantic ocean:39,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA578039,39,france:8;germany:7;italy:6;austria:5;romania:4;norway:2;slovakia:2;poland:2;sweden:1;hungary:1;spain:1,NotCountry:multiple European countries (Spain to southern Scandinavia),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA596510,39,pacific ocean:39,NotCountry:North Pacific Subtropical Gyre (north of Hawaiian Islands),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA270248,38,pacific ocean:38,NotCountry:North Pacific Subtropical Gyre,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA273799,37,baltic sea:37,Sweden:Öland,sweden,fully_disjoint,llm,llm_preferred,conflict
+PRJNA322246,37,sweden:37,baltic sea,baltic sea,fully_disjoint,rule,rule_only,rule_only
+PRJNA407112,37,kenya:10;united states:10;india:5;new zealand:4;switzerland:2;panama:2;nicaragua:2;georgia:1;ukraine:1,"NotCountry:global study (9 countries, 5 continents)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA449946,37,canada:34;united states:2;pacific ocean:1,"NotCountry:global marine sites (tropics to poles), no single collection country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA623475,37,united states:37,NotCountry:seawater source unspecified,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA635214,37,pacific ocean:37,NotCountry:Challenger Deep / Mariana Trench (international),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA875933,37,atlantic ocean:37,Canada,canada,fully_disjoint,llm,llm_preferred,consistent
+PRJNA976277,37,united states:37,"NotCountry:global study, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA47483,36,raunefjorden:36,Norway:Raunefjorden,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA498017,36,china:36,"NotCountry:laboratory coculture of an open-ocean Synechococcus ecotype, no collection site given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA509512,36,united states:36,NotCountry:international travelers (multiple destination countries),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA522695,36,spain:36,"NotCountry:Mediterranean Sea sampling, specific country not stated",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB33354,36,north sea:36,Germany:Helgoland,germany,fully_disjoint,llm,llm_preferred,conflict
+PRJDB4525,36,thailand:13;indonesia:10;japan:9;south korea:4,China,china,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA328258,36,united states:36,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA678552,36,new zealand:36,NotCountry:Western Pacific (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA52297,35,yellowstone national park:33;boiling springs lake:2,"United States:Yellowstone National Park, Wyoming",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB76913,35,germany:35,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA678578,34,china:34,NotCountry:PRE not expanded in evidence,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB52999,34,north sea:34,Germany,germany,fully_disjoint,llm,llm_preferred,conflict
+PRJEB2888,33,"helgoland roads, german bight, north sea:33",NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA222583,33,north pacific subtropical gyre:33,NotCountry:North Pacific Subtropical Gyre,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA539933,33,republic of the congo:127;united states:33,Republic of the Congo,republic of the congo,incomplete_subset,llm,llm_preferred,consistent
+PRJEB46821,33,pacific ocean:33,NotCountry:North Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA188481,32,united states:32,Mexico,mexico,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA574146,32,united states:32,NotCountry:deep-sea location not specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB8043,32,atlantic ocean:18;pacific ocean:14,NotCountry:deep ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB44313,32,serbia:23;italy:16;romania:4;austria:4;croatia:1,Italy,italy,incomplete_subset,llm,llm_preferred,conflict
+PRJNA663116,32,china:32,Mongolia,mongolia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA704804,32,pacific ocean:32,NotCountry:no geographic signal (open ocean ETSP ODZ),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA801405,32,pacific ocean:32,USA:Monterey Canyon,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA1198342,32,netherlands:32,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB49313,31,united kingdom:31,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB61010,31,antarctica:31,"NotCountry:Potter Cove, Antarctica",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1100783,31,singapore:96;canada:31,Singapore,singapore,incomplete_subset,llm,llm_preferred,consistent
+PRJNA288044,30,canada:30,Turkey,turkey,fully_disjoint,rule_place,rule_only,rule_only
+PRJDB6686,30,pacific ocean:30,NotCountry:North Western Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA561465,30,viet nam:30,Vietnam,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1001592,30,poland:23;russia:7,europe,europe,fully_disjoint,rule,rule_only,rule_only
+PRJDB5777,29,pacific ocean:29,NotCountry:Northwest Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA769790,29,atlantic ocean:29,"NotCountry:open-ocean Sargasso Sea (BATS site near Bermuda), no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB45291,29,spain:11;chile:5;israel:4;south africa:4;turkey:2;algeria:2;portugal:1,NotCountry:global,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA283041,28,germany:28,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA678426,28,south korea:78;korea:28,South Korea,south korea,incomplete_subset,llm,llm_preferred,consistent
+PRJNA748533,28,china:28,NotCountry:open-sea location (South China Sea) only,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA938789,28,china:28,Poland:Bogdalow post-mining reservoir,poland,fully_disjoint,llm,llm_preferred,consistent
+PRJEB9488,27,united states:27,Malawi,malawi,fully_disjoint,llm,llm_preferred,conflict
+PRJNA394687,27,mozambique:9;india:9;mali:9,NotCountry:three countries of Global Enteric Multicenter Study (unspecified),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA522005,27,canada:27;united states:15,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA554776,27,united kingdom:13;poland:11;sweden:2;brazil:1,NotCountry:global study across three continents,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB23737,27,united states:27,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB48073,27,mediterranean sea:27,Italy:Panarea,italy,fully_disjoint,llm,llm_preferred,consistent
+PRJNA632343,27,indian ocean:27,NotCountry:Carlsberg Ridge (northern Indian Ocean),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA1280935,27,chile:34;southern ocean:19;antarctica:8,Chile,chile,incomplete_subset,llm,llm_preferred,conflict
+PRJNA47463,26,pacific ocean:26,"United States:La Jolla, California",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA275926,26,united kingdom:22;ireland:4,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA308531,26,denmark:20;sweden:6,baltic sea,baltic sea,fully_disjoint,rule,rule_only,rule_only
+PRJDB5681,26,pacific ocean:26,NotCountry:deep-sea,notcountry,notcountry_kept,rule_open_ocean,rule_only,rule_only
+PRJNA681031,25,united states:270;arctic ocean:25,USA,united states,incomplete_subset,llm,llm_preferred,conflict
+PRJNA561510,25,mexico:25;united states:8,USA,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA776392,25,svalbard:25,"NotCountry:Arctic fjord, no country named",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB51658,25,italy:22,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1114758,25,brazil:25,atlantic,atlantic,fully_disjoint,rule,rule_only,rule_only
+PRJNA258369,24,france:24,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA318384,24,pacific ocean:24,pacific,pacific,fully_disjoint,rule,rule_only,rule_only
+PRJNA565265,24,united states:24,Gulf of Mexico,gulf of mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJNA633424,24,united states:24,NotCountry:Sonoran Desert (spans US/Mexico),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA680010,24,china:24,"NotCountry:Northern South China Sea (regional sea, no single country named)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA623996,24,india:24;singapore:24,India,india,incomplete_subset,llm,llm_preferred,consistent
+PRJNA694225,24,korea:24,South Korea,south korea,fully_disjoint,llm,llm_preferred,consistent
+PRJNA832528,24,pacific ocean:24,"NotCountry:open ocean (Western North Pacific), no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB59037,24,canada:14;united states:5;argentina:2;norway:2;austria:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB13835,23,switzerland:23,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB29679,23,brazil:23,United Kingdom,united kingdom,fully_disjoint,llm,llm_preferred,consistent
+PRJEB51652,23,belgium:23,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB44508,23,sweden:23,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA299097,22,egypt:22,NotCountry:Red Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA386804,22,united states:22,NotCountry:no geographic signal,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB34453,22,atlantic ocean:17;southern ocean:5,NotCountry:Atlantic/Southern Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA957232,22,pacific ocean:22,"NotCountry:Mariana Trench, western Pacific international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA397990,21,georgia:21,United States,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJEB38669,21,antarctica:21,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA685265,21,germany:5;south africa:4;australia:3;spain:2;poland:2;sudan:2;united kingdom:2;belgium:2;sierra leone:1,Belgium,belgium,incomplete_subset,llm,llm_preferred,consistent
+PRJDB11497,21,nepal:5;china:4;greenland:4;united states:2;svalbard:2;tajikistan:1;chile:1;antarctica:1;kyrgyzstan:1,asian,asian,fully_disjoint,rule,rule_only,rule_only
+PRJEB46097,21,united kingdom:19;russia:1;netherlands:1,africa,africa,fully_disjoint,rule,rule_only,rule_only
+PRJNA407229,20,pacific ocean:20,"NotCountry:multiple ocean OMZ regions (ETSP, Arabian Sea)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB32787,20,atlantic ocean:20,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB36797,20,switzerland:20,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA784005,20,pacific ocean:20,"NotCountry:Northwest Pacific, no country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB51662,20,france:20,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1087105,20,south korea:20,Korea,korea,fully_disjoint,llm,llm_preferred,consistent
+PRJEB3206,19,valencia (spain):19,Spain:Valencia,spain,fully_disjoint,llm,llm_preferred,consistent
+PRJNA288501,19,canada:19,NotCountry:Great Lakes,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA489143,19,australia:27;saudi arabia:19,Australia:Great Barrier Reef,australia,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA546572,19,pacific ocean:19,New Zealand:Kermadec Arc (Brothers Volcano),new zealand,fully_disjoint,llm,llm_preferred,conflict
+PRJNA727670,19,pacific ocean:19,NotCountry:open ocean (North Pacific Subtropical Gyre) - no country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB12466,18,united states:6;thailand:3;china:2;singapore:2;japan:2;greenland:1;canada:1;pakistan:1,Denmark:Copenhagen,denmark,fully_disjoint,llm,llm_preferred,consistent
+PRJEB12234,18,pacific ocean:18,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA395911,18,canada:18,NotCountry:multiple worldwide locations (unspecified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB14197,18,baltic sea:18,NotCountry:Baltic Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA770010,18,viet nam:18,Vietnam:Day river area,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJEB51661,18,portugal:18,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA504027,17,atlantic ocean:17,Bermuda,bermuda,fully_disjoint,llm,llm_preferred,conflict
+PRJEB39013,17,ghana:14;uganda:9;tanzania:8,Ghana,ghana,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA449022,17,united states:17,NotCountry:no collection location stated,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB59431,17,antarctica:11;greenland:2;australia:2;svalbard:1;south africa:1,antarctic,antarctic,fully_disjoint,rule,rule_only,rule_only
+PRJEB59067,17,svalbard:17,arctic,arctic,fully_disjoint,rule,rule_only,rule_only
+PRJNA1028672,17,china:17,asia,asia,fully_disjoint,rule,rule_only,rule_only
+PRJNA950101,17,arctic ocean:17,NotCountry:Central Arctic Ocean/international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA246597,16,peru:14;bulgaria:9;denmark:2,Bulgaria,bulgaria,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA255875,16,france:16,Germany,germany,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA454581,16,arctic ocean:16,NotCountry:Arctic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB41132,16,au:16,NotCountry:marine environment,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA603575,16,italy:16,NotCountry:no single geographic location stated (food and global human metagenomes),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA756323,16,australia:16,"NotCountry:microcosm experiment, seawater source not stated",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA1186253,16,china:16,NotCountry:South China Sea (Site F Cold Seep),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA1156059,16,united states:16,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA52299,15,yellowstone national park:15,"United States:Yellowstone National Park, Wyoming",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB5293,15,pacific ocean:15,NotCountry:Axial Seamount (northeast Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA311705,15,philippines:39;south africa:15,Philippines,philippines,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA395091,15,pacific ocean:15,NotCountry:no geographic signal,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB21672,15,canada:15,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA356809,15,china:15,NotCountry:no country stated (giant panda endemic to China),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB34744,15,barbados:15,Germany,germany,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA322324,15,united kingdom:8;kenya:5;angola:2,United States,united states,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB24517,15,arctic ocean:15,Norway:Svalbard,norway,fully_disjoint,llm,llm_preferred,consistent
+PRJNA400260,15,china:15,"NotCountry:no specific country (northern and southern hemispheres, global)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB49281,15,united kingdom:15,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA704368,15,canada:15,"NotCountry:no geographic signal (marine spill, no location)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA771879,15,russia:15,NotCountry:Arctic/Yedoma region but country not specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA788475,15,mediterranean sea:15,"NotCountry:Mediterranean Sea, multiple countries",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA858966,15,india:15,NotCountry:Sundarban spans India/Bangladesh; not specified,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA814825,15,china:15,NotCountry: Gobi Desert spans Mongolia/China; no explicit country,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB50566,15,italy:15,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB51664,15,france:15,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA47455,14,argentine sea:14,Argentina,argentina,fully_disjoint,llm,llm_preferred,consistent
+PRJNA257723,14,spain:14,United States:Washington,united states,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA350692,14,pacific ocean:14,NotCountry:offshore Eastern Tropical North Pacific (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA390944,14,pacific ocean:14,United States,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA397176,14,united states:14,"NotCountry:marine environment (Northern Gulf of Mexico), no specific country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB32794,14,ireland:26;brazil:14,Ireland,ireland,incomplete_subset,llm,llm_preferred,consistent
+PRJEB27821,14,italy:9;sweden:5;russia:3,Russia,russia,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB41592,14,arctic ocean:14,NotCountry:Fram Strait,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA984432,14,china:14,"NotCountry:global study, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB51660,14,spain:12,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1099162,14,france:14,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA248552,13,pacific ocean:9;north pacific subtropical gyre:4,NotCountry:North Pacific Gyre,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA400857,13,singapore:13,NotCountry:no specific country (multiple urban locations worldwide),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB36096,13,atlantic ocean:7;mediterranean sea:6,Mexico,mexico,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB35770,13,czechia:49;switzerland:13,Czechia,czechia,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA779602,13,atlantic ocean:13,"NotCountry:mid-Atlantic Ridge, intl waters",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA693984,13,united states:13,North America,north america,fully_disjoint,llm,llm_preferred,conflict
+PRJNA47487,12,pacific:12,"NotCountry:Guaymas Basin, Gulf of California, international waters",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA52289,12,chesapeake bay station 858:12,"United States:Chesapeake Bay, station 858",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB2778,12,united states:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA207834,12,united states:12;uganda:12,Uganda,uganda,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA234377,12,pacific ocean:12,NotCountry:Eastern Lau Spreading Center,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA298260,12,united states:22;canada:12,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJEB15676,12,pacific ocean:12,NotCountry:Station ALOHA,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA322450,12,sweden:12,baltic sea,baltic sea,fully_disjoint,rule,rule_only,rule_only
+PRJEB24418,12,spain:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB24121,12,estonia:278;latvia:12,Estonia,estonia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA237060,12,pacific ocean:12,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJDB6359,12,china:12,Russia,russia,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB22053,12,argentina:12,Bangladesh,bangladesh,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB31886,12,united kingdom:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA531756,12,sweden:12,"NotCountry:Eastern Gotland Basin, Baltic Sea (international/transboundary waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA555481,12,poland:6;slovenia:6;switzerland:6,Switzerland,switzerland,incomplete_subset,llm,llm_preferred,consistent
+PRJEB37860,12,spain:12,Germany,germany,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB17887,12,pacific ocean:12,United States:California,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA642232,12,israel:12,NotCountry:no specific country; analyses used local/regional/global soil datasets without a single collection country,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA645809,12,lithuania:12,NotCountry:Curonian Lagoon spans Lithuania and Russia (Kaliningrad); no specific side stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA613976,12,atlantic ocean:12,Canada,canada,fully_disjoint,llm,llm_preferred,consistent
+PRJEB30847,12,united kingdom:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA672704,12,india:12;united states:12,USA,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA694437,12,united states:10;solomon islands:2,NotCountry:multiple oceans (Pacific and Atlantic),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA627699,12,baltic sea:12,NotCountry:Baltic Sea (international),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB48226,12,arctic ocean:12,NotCountry:Gakkel Ridge (Central Arctic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA888840,12,nigeria:12,South Africa,south africa,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1046661,12,china:12,NotCountry:deep-sea,notcountry,notcountry_kept,rule_open_ocean,rule_only,rule_only
+PRJNA1052463,12,croatia:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB51656,12,israel:12,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB51653,12,spain:12,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1169419,12,israel:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1211045,12,malawi:6;tanzania:4;uganda:3;united kingdom:2,Uganda,uganda,incomplete_subset,rule_place,rule_only,rule_only
+PRJNA1275038,12,australia:12,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1283476,12,china:12,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA52315,11,atlantic:8;argentine sea:3,"United States:Gulf of Maine, Atlantic Ocean",united states,fully_disjoint,llm,llm_preferred,conflict
+PRJEB9818,11,malawi:320;united states of america;usa:11,Malawi,malawi,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA257561,11,switzerland:11,baltic sea,baltic sea,fully_disjoint,rule,rule_only,rule_only
+PRJNA278393,11,tanzania:27;italy:11,Tanzania,tanzania,incomplete_subset,llm,llm_preferred,consistent
+PRJNA350693,11,ross sea:11,Antarctica:Ross Sea,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA299342,11,china:11,Turkey,turkey,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA358755,11,china:11,NotCountry:no country stated (giant panda endemic to China),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA490621,11,portugal:11,"NotCountry:deep-sea, no location named",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB35877,11,china:16;pacific ocean:11,China:South China Sea,china,incomplete_subset,llm,llm_preferred,consistent
+PRJNA504765,11,arctic ocean:11,"NotCountry:Arctic deep-sea hydrothermal vent (Loki's Castle, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA632347,11,mexico:9;pacific ocean:2,NotCountry:open ocean Eastern Tropical North Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA641445,11,pacific ocean:8;atlantic ocean:3,"NotCountry:no geographic signal; deep-sea vesicomyid clams, location not stated",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA593704,11,saudi arabia:11,NotCountry:Red Sea (Suakin Deep),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA438436,11,france:11,Italy,italy,fully_disjoint,llm,llm_preferred,consistent
+PRJNA831615,11,switzerland:11,"NotCountry:Lake Geneva spans Switzerland/France, ambiguous",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB55779,11,cameroon:6;french guiana:3;malawi:2,atlantic,atlantic,fully_disjoint,rule,rule_only,rule_only
+PRJEB51659,11,portugal:11,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1199800,11,portugal:7;spain:4;italy:1,Italy,italy,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB75506,11,indian ocean:6;southern ocean:5,NotCountry:Southern Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA47435,10,pacific:10,"United States:Shane Seep, Coal Oil Point seep field offshore Goleta, California and Santa Barbara Basin",united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52301,10,pacific ocean:10,"NotCountry:subarctic open Pacific Ocean, no country/EEZ stated",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB11413,10,slovenia:10,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA290197,10,pacific ocean:10,United States:Hydrate Ridge,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA308562,10,israel:10,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA378717,10,china:10,NotCountry:various marine environments (no country specified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB26952,10,pacific ocean:10,United States:California,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA434253,10,germany:10,NotCountry:no geographic signal in text,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB27554,10,pacific ocean:10,NotCountry:Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA529320,10,indian ocean:10,NotCountry:Bay of Bengal spans multiple countries (India/Bangladesh/Myanmar); no single collection country stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA542342,10,united states:10,China:Gan River source area,china,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB34461,10,antarctica:10,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA428417,10,pacific ocean:10,China,china,fully_disjoint,llm,llm_preferred,consistent
+PRJEB49115,10,france:10,United Kingdom:UK,united kingdom,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA495050,10,pacific ocean:10,"NotCountry:Eastern Lau Spreading Center, deep-sea hydrothermal vents in the Lau Basin (SW Pacific, off Tonga)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA535364,10,china:10,NotCountry:South China Sea / NW Pacific (international/transboundary waters),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB68224,10,atlantic ocean:10,NotCountry:north-east Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1116707,10,france:4;lebanon:2;united kingdom:2;austria:2,Saudi Arabia,saudi arabia,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1135464,10,,atlantic,atlantic,other,rule,rule_only,rule_only
+PRJNA272371,9,singapore:9,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA309222,9,indian ocean:9,India,india,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA182070,9,germany:9,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA380975,9,china:9,"NotCountry:no country stated (Pacific white shrimp, location unspecified)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB15043,9,arctic ocean:9,NotCountry:Arctic Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB32776,9,atlantic ocean:9,NotCountry:Gulf of Mexico,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB34799,9,papua new guinea:9,United Kingdom:UK,united kingdom,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA412741,9,pacific ocean:9,"NotCountry:Mariana Trench (deep sea, western Pacific; no sovereign country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA554497,9,pacific ocean:9,NotCountry:no geographic signal,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB35096,9,mediterranean sea:9,China:Hong Kong,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA555820,9,pacific ocean:5;atlantic ocean:4,"NotCountry:multiple hydrothermal vent sites (Hawaii, Mariana Trough, Mid-Atlantic Ridge)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJDB11069,9,pacific ocean:9,NotCountry:North-West Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB47625,9,united kingdom:9,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA634212,9,pacific ocean:9,NotCountry:open ocean Eastern Tropical North Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA649531,9,canada:6;united states:2;saint helena:1,NotCountry:pelagic shark sampling; no specific country stated,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA656660,9,china:9,Mexico,mexico,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA692099,9,pacific ocean:9,NotCountry:Mariana Trench (international/hadal waters),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB52171,9,arctic ocean:9,NotCountry:Fram Strait (Arctic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA783651,9,china:9,Mongolia,mongolia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA855972,9,pacific ocean:9,"NotCountry:only Station ALOHA, N Pacific Gyre stated",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA837106,9,china:9,"NotCountry:global methane seeps, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA644733,9,new zealand:9,NotCountry:Pacific Ring of Fire spans multiple countries; no single collection country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA994497,9,guadeloupe:9,France,france,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA1013917,9,italy:9,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1028180,9,romania:9,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1162843,9,india:9,asia,asia,fully_disjoint,rule,rule_only,rule_only
+PRJNA1173971,9,sweden:9,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1236935,9,belgium:9,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA52291,8,pacific ocean:8,"United States:North Pacific subtropical gyre, Hawaii Ocean Time-series (HOT219)",united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA47485,8,pacific:8,"NotCountry:East Pacific Rise hydrothermal vent, international waters",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA52287,8,pacific:8,"United States:offshore Coal Oil Point, Goleta, California (Pacific Ocean)",united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA242360,8,sargasso sea:8,NotCountry:Sargasso Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB6542,8,netherlands:8,african,african,fully_disjoint,rule,rule_only,rule_only
+PRJNA261319,8,spain:8,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA237127,8,united states:38;peru:3;canada:3;argentina:2,United States:America,united states,incomplete_subset,rule_place,rule_only,rule_only
+PRJEB11474,8,svalbard:8,Norway:Svalbard,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA283159,8,atlantic ocean:8,NotCountry:Mid Cayman Rise,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA293255,8,china:8,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA319434,8,china:8,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA352340,8,saudi arabia:8,NotCountry:no specific reef location,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA454888,8,pacific ocean:8,"NotCountry:Mariana back-arc (Pacific, international)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB27640,8,germany:5;italy:2;austria:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA529454,8,pacific ocean:8,"NotCountry:Station ALOHA is in the North Pacific Subtropical Gyre, open ocean / no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB29861,8,antarctica:8,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA575023,8,united states:2;france:1;australia:1;hungary:1;germany:1;new zealand:1;israel:1,NotCountry:global - 12 lakes across four continents (countries not individually named),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA657625,8,atlantic ocean:8,NotCountry:North Atlantic international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA647462,8,pacific ocean:8,USA,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA713414,8,pacific ocean:8,Mexico:Gulf of California,mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJNA784430,8,pacific ocean:6;china:2,"NotCountry:South China Sea / Mariana Trench, no country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB52100,8,switzerland:8,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA707065,8,new zealand:12;united kingdom:8,New Zealand:Auckland,new zealand,incomplete_subset,llm,llm_preferred,consistent
+PRJEB51496,8,norway:8,atlantic,atlantic,fully_disjoint,rule,rule_only,rule_only
+PRJNA813168,8,united states:8,"NotCountry: Northeast Pacific Ocean, no specific country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA837619,8,united states:8,"NotCountry:marine sanctuary, country not specified",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA893434,8,sweden:42;france:4;united kingdom:2;denmark:2,Sweden,sweden,incomplete_subset,llm,llm_preferred,consistent
+PRJNA541485,8,pacific ocean:8,"NotCountry:Mariana Trench, western Pacific Ocean",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1160398,8,china:8,NotCountry:East China Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA1246254,8,argentina:8,pacific,pacific,fully_disjoint,rule,rule_only,rule_only
+PRJNA47433,7,strait of georgia:7,"Canada:Strait of Georgia, British Columbia (Jericho Pier Vancouver, Point Atkinson, Vancouver Island coast)",canada,fully_disjoint,llm,llm_preferred,consistent
+PRJNA47441,7,caroline island site 12:3;caroline island site 9:3;caroline island wreck:1,Kiribati:Caroline Island (Millennium Atoll),kiribati,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB3227,7,spain:7,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA185981,7,malaysia:7,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA240343,7,antarctica:7,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA248084,7,arctic deep sea:5;arctic ocean:2,NotCountry:Hakon Mosby Mud Volcano,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA285416,7,china:7,NotCountry:South China Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB9378,7,australia:7,pacific,pacific,fully_disjoint,rule,rule_only,rule_only
+PRJEB19882,7,atlantic ocean:7,NotCountry:Gulf of Mexico,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA495396,7,atlantic ocean:3;australia:3;united kingdom:1,"NotCountry:marine sponges Hexadella detritifera and Stylissa flabelliformis, no collection site named",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA545216,7,saudi arabia:7,NotCountry:Red Sea brine pool (no specific country stated),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA553005,7,atlantic ocean:7,Gulf of Mexico,gulf of mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJNA623111,7,svalbard:7,Norway:Svalbard,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA657275,7,italy:11;belize:7,Italy,italy,incomplete_subset,llm,llm_preferred,consistent
+PRJDB9793,7,pacific ocean:7,NotCountry:North Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB41137,7,pacific ocean:7,NotCountry:marine,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA784435,7,pacific ocean:7,"NotCountry:Mariana Trench, no country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB46489,7,france:7,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA668558,7,pacific ocean:7,"NotCountry:Mariana Trench (Pacific, no country)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA728519,7,china:7,"NotCountry:offshore cold seep, no sovereign country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA808646,7,pacific ocean:7,NotCountry:Clarion-Clipperton Fracture Zone (Pacific),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB76672,7,arctic ocean:7,NotCountry:East Siberian Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA765502,7,atlantic ocean:7,Namibia,namibia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA1159479,7,china:7,NotCountry:South China Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB87871,7,portugal:7,Cuba,cuba,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA52303,6,pacific ocean:6,"Australia:Coral Sea, Pacific Ocean",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52329,6,"rifle doe ifrc, rifle colorado:6","United States:Rifle, Colorado",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA52305,6,jaco summit:6,Costa Rica:Pacific margin methane seeps,costa rica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA47439,6,pt loma san diego:6,"United States:Point Loma, San Diego, California",united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA47443,6,shark skin malden island:3;shark skin caroline island:3,Kiribati:Caroline Island (Millennium Atoll),kiribati,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB3085,6,germany:6,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB4844,6,united states:6;sweden:3,Sweden,sweden,incomplete_subset,llm,llm_preferred,consistent
+PRJNA183510,6,canada:93;united states:4;trinidad and tobago:2,Canada,canada,incomplete_subset,rule_demonym,rule_only,rule_only
+PRJEB1798,6,baltic sea:6,NotCountry:Baltic Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA72255,6,united states:19;northwestern lake huron:6,United States:Michigan,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA265986,6,italy:8;atlantic ocean:2;new caledonia:2;costa rica:1;portugal:1,Italy:Voltri Massif,italy,incomplete_subset,llm,llm_preferred,consistent
+PRJEB12327,6,italy:6;pakistan:6,Pakistan,pakistan,incomplete_subset,llm,llm_preferred,consistent
+PRJEB6559,6,mediterranean sea:6,NotCountry:Eastern Mediterranean Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA340165,6,pacific ocean:6,Tonga:Tonga Trench,tonga,fully_disjoint,llm,llm_preferred,conflict
+PRJEB19456,6,pacific ocean:6,"NotCountry:Axial Seamount, northeast Pacific Ocean",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA361177,6,pacific ocean:6,USA:Hawaii,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA398459,6,pacific ocean:6,"NotCountry:marine environment (northwestern Pacific / Sea of Okhotsk), no specific country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA305678,6,germany:6,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA330990,6,atlantic ocean:6,NotCountry:open ocean (western North Atlantic),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA377913,6,united states:10;denmark:4;singapore:2,USA,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA474760,6,china:6,Armenia:Syunik region,armenia,fully_disjoint,llm,llm_preferred,consistent
+PRJNA415343,6,sweden:6,Peru,peru,fully_disjoint,llm,llm_preferred,conflict
+PRJEB31957,6,norway:6,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB29105,6,greece:6,NotCountry:deep-sea,notcountry,notcountry_kept,rule_open_ocean,rule_only,rule_only
+PRJNA564639,6,china:6,USA,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA644370,6,pacific ocean:6,NotCountry:Mariana Trench is in international Pacific waters; no single collection country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA647466,6,french polynesia:6,NotCountry:no geographic signal; bleaching event location not stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA505148,6,chile:4;pacific ocean:2,NotCountry:Pacific oxygen minimum zone (no country),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA679196,6,brazil:6,NotCountry:Mid-Atlantic Ridge (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA552185,6,japan:6,NotCountry:no geographic signal,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA516152,6,tasman sea:5;pacific ocean:1,Australia,australia,fully_disjoint,llm,llm_preferred,consistent
+PRJNA517745,6,atlantic ocean:6,"NotCountry:Atlantic Ocean named, no sovereign country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB38557,6,russia:6,arctic,arctic,fully_disjoint,rule,rule_only,rule_only
+PRJEB41993,6,norway:6,China,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA602302,6,spain:3;germany:1;france:1;austria:1,NotCountry:six European lakes (specific countries not stated),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA698629,6,germany:6,"NotCountry:only 'European dogs' mentioned, no specific country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA647383,6,united states:3;belize:3,NotCountry:corals from Caribbean and Pacific regions; no single collection country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA781422,6,czechia:33;austria:6,Czech Republic,czechia,incomplete_subset,llm,llm_preferred,consistent
+PRJEB50056,6,atlantic ocean:6,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA693108,6,pacific ocean:6,"NotCountry:deep-sea, location unnamed",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA807825,6,australia:6,NotCountry:Indo-Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA278504,6,denmark:6,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJEB51654,6,norway:6,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJEB85826,6,united states:6,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA47457,5,arctic:4;beaufort sea:1,"Canada:Sachs Harbor, Beaufort Sea",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA193416,5,egypt:4;saudi arabia:1,NotCountry:Red Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA219363,5,"kebrit deep, red sea:3;atlantis ii, red sea:1;discovery deep, red sea:1",NotCountry:Red Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA291283,5,atlantic ocean:5,NotCountry:Gulf of Mexico,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA305355,5,italy:3;greece:2,NotCountry:Mediterranean Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA318731,5,spain:5,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJDB5792,5,southern mariana trough:4;pacific ocean:1,NotCountry:Southern Mariana Trough,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB15554,5,pacific ocean:5,Papua New Guinea,papua new guinea,fully_disjoint,llm,llm_preferred,consistent
+PRJEB21266,5,germany:5,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA393056,5,pacific ocean:5,NotCountry:no geographic signal,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB7296,5,pacific ocean:5,NotCountry:Southern Mariana Trough,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB13455,5,germany:3;austria:2,europe,europe,fully_disjoint,rule,rule_only,rule_only
+PRJEB17916,5,mexico:5,NotCountry:Gulf of Mexico,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA481022,5,united states:5,"NotCountry:Gulf of Mexico shipwreck habitats, no country named",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA432804,5,china:5,Australia,australia,fully_disjoint,llm,llm_preferred,consistent
+PRJNA433242,5,denmark:3;baltic sea:2,"NotCountry:Baltic Sea Basin and Kattegat border multiple countries (Sweden, Finland, Germany, Denmark, etc.)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB30872,5,svalbard:5,"Norway:Adventdalen, Svalbard",norway,fully_disjoint,llm,llm_preferred,consistent
+PRJNA517146,5,cuba:9;united states:5,Cuba,cuba,incomplete_subset,llm,llm_preferred,consistent
+PRJNA431431,5,canada:6;south africa:2;pacific ocean:2;united states:1,Canada,canada,incomplete_subset,llm,llm_preferred,consistent
+PRJNA556392,5,indian ocean:5,NotCountry:southwest Indian Ridge (International Waters),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA511814,5,sweden:5,"NotCountry:Bothnian Sea (Baltic Sea, Finland/Sweden)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA602816,5,canada:3;italy:2,NotCountry:no geographic location stated (marine enrichments),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA529480,5,atlantic ocean:5,"NotCountry:Arctic Mid-Ocean Ridge, international waters / no country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA673456,5,bangladesh:5,India,india,fully_disjoint,llm,llm_preferred,consistent
+PRJEB15541,5,cayman islands:5,NotCountry:Mid-Cayman Rise,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA638805,5,bulgaria:5,NotCountry:Black Sea is an international basin bordering multiple countries; no specific collection country stated,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA807686,5,pacific ocean:5,NotCountry:Okinawa backarc basin (Pacific),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA758896,5,pacific ocean:5,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA860773,5,china:9;north korea:5,China:Liaoning,china,incomplete_subset,llm,llm_preferred,consistent
+PRJNA820565,5,antarctica:5,NotCountry: multiple European countries (continental-scale),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA996601,5,pacific ocean:5,NotCountry:no single country (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB51655,5,greece:3,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA47467,4,near bats:4,"NotCountry:Sargasso Sea open Atlantic, no terrestrial country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA52285,4,"kaneohe bay, kaneohe, hawaii:4","United States:Kaneohe Bay, Kaneohe, Hawaii",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47453,4,wreck reef:4,"United States:La Paraguera, Puerto Rico",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47459,4,estuary:4,"United States:Tampa Bay, Florida",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47469,4,key west coral nursery:4,"United States:Key West, Florida",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA52403,4,estuary:4,"United States:Tampa Bay, Florida",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47451,4,babs cove:4,"United States:Appledore Island, Maine",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB3374,4,china:4,United Kingdom:UK,united kingdom,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB1391,4,south korea:4,United Kingdom:UK,united kingdom,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB4261,4,indian ocean:4,NotCountry:Arabian Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA217777,4,pacific ocean:4;chile:4,Chile,chile,incomplete_subset,llm,llm_preferred,consistent
+PRJNA196863,4,station aloha north pacific subtropical gyre:4,United States:Hawaii,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA253251,4,egypts red sea coast:4,Egypt,egypt,fully_disjoint,llm,llm_preferred,consistent
+PRJNA266758,4,norway:4,NotCountry:Loki's Castle,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA271884,4,pacific ocean:4,NotCountry:Louisville Seamount Chain,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA280201,4,atlantic ocean:4,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA277357,4,mexico:4,NotCountry:marine oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA301767,4,china:4,NotCountry:deep-sea,notcountry,notcountry_kept,rule_open_ocean,rule_only,rule_only
+PRJNA312164,4,brazil:4,United States,united states,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA356928,4,north sea:4,NotCountry:North Sea (UK/Norway sector not specified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB4244,4,japan:4,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA309112,4,belgium:4,north sea,north sea,fully_disjoint,rule,rule_only,rule_only
+PRJNA420998,4,pacific ocean:4,USA:Oregon,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA330603,4,atlantic ocean:4,NotCountry:no location mentioned,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA366134,4,atlantic ocean:4,Norway:Norwegian Sea,norway,fully_disjoint,llm,llm_preferred,consistent
+PRJNA330601,4,atlantic ocean:4,NotCountry:no location mentioned,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA407815,4,indonesia:20;liberia:4,Indonesia,indonesia,incomplete_subset,llm,llm_preferred,consistent
+PRJEB24039,4,pacific ocean:4,Papua New Guinea,papua new guinea,fully_disjoint,llm,llm_preferred,consistent
+PRJEB27164,4,pacific ocean:4,Papua New Guinea,papua new guinea,fully_disjoint,llm,llm_preferred,conflict
+PRJNA450104,4,italy:4,Japan,japan,fully_disjoint,llm,llm_preferred,llm_only
+PRJEB21210,4,north sea:4,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB21603,4,belgium:4,Mali,mali,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB28367,4,united states:4,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA431606,4,atlantic ocean:4,NotCountry:South Atlantic gyre / open ocean; no coastal country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA437470,4,pacific ocean:4,NotCountry:eastern North Pacific (Line P transect); no single country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA489438,4,atlantic ocean:4,"NotCountry:North Pond, Mid-Atlantic Ridge, international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA661273,4,spain:4,"NotCountry:coastal waters, no location",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA663545,4,netherlands:3;sweden:1,"NotCountry:Bothnian Sea (Baltic), no single country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA599172,4,pacific ocean:4,Costa Rica,costa rica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA528516,4,austria:4,"NotCountry:European cherry fruit fly host, no specific country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA518164,4,china:4,NotCountry:no geographic signal in evidence,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA640385,4,latvia:4;israel:4,Latvia:Jerusalem,latvia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA511792,4,pacific ocean:4,Papua New Guinea:Manus Basin,papua new guinea,fully_disjoint,llm,llm_preferred,conflict
+PRJEB30289,4,australia:4,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB33248,4,arctic ocean:4,NotCountry:Arctic Fram Strait,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB42658,4,china:4,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB46766,4,indian ocean:4,French Southern Territories,french southern territories,fully_disjoint,llm,llm_preferred,conflict
+PRJEB45013,4,united kingdom:4,England,england,fully_disjoint,llm,llm_preferred,consistent
+PRJNA666082,4,australia:34;indonesia:4,Australia,australia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA668868,4,italy:2;austria:1;hungary:1,NotCountry:no country stated (Rhagoletis cerasi is a Palearctic/European cherry fly),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA732601,4,kerguelen archipelago:4,France:Kerguelen Islands,france,fully_disjoint,llm,llm_preferred,conflict
+PRJNA688760,4,united states:4,Mexico,mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJNA604781,4,canada:4,"NotCountry:Scotian Slope, NW Atlantic (offshore)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB46962,4,ukraine:4,NotCountry:Black Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB58924,4,netherlands:4,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA931729,4,indian ocean:4,NotCountry:no location,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA1159728,4,united states:4,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB65987,4,netherlands:4,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1114660,4,poland:4,Australia,australia,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA1193526,4,malawi:30;belgium:4,Malawi,malawi,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA47449,3,babs cove:3,"United States:Appledore Island, Maine",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47425,3,atlantic:3,"NotCountry:Equatorial Atlantic Ocean, Romanche Fracture Zone Lower Deep Water - open-ocean site outside national jurisdiction",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA47427,3,mediterranean sea:3,NotCountry:Southwest Mediterranean Sea seawater; no country or coastal station named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA50471,3,pacific ocean:3,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJEB3061,3,mid-atlantic ridge:3,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA244165,3,peru:3,United States,united states,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA217520,3,andaman sea:3,NotCountry:Andaman Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA259156,3,arctic ocean:3,NotCountry:Loki's Castle,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA264811,3,pacific ocean:3,NotCountry:Juan de Fuca Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB11362,3,atlantic ocean:3,"NotCountry:Menez Gwen hydrothermal vent field, Mid-Atlantic Ridge",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB13497,3,croatia:3,NotCountry:northern Adriatic Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA279271,3,iran:3,NotCountry:Caspian Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA287178,3,viet nam:3,Vietnam,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA318959,3,greece:3,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA330320,3,arctic ocean:3,Norway:Svalbard,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA320927,3,united states:3,Mexico,mexico,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA341273,3,atlantic ocean:3,"NotCountry:North Pond, Mid-Atlantic Ridge (international waters)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA366135,3,atlantic ocean:3,Norway:Norwegian Sea,norway,fully_disjoint,llm,llm_preferred,consistent
+PRJNA384468,3,indian ocean:3,"NotCountry:Southwest Indian Ocean (no country specified, international waters)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA319431,3,united states:3,Turkey,turkey,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB19379,3,chile:3;argentina:1,Argentina:Altiplano,argentina,incomplete_subset,llm,llm_preferred,consistent
+PRJNA305188,3,china:22;united states:1;south africa:1;singapore:1,China,china,incomplete_subset,llm,llm_preferred,consistent
+PRJNA450884,3,indian ocean:3,NotCountry:open ocean (Indian Ocean),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA435427,3,pacific ocean:3,NotCountry:Western Tropical South Pacific open ocean (OUTPACE cruise); no single country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA508294,3,china:3,NotCountry:no geographic signal (coastal sediment unspecified),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA474521,3,tunisia:6;algeria:3,Tunisia,tunisia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA446061,3,united states:3,NotCountry:participant location not stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB27605,3,sweden:36;finland:3,Sweden,sweden,incomplete_subset,llm,llm_preferred,consistent
+PRJEB33505,3,north sea:3,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB34875,3,egypt:13;norway:3,Egypt,egypt,incomplete_subset,llm,llm_preferred,consistent
+PRJNA515837,3,united states:3,Gulf of Mexico,gulf of mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJNA579034,3,south korea:3,NotCountry:no geographic signal in evidence,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA438526,3,argentina:3,NotCountry:Diamante lagoon not localized to a country in text,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA527656,3,pacific ocean:3,Micronesia,micronesia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA478776,3,brazil:3,"NotCountry:offshore oil spill, no country named",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA556786,3,spain:3,NotCountry:Western Mediterranean coast,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB6640,3,malaysia:3,Indonesia,indonesia,fully_disjoint,llm,llm_preferred,consistent
+PRJNA655097,3,atlantic ocean:3,NotCountry:North Sea (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655099,3,atlantic ocean:3,NotCountry:North Sea (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622180,3,pacific ocean:3,NotCountry:open ocean Eastern Pacific OMZ (ETNP),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA614527,3,cape verde:1;croatia:1;united states:1,NotCountry:isolation sites of the marine anaerobic ciliates not stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA647683,3,australia:12;united states:1;china:1;namibia:1,Australia,australia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA655098,3,atlantic ocean:3,NotCountry:North Sea (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB37465,3,southern ocean:3,NotCountry:Southern Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA674982,3,spain:3,"NotCountry:Mediterranean Sea (international waters, no single country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA723166,3,pacific ocean:3,"NotCountry:no country (Mariana Trench, hadal zone)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA689840,3,united states:3,NotCountry:Gulf of Mexico (no specific country),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA667178,3,sweden:3,"NotCountry:subarctic lake, no specific country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA752507,3,united states:3,"NotCountry:offshore Gulf of Mexico reservoir, jurisdiction not specified",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA766414,3,viet nam:3,Vietnam,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA751690,3,indian ocean:3,"NotCountry:Indian Ocean ridge, international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA781120,3,italy:3,"NotCountry:Mediterranean grassland, no country named",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA748243,3,united states:3;romania:3,USA:Pipe Creek (Indiana),united states,incomplete_subset,llm,llm_preferred,conflict
+PRJNA796108,3,brazil:5;atlantic ocean:3,Brazil:Amapa,brazil,incomplete_subset,llm,llm_preferred,consistent
+PRJNA797383,3,indian ocean:3,NotCountry:Mid-Atlantic Ridge (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA804487,3,israel:3,NotCountry:Red Sea (international),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA820494,3,pacific ocean:3,NotCountry: Southwest Pacific Ocean (international/non-country),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA823871,3,france:3,NotCountry: Thau lagoon implied (France) but not stated,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA835145,3,mexico:3,"NotCountry:Gulf of Mexico, no single country specified",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB54899,3,united kingdom:37;netherlands:3,United Kingdom,united kingdom,incomplete_subset,llm,llm_preferred,consistent
+PRJNA872758,3,malaysia:3,NotCountry:multi-country Asian cohort (Malaysia focus),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB66855,3,slovenia:3,NotCountry:northern Adriatic Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA1085763,3,germany:3,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1073546,3,saudi arabia:3,NotCountry:Gulf of Aqaba,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA1050611,3,united states:3,pacific,pacific,fully_disjoint,rule,rule_only,rule_only
+PRJEB40748,3,netherlands:3,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB51665,3,france:3,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA1172671,3,arctic ocean:3,NotCountry:Central Arctic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA47471,2,pacific:2,"NotCountry:Juan de Fuca Ridge hydrothermal vent, NE Pacific, no country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA47461,2,boiling springs lake:2,"United States:Boiling Springs Lake, California",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA50467,2,pacific ocean:2,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA52331,2,"lake 227, experimental lakes area, ontario:2","Canada:Lake 227, Experimental Lakes Area, Ontario",canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA50459,2,pacific:2,"NotCountry:Strait of Georgia, Pacific, no country specified",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA47475,2,arctic ocean:2,"NotCountry:Arctic deep sea Molloy Hole, Fram Strait, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA52321,2,pacific:2,"Canada:Strait of Georgia, British Columbia",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA50465,2,pacific ocean:2,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA50463,2,pacific ocean:2,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA50461,2,pacific:2,"NotCountry:Strait of Georgia, Pacific, no country specified",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA50457,2,arctic:2,"NotCountry:Beaufort Sea / Amundsen Gulf Arctic, no country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA47429,2,gulf of mexico:2,NotCountry:Gulf of Mexico water column; no country or station named,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA47431,2,saanich inlet:2,"Canada:Saanich Inlet, British Columbia",canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47465,2,atlantic:2,Germany:Helgoland,germany,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA52311,2,irish sea (ne atlantic ocean):2,"Ireland:Whittard Canyon, NE Atlantic",ireland,fully_disjoint,llm,llm_preferred,consistent
+PRJNA52309,2,black sea:2,"NotCountry:Black Sea permanently anoxic deep-sea site, no country stated",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA52333,2,"lake 239, experimental lakes area, ontario:2","Canada:Lake 239, Experimental Lakes Area, Ontario",canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA47473,2,bay of biscay (ne atlantic ocean):2,"Spain:Galicia Bank, Bay of Biscay",spain,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52313,2,octopus hot spring:2,"United States:Great Boiling Spring, Nevada",united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA52293,2,arctic:2,"NotCountry:Chukchi Sea polar coastal sea ice, no country stated",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA47437,2,pacific:2,NotCountry:Pacific Ocean suboxic seawater overlying a methane-releasing carbonate mound; no country or station named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA50469,2,pacific ocean:2,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJEB2763,2,"helsinki, finland:2",Finland,finland,fully_disjoint,llm,llm_preferred,consistent
+PRJEB3125,2,france/mediterranean sea:2,France:Marseille,france,fully_disjoint,llm,llm_preferred,consistent
+PRJNA251889,2,north pacific ocean gyre:2,United States:Hawaii,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA253472,2,kiribati:2,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA244727,2,atlantic ocean:2,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJEB4893,2,north sea:2,Netherlands,netherlands,fully_disjoint,llm,llm_preferred,consistent
+PRJNA269585,2,united states:3;belize:2,USA:Florida Keys,united states,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA268940,2,united states:2,Canada,canada,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA286149,2,united states:2,Cyprus,cyprus,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA297058,2,pacific ocean:2,NotCountry:South Pacific Gyre,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA298665,2,pacific ocean:2,NotCountry:Arabian Sea,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA297682,2,canada:2,arctic,arctic,fully_disjoint,rule,rule_only,rule_only
+PRJEB4702,2,north sea:2,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA240141,2,germany:2,asian,asian,fully_disjoint,rule,rule_only,rule_only
+PRJEB12379,2,mediterranean sea:2,Spain:Blanes Bay,spain,fully_disjoint,llm,llm_preferred,conflict
+PRJNA287582,2,viet nam:2,Vietnam,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA303107,2,zambia:6;united states:2,Zambia,zambia,incomplete_subset,llm,llm_preferred,consistent
+PRJNA326769,2,pacific ocean:2,United States:California,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA266365,2,pacific ocean:2,NotCountry:mid-ocean ridge flank,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB9018,2,portugal:2,NotCountry:North Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA288724,2,atlantic ocean:2,NotCountry:eastern tropical North Atlantic,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA362212,2,united states:2;mexico:2,Mexico,mexico,incomplete_subset,llm,llm_preferred,conflict
+PRJNA328926,2,southern ocean:2,NotCountry:Southern Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365776,2,atlantic ocean:2,"Germany:Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365437,2,pacific ocean:2,NotCountry:sampled in Subarctic Pacific Ocean (open ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405719,2,germany:2,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA360271,2,atlantic ocean:2,NotCountry:North Pond is an open-Atlantic IODP drill site (no coastal country),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA371487,2,french guiana:18;brazil:2,French Guiana,french guiana,incomplete_subset,llm,llm_preferred,conflict
+PRJNA405919,2,pacific ocean:2,NotCountry:Subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405922,2,pacific ocean:2,NotCountry:Subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405923,2,pacific ocean:2,NotCountry:Subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405924,2,pacific ocean:2,NotCountry:Subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405925,2,atlantic ocean:2,"NotCountry:Cariaco Basin (Caribbean Sea, off Venezuela)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA410297,2,germany:2,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA410300,2,germany:2,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405708,2,germany:2,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405711,2,germany:2,Australia,australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405720,2,germany:2,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA375530,2,pacific ocean:2,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA364899,2,pacific ocean:2,NotCountry:North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA324597,2,germany:2,Italy,italy,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA405921,2,pacific ocean:2,NotCountry:Subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405920,2,pacific ocean:2,NotCountry:Subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA410298,2,germany:2,Italy:Pianosa,italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405926,2,atlantic ocean:2,"NotCountry:Cariaco Basin (Caribbean Sea, off Venezuela)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA430956,2,zambia:6;united states:2,Zambia,zambia,incomplete_subset,llm,llm_preferred,consistent
+PRJEB17929,2,north sea:2,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB6687,2,pacific ocean:2,NotCountry:Southern Mariana Trough,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB20879,2,france:2,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA475442,2,mexico:2,"NotCountry:Chapopote seep, Gulf of Mexico, no country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA454439,2,switzerland:2,Italy,italy,fully_disjoint,llm,llm_preferred,consistent
+PRJNA521734,2,mexico:2,NotCountry:salt lagoon location not stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA352737,2,pacific ocean:2,USA:Hawaii,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA552940,2,viet nam:2,Vietnam:Ninh Thuan,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA558243,2,austria:2,"NotCountry:Alpine soils (European Alps, multi-country)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA475438,2,mexico:2,"NotCountry:deep-sea asphalt seep, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA428343,2,united states:2;china:2,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJEB36446,2,germany:2,Mexico,mexico,fully_disjoint,llm,llm_preferred,conflict
+PRJEB37532,2,germany:2;argentina:1,Argentina,argentina,incomplete_subset,llm,llm_preferred,consistent
+PRJNA608555,2,japan:15;australia:2,Japan,japan,incomplete_subset,llm,llm_preferred,consistent
+PRJNA472634,2,north sea:2,"United Kingdom:Brent oil field, North Sea, Delta platform storage cell C6",united kingdom,fully_disjoint,llm,llm_preferred,conflict
+PRJNA695113,2,nepal:1;india:1;bhutan:1,India,india,incomplete_subset,llm,llm_preferred,consistent
+PRJEB48350,2,germany:2,Spain:Girona,spain,fully_disjoint,llm,llm_preferred,consistent
+PRJNA752935,2,mediterranean sea:2,"NotCountry:Southeastern Mediterranean Sea offshore, no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA371432,2,united kingdom:2,"NotCountry:description says 'cool surface sediments worldwide', no specific sampling site",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB36558,2,canada:21;united kingdom:2,Canada,canada,incomplete_subset,llm,llm_preferred,consistent
+PRJNA743701,2,pacific ocean:2,"NotCountry:hadal deep-sea trench, no sovereign country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA699472,2,canada:2,"NotCountry:only 'high-arctic' mentioned, no specific country",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJEB32129,2,germany:2,Switzerland,switzerland,fully_disjoint,llm,llm_preferred,consistent
+PRJEB49968,2,tonga:2,NotCountry:Tonga Arc (South Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA794207,2,ecuador:21;united states:2,Ecuador:Galapagos,ecuador,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA806488,2,indian ocean:2,"NotCountry:SW Indian Ocean (international, SWIR)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA785751,2,southern ocean:2,NotCountry:no location mentioned,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA806158,2,pacific ocean:2,"NotCountry:Mariana Arc (Pacific, international)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA830531,2,united states:2,"NotCountry: arctic, region not specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA679168,2,russia:2,"NotCountry:Laptev Sea (Arctic, no single country named in evidence)",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA718843,2,pacific ocean:2,United States:Washington/Oregon,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA1026665,2,china:2,Japan,japan,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJEB55112,2,saudi arabia:2,Japan:Kyoto,japan,fully_disjoint,rule_place,rule_only,rule_only
+PRJNA1135947,2,croatia:2,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA1148974,2,italy:2,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1126331,2,antarctica:2,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA1135948,2,serbia:2,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA1176278,2,china:2,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA1189542,2,united states:2,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA52325,1,pacific:1,"Canada:Strait of Georgia, British Columbia",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52327,1,pacific:1,"Canada:Strait of Georgia, British Columbia",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52319,1,pacific:1,"Canada:Strait of Georgia, British Columbia",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52323,1,pacific:1,"Canada:Strait of Georgia, British Columbia",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA52317,1,pacific:1,"Canada:Strait of Georgia, British Columbia",canada,fully_disjoint,llm,llm_preferred,conflict
+PRJEB2859,1,arctic ocean:1,NotCountry:Arctic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB4876,1,netherlands:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA202430,1,germany:1,european,european,fully_disjoint,rule,rule_only,rule_only
+PRJNA210529,1,mediterranean sea:1,NotCountry:Mediterranean Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB4259,1,netherlands:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA179186,1,egypt:1,NotCountry:Gulf of Aqaba,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA212629,1,antarctica:1,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB7459,1,antarctica:1,NotCountry:open ocean,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA240960,1,france:1,NotCountry:Eastern English Channel,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA193217,1,united kingdom:1,worldwide,worldwide,fully_disjoint,rule,rule_only,rule_only
+PRJNA238498,1,china:1,NotCountry:pelagic,notcountry,notcountry_kept,rule_open_ocean,rule_only,rule_only
+PRJNA239221,1,china:1,"Taiwan, China","taiwan, china",fully_disjoint,llm,llm_preferred,consistent
+PRJEB7460,1,indian ocean:1,NotCountry:open ocean,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB1179,1,mediterranean sea:1,"NotCountry:Red Sea, Shaban deep-sea brine lake",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB6102,1,india:1;sweden:1,India,india,incomplete_subset,llm,llm_preferred,consistent
+PRJNA194095,1,china:1,"Hong Kong, China","hong kong, china",fully_disjoint,llm,llm_preferred,consistent
+PRJNA168041,1,netherlands:1,China,china,fully_disjoint,rule_demonym,rule_only,rule_only
+PRJNA269960,1,canada:1,USA:Maryland,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA304014,1,pacific ocean:1,NotCountry:North Pacific Subtropical Gyre,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA272679,1,north sea:1,Belgium,belgium,fully_disjoint,llm,llm_preferred,consistent
+PRJNA242294,1,arctic ocean:1,"NotCountry:Fildes Peninsula, Antarctica",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB8444,1,north sea:1,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA296435,1,china:1,United States:New York,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA321549,1,united states:1,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA330077,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330149,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330106,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330145,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330073,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330140,1,indian ocean:1,"NotCountry:deep Indian Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330091,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA329989,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330093,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330081,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330006,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330095,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330019,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330097,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330083,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330089,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330139,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330127,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330076,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330044,1,pacific ocean:1,NotCountry:mesopelagic equatorial Pacific oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330040,1,pacific ocean:1,NotCountry:mesopelagic equatorial Pacific oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA338830,1,atlantic ocean:1,"NotCountry:mid-Atlantic Ridge, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB5347,1,norway:1,NotCountry:Arctic and Antarctic,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA302103,1,pacific ocean:1,NotCountry:South China Sea,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA294203,1,united states:14;china:1,United States:Cheney Reservoir,united states,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA330041,1,pacific ocean:1,NotCountry:mesopelagic equatorial Pacific oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA319586,1,antarctica:1,NotCountry:Antarctica,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330084,1,spain:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329991,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330160,1,atlantic ocean:1,Antigua and Barbuda,antigua and barbuda,fully_disjoint,llm,llm_preferred,conflict
+PRJNA330085,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330112,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330009,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330136,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330018,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329988,1,pacific ocean:1,NotCountry:South Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330128,1,indian ocean:1,"NotCountry:deep Indian Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330027,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330002,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330079,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329990,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330154,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330005,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330135,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330153,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330017,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329987,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA290104,1,tonga:1,NotCountry:Tu'i Malila hydrothermal vent field,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA330130,1,spain:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329999,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330096,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330129,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330088,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330131,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330152,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330126,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330118,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330087,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330119,1,pacific ocean:1,"NotCountry:deep Pacific Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330080,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329986,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330008,1,pacific ocean:1,NotCountry:Deep Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330001,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330113,1,indian ocean:1,"NotCountry:deep Indian Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330138,1,indian ocean:1,"NotCountry:deep Indian Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330020,1,indian ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA329993,1,indian ocean:1,NotCountry:Deep Indian Ocean,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA330094,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330150,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330007,1,atlantic ocean:1,NotCountry:Deep Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330161,1,atlantic ocean:1,"NotCountry:deep Atlantic Ocean, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330043,1,pacific ocean:1,NotCountry:mesopelagic equatorial Pacific oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330039,1,pacific ocean:1,NotCountry:mesopelagic equatorial Pacific oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA330038,1,pacific ocean:1,NotCountry:mesopelagic equatorial Pacific oxygen minimum zone,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA337945,1,arctic ocean:1,Canada:Amundsen Gulf,canada,fully_disjoint,llm,llm_preferred,conflict
+PRJNA323946,1,pacific ocean:1,NotCountry:Eastern Tropical North Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA323948,1,pacific ocean:1,NotCountry:Eastern Tropical North Pacific,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB8201,1,egypt:1;united states:1,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA405199,1,pacific ocean:1,"NotCountry:marine environment (Central Pacific Ocean), no specific country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405200,1,pacific ocean:1,"NotCountry:marine environment (Central Pacific Ocean), no specific country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA395380,1,finland:1;united states:1,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA367444,1,atlantic ocean:1,"NotCountry:South Atlantic Ocean, Benguela upwelling region - open ocean deep subsurface site",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367445,1,indian ocean:1,"Indonesia:off Sumatra, Indian Ocean",indonesia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA366334,1,pacific ocean:1,"NotCountry:open Pacific Ocean, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366253,1,democratic republic of the congo:1,Republic of the Congo:Pointe-Noire,republic of the congo,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366254,1,democratic republic of the congo:1,Republic of the Congo:Pointe-Noire,republic of the congo,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366055,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366057,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365942,1,atlantic ocean:1,NotCountry:open ocean (Southern Atlantic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365957,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA365958,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA366968,1,pacific ocean:1,USA:Monterey Bay,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366971,1,pacific ocean:1,USA:Monterey Bay,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365762,1,germany:1,Italy:Pianosa Island,italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365781,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365782,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365783,1,germany:1,Italy:Elba Island,italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365786,1,germany:1,"Egypt:Dahab, Red Sea",egypt,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365789,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365796,1,germany:1,"Australia:Lizard Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365800,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365801,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365805,1,germany:1,"Italy:Cavoli, Elba Island",italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365806,1,germany:1,"Italy:Cavoli, Elba Island",italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA367092,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365135,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365136,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365137,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365141,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365144,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365142,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365143,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365207,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365204,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365220,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365102,1,united states:1,"NotCountry:Arctic (multinational region, no specific country named)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375507,1,sweden:1,NotCountry:Arctic - no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375449,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375453,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375454,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375520,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375524,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375525,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375523,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375528,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375532,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375535,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375539,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375541,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375542,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375545,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375544,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375548,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375553,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375556,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375557,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375598,1,atlantic ocean:1,NotCountry:Atlantic coast (country not specified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375297,1,atlantic ocean:1,NotCountry:Atlantic coast not further specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375602,1,atlantic ocean:1,Antarctica:West Antarctic Peninsula,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA375604,1,atlantic ocean:1,Antarctica:West Antarctic Peninsula,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA375218,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375220,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375223,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375227,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375225,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375226,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375229,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375230,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375234,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375235,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375237,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375241,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA375240,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA375243,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365151,1,italy:1,Portugal:Porto,portugal,fully_disjoint,llm,llm_preferred,consistent
+PRJNA367431,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB2) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367432,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB2) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367435,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB4) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367436,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB8) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365112,1,arctic ocean:1,NotCountry:Arctic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365111,1,arctic ocean:1,NotCountry:Arctic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365113,1,arctic ocean:1,NotCountry:Arctic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365119,1,atlantic ocean:1,NotCountry:Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA365780,1,germany:1,Bermuda,bermuda,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365784,1,germany:1,Italy:Elba Island,italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365787,1,germany:1,"Egypt:Dahab, Red Sea",egypt,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365788,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365790,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365793,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365794,1,germany:1,"Australia:Lizard Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365795,1,germany:1,"Australia:Lizard Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365798,1,germany:1,"Australia:Lizard Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365804,1,germany:1,"Italy:Cavoli, Elba Island",italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365803,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365807,1,germany:1,"Italy:Cavoli, Elba Island",italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA366337,1,pacific ocean:1,"NotCountry:open Pacific Ocean, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366447,1,croatia:1,Slovenia:Gulf of Piran,slovenia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA405703,1,democratic republic of the congo:1,Republic of the Congo,republic of the congo,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405704,1,democratic republic of the congo:1,Republic of the Congo,republic of the congo,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405784,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405713,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405717,1,germany:1,Italy,italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365182,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367442,1,baltic sea:1,"Sweden:Landsort Deep, Baltic Sea",sweden,fully_disjoint,llm,llm_preferred,conflict
+PRJNA367446,1,indian ocean:1,"Indonesia:off Sumatra, Indian Ocean",indonesia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365118,1,atlantic ocean:1,NotCountry:Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA366054,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366058,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366059,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366060,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365941,1,atlantic ocean:1,NotCountry:open ocean (Southern Atlantic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365944,1,atlantic ocean:1,NotCountry:open ocean (Southern Atlantic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365943,1,atlantic ocean:1,NotCountry:open ocean (Southern Atlantic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365945,1,atlantic ocean:1,NotCountry:open ocean (Southern Atlantic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365946,1,atlantic ocean:1,NotCountry:open ocean (Southern Atlantic Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365959,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA365962,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA365966,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA405730,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA356267,1,israel:1,NotCountry:Red Sea (no specific coastal country),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405470,1,pacific ocean:1,"NotCountry:Kermadec Trench (New Zealand EEZ, SW Pacific)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA410407,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405709,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405712,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405715,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405714,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405716,1,germany:1,Italy,italy,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405718,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405723,1,germany:1,Australia,australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405724,1,germany:1,Australia,australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA366975,1,pacific ocean:1,USA:Monterey Bay,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365760,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365774,1,atlantic ocean:1,"Germany:Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365775,1,atlantic ocean:1,"Germany:Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA380945,1,mexico:1,NotCountry:Gulf of Mexico (bordering country unspecified),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA365645,1,united states:1,NotCountry:Arctic region indicated but no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365647,1,united states:1,NotCountry:Arctic region indicated but no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367091,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367093,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367095,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367096,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367094,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367098,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365438,1,pacific ocean:1,NotCountry:sampled in Subarctic Pacific Ocean (open ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365466,1,united states:1,Botswana,botswana,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365470,1,united states:1,Botswana,botswana,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365132,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365140,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365138,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365147,1,atlantic ocean:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365145,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365148,1,antarctica:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365210,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365229,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375506,1,sweden:1,NotCountry:Arctic - no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375376,1,sweden:1,NotCountry:Arctic - no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375378,1,sweden:1,NotCountry:Arctic - no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375508,1,sweden:1,NotCountry:Arctic - no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375450,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375510,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375512,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375513,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375514,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375521,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375522,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375529,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375534,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375536,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375543,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375546,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375547,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375549,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375552,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375554,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375559,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375600,1,atlantic ocean:1,NotCountry:Atlantic coast (country not specified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375295,1,atlantic ocean:1,NotCountry:Atlantic coast not further specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375601,1,atlantic ocean:1,NotCountry:Atlantic coast (country not specified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375298,1,atlantic ocean:1,NotCountry:Atlantic coast not further specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375605,1,atlantic ocean:1,Antarctica:West Antarctic Peninsula,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA375606,1,atlantic ocean:1,Antarctica:West Antarctic Peninsula,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA375221,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375228,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375231,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367433,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB4) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367430,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB2) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367437,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB8) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367428,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB11) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367429,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB11) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365117,1,atlantic ocean:1,NotCountry:Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA405477,1,pacific ocean:1,Chile,chile,fully_disjoint,llm,llm_preferred,consistent
+PRJNA405471,1,pacific ocean:1,"NotCountry:Kermadec Trench (New Zealand EEZ, SW Pacific)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA365228,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366335,1,pacific ocean:1,"NotCountry:open Pacific Ocean, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366336,1,pacific ocean:1,"NotCountry:open Pacific Ocean, no country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366252,1,democratic republic of the congo:1,Republic of the Congo:Pointe-Noire,republic of the congo,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366251,1,democratic republic of the congo:1,Republic of the Congo:Pointe-Noire,republic of the congo,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366061,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365961,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA365960,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA365964,1,pacific ocean:1,Canada:Saanich Inlet,canada,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA366976,1,pacific ocean:1,USA:Monterey Bay,united states,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365759,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365761,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365779,1,germany:1,Bermuda,bermuda,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365785,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365791,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365792,1,germany:1,"Australia:Heron Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365799,1,germany:1,"Australia:Lizard Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365797,1,germany:1,"Australia:Lizard Island, Great Barrier Reef",australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365802,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365644,1,united states:1,NotCountry:Arctic region indicated but no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365646,1,united states:1,NotCountry:Arctic region indicated but no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367097,1,united states:1,NotCountry:Arctic region named but no specific country specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365439,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365467,1,united states:1,Botswana,botswana,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365469,1,united states:1,Botswana,botswana,fully_disjoint,llm,llm_preferred,consistent
+PRJNA365133,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365134,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365139,1,mediterranean sea:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365166,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365222,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365221,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365223,1,atlantic ocean:1,NotCountry:sampled in Southern Atlantic Ocean (open-ocean transect),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365103,1,united states:1,"NotCountry:Arctic (multinational region, no specific country named)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365101,1,united states:1,"NotCountry:Arctic (multinational region, no specific country named)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365104,1,united states:1,"NotCountry:Arctic (multinational region, no specific country named)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365105,1,united states:1,"NotCountry:Arctic (multinational region, no specific country named)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365106,1,united states:1,"NotCountry:Arctic (multinational region, no specific country named)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375377,1,sweden:1,NotCountry:Arctic - no specific country named,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375452,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375451,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375455,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375456,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375509,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375511,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375515,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375526,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375527,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375531,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375533,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375537,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375538,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375540,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean - international waters,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375550,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375551,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375555,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375558,1,pacific ocean:1,"NotCountry:Eastern Pacific Ocean (open ocean, no country)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375599,1,atlantic ocean:1,NotCountry:Atlantic coast (country not specified),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375296,1,atlantic ocean:1,NotCountry:Atlantic coast not further specified,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375603,1,atlantic ocean:1,Antarctica:West Antarctic Peninsula,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA375608,1,atlantic ocean:1,Antarctica:West Antarctic Peninsula,antarctica,fully_disjoint,llm,llm_preferred,consistent
+PRJNA375217,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375219,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375222,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375224,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375232,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375233,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375236,1,pacific ocean:1,NotCountry:open ocean (Subarctic Pacific) - no country,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375238,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA375242,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA375239,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA365152,1,italy:1,Portugal:Porto,portugal,fully_disjoint,llm,llm_preferred,consistent
+PRJNA367434,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB4) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367438,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB8) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA367427,1,arctic ocean:1,"NotCountry:western Arctic Ocean (Canada Basin station CB11) - open ocean, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA365114,1,arctic ocean:1,NotCountry:Arctic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405729,1,atlantic ocean:1,NotCountry:Southern Atlantic Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405731,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405732,1,pacific ocean:1,NotCountry:Eastern Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405476,1,pacific ocean:1,NotCountry:Mariana Trench (western Pacific),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA412510,1,pacific ocean:1,USA:Hawaii,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA410296,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA410299,1,germany:1,Bahamas,bahamas,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366725,1,united states:1,Canada:Algoma,canada,fully_disjoint,llm,llm_preferred,consistent
+PRJNA366056,1,pacific ocean:1,"NotCountry:open ocean (Pacific Ocean, ETNP)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA405721,1,germany:1,Belize,belize,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405722,1,germany:1,Australia,australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA405725,1,germany:1,Australia,australia,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441608,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441607,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441613,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA360036,1,united states:1,China:Hong Kong,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA469229,1,pacific ocean:1,"NotCountry:East Pacific Rise, Pacific Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469231,1,pacific ocean:1,"NotCountry:East Pacific Rise, Pacific Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469233,1,pacific ocean:1,"NotCountry:East Pacific Rise, Pacific Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469232,1,pacific ocean:1,"NotCountry:Lau Basin, Pacific Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469237,1,atlantic ocean:1,"NotCountry:Mid Atlantic Ridge, Atlantic Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469241,1,pacific ocean:1,"NotCountry:Axial Seamount, Juan de Fuca Ridge, Pacific Ocean (international/EEZ waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA479708,1,atlantic ocean:1,"NotCountry:South Mid-Atlantic Ridge, international waters",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA496348,1,china:1,"NotCountry:coal seam formation water enrichment cultures, no basin or country named",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA366219,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366222,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366221,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366223,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366444,1,croatia:1,Slovenia:Gulf of Piran,slovenia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA366449,1,croatia:1,Slovenia:Gulf of Piran,slovenia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA366225,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJEB25185,1,germany:1,pacific,pacific,fully_disjoint,rule,rule_only,rule_only
+PRJEB20768,1,baltic sea:1,"NotCountry:Bothnian Sea, Baltic Sea",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJEB23286,1,atlantic ocean:1,NotCountry:Mid-Atlantic Ridge,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA421793,1,atlantic ocean:1,NotCountry:Atlantic Ocean named; no coastal country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366446,1,croatia:1,Slovenia:Gulf of Piran,slovenia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA366448,1,croatia:1,Slovenia:Gulf of Piran,slovenia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA365146,1,southern ocean:1,"NotCountry:Global ocean (Malaspina Expedition, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366227,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366228,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA369601,1,korea:1,"South Korea:Jeju Island (Bijarim forest, Gotjawal)",south korea,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA421252,1,portugal:1;france:1,Portugal,portugal,incomplete_subset,llm,llm_preferred,consistent
+PRJNA430093,1,pacific ocean:1,China,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA430263,1,pacific ocean:1,China,china,fully_disjoint,llm,llm_preferred,consistent
+PRJNA493180,1,arctic ocean:1,"Norway:Krossfjorden, Svalbard",norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA444462,1,pacific ocean:1,Mariana Trench,mariana trench,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA350622,1,united states:1,NotCountry:Lake Erie spans USA/Canada border; central basin not assigned,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA381916,1,china:1,"NotCountry:no country stated (phycosphere vs seawater, location unspecified)",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA441609,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA340134,1,canada:1,United States:Lake St. Clair,united states,fully_disjoint,llm,llm_preferred,conflict
+PRJNA469230,1,pacific ocean:1,"NotCountry:East Pacific Rise, Pacific Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469236,1,pacific ocean:1,Mexico:Guaymas Basin,mexico,fully_disjoint,llm,llm_preferred,consistent
+PRJNA469238,1,atlantic ocean:1,"NotCountry:Mid Atlantic Ridge, Atlantic Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA469239,1,atlantic ocean:1,"NotCountry:Mid Atlantic Ridge, Atlantic Ocean (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA450125,1,china:1,Japan,japan,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA441610,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441611,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441612,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441614,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA441615,1,atlantic ocean:1,"Germany:Kabeltonne station, Helgoland, North Sea",germany,fully_disjoint,llm,llm_preferred,conflict
+PRJNA471692,1,atlantic ocean:1,"NotCountry:South Mid-Atlantic Ridge, South Atlantic Ocean - open-ocean site outside any national territory",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA476873,1,egypt:1,"NotCountry:Red Sea deep brine pool, international waters",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA366217,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366218,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366216,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366215,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366220,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366445,1,croatia:1,Slovenia:Gulf of Piran,slovenia,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA366224,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA366226,1,pacific ocean:1,NotCountry:open ocean (Deep Pacific Ocean),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB8702,1,"farms at hai phong, quang ninh, and khanh hoa provinces in vietnam:1",Vietnam,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJEB21520,1,poland:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJEB30510,1,north sea:1,NotCountry:North Sea,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA494230,1,russia:1;canada:1,"Canada:Dinosaur Provincial Park, Alberta",canada,incomplete_subset,llm,llm_preferred,consistent
+PRJEB30867,1,france:1,africa,africa,fully_disjoint,rule,rule_only,rule_only
+PRJNA502668,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502667,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502671,1,atlantic ocean:1,"NotCountry:Atlantic Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502677,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA465919,1,pacific ocean:1,"NotCountry:open ocean, Eastern Pacific Ocean",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375245,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA539630,1,pacific ocean:1,NotCountry:North Pacific Subtropical Gyre (station ALOHA),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA539631,1,pacific ocean:1,NotCountry:North Pacific Subtropical Gyre (station ALOHA),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA539632,1,pacific ocean:1,NotCountry:North Pacific Subtropical Gyre (station ALOHA),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA539091,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539094,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539096,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539098,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539105,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539107,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539112,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539116,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539118,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539117,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539121,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539120,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539122,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539124,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539132,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539125,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539134,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539136,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539139,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539144,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539142,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539147,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539150,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539152,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA545514,1,united states:1,Kuwait,kuwait,fully_disjoint,llm,llm_preferred,consistent
+PRJEB29715,1,japan:1,asian,asian,fully_disjoint,rule,rule_only,rule_only
+PRJEB32856,1,china:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA539633,1,pacific ocean:1,NotCountry:North Pacific Subtropical Gyre (station ALOHA),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA539090,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539093,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539095,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539097,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539099,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539101,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539104,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539103,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539102,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539108,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539109,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539110,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539113,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539119,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539126,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539137,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539138,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539145,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539149,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539151,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539154,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539158,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA577730,1,atlantic ocean:1,"NotCountry:Lost City Hydrothermal Field, Mid-Atlantic Ridge (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA465918,1,pacific ocean:1,"NotCountry:open ocean, Eastern Pacific Ocean",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502670,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502672,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375244,1,atlantic ocean:1,Venezuela:Cariaco Basin,venezuela,fully_disjoint,llm,llm_preferred,conflict
+PRJNA488629,1,united states:10;mexico:1,United States,united states,incomplete_subset,llm,llm_preferred,consistent
+PRJNA488516,1,nigeria:1;india:1,Nigeria,nigeria,incomplete_subset,llm,llm_preferred,consistent
+PRJNA528596,1,arctic ocean:1,Norway,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA539682,1,arctic ocean:1,Canada:Western Arctic Ocean,canada,fully_disjoint,llm,llm_preferred,consistent
+PRJNA539089,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539092,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539100,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539106,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539111,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539114,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539115,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539123,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539131,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539127,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539128,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539130,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539133,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539135,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539141,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539140,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539143,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539146,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539148,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539129,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539153,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539156,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539155,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA539157,1,united states:1,Puerto Rico (USA):Luquillo Experimental Forest,puerto rico (usa),fully_disjoint,llm,llm_preferred,llm_only
+PRJNA544312,1,canada:1,NotCountry:Arctic cold saline spring (no specific country stated),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502669,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502675,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502674,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502673,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA502676,1,pacific ocean:1,"NotCountry:Pacific Ocean open ocean, no coastal country specified",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA518420,1,pacific ocean:1,"NotCountry:Pacific Ocean (Juan de Fuca Ridge, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA526329,1,pacific ocean:1,"NotCountry:Mariana Trench, western Pacific hadal zone",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA432360,1,denmark:1,United States,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA644737,1,arctic ocean:1,Norway,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA419081,1,chile:2;united states:1,Chile:Navarino Island,chile,incomplete_subset,llm,llm_preferred,consistent
+PRJNA655018,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655020,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655022,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655023,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655031,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655107,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655032,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655038,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655037,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655033,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655006,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655008,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655014,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655009,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655013,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655010,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653157,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653160,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653159,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653162,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677789,1,atlantic ocean:1,"NotCountry:Faroe-Shetland Channel, North-East Atlantic (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677792,1,atlantic ocean:1,"NotCountry:Faroe-Shetland Channel, North-East Atlantic (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA375247,1,atlantic ocean:1,NotCountry:Gulf of Mexico is transboundary open marine - no specific country,notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA405475,1,atlantic ocean:1,NotCountry:Black Sea (international waters),notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA622179,1,pacific ocean:1,NotCountry:open ocean Eastern Pacific OMZ (ETNP),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621686,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622118,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622119,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622122,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622124,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622125,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622129,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622130,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622132,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621529,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621532,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621531,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621534,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621537,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621538,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621539,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621290,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621301,1,indian ocean:1,"NotCountry:Arabian Sea, Indian Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA239311,1,china:1,NotCountry:deep-sea,notcountry,notcountry_kept,rule_open_ocean,rule_only,rule_only
+PRJNA621688,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622121,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622123,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622131,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621533,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621530,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621536,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621540,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621291,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621297,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621300,1,indian ocean:1,"NotCountry:Arabian Sea, Indian Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA621293,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621296,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA649681,1,svalbard:1,NotCountry:Arctic soils are circumpolar; no specific country stated,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA618889,1,guadeloupe:1,France:Guadeloupe,france,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA655094,1,pacific ocean:1,"NotCountry:Pacific Ocean (East Pacific Rise, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655021,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655019,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655026,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655034,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655012,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655039,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653156,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653158,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA653161,1,pacific ocean:1,NotCountry:eastern tropical North Pacific Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677069,1,atlantic ocean:1,NotCountry:Western North Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621687,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622120,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622126,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622127,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA622128,1,pacific ocean:1,NotCountry:open ocean Northeast subarctic Pacific,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621528,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621535,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621541,1,pacific ocean:1,NotCountry:Northeast subarctic Pacific Ocean,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621298,1,indian ocean:1,"NotCountry:Arabian Sea, Indian Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA621299,1,indian ocean:1,"NotCountry:Arabian Sea, Indian Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA621292,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621294,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA621295,1,pacific ocean:1,"NotCountry:eastern tropical North Pacific Ocean, open-ocean sampling with no country given",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655024,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655029,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655028,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655025,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655030,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655027,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655036,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655035,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655007,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655011,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655015,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA655040,1,pacific ocean:1,"NotCountry:Northeast Pacific Ocean (Juan de Fuca Ridge flank, international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677791,1,atlantic ocean:1,"NotCountry:Faroe-Shetland Channel, North-East Atlantic (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677790,1,atlantic ocean:1,"NotCountry:Faroe-Shetland Channel, North-East Atlantic (international waters)",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677071,1,atlantic ocean:1,NotCountry:Western North Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677070,1,atlantic ocean:1,NotCountry:Western North Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA677068,1,atlantic ocean:1,NotCountry:Western North Atlantic Ocean (international waters),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA603842,1,united states:1,NotCountry:Pacific Islands (specific island/country not stated),notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA596069,1,viet nam:1,Vietnam:Hai Phong,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJEB37438,1,mediterranean sea:1,mediterranean,mediterranean,fully_disjoint,rule,rule_only,rule_only
+PRJNA576751,1,pacific ocean:1,United States:Santa Monica Basin,united states,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA691059,1,united states:2;denmark:1,United States,united states,incomplete_subset,llm,llm_preferred,llm_only
+PRJNA563142,1,netherlands:1,Sint Eustatius,sint eustatius,fully_disjoint,llm,llm_preferred,llm_only
+PRJNA665642,1,china:1,"NotCountry:three oceans, no single country",notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJNA758801,1,russia:1,Mongolia:Lake Hotontyn Nur,mongolia,fully_disjoint,llm,llm_preferred,consistent
+PRJNA766251,1,united states:5;france:1,"USA:Santa Barbara Basin, California",united states,incomplete_subset,llm,llm_preferred,conflict
+PRJNA662017,1,spain:1,"NotCountry:Mediterranean Sea, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA743777,1,switzerland:1,Spain:Valencia,spain,fully_disjoint,llm,llm_preferred,consistent
+PRJNA703412,1,australia:1,NotCountry:no geographic signal (open ocean),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA739473,1,australia:1,"NotCountry:worldwide distribution, no single country",notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJDB13674,1,japan:1,Switzerland,switzerland,fully_disjoint,rule_place,rule_only,rule_only
+PRJEB50473,1,france:1,pacific,pacific,fully_disjoint,rule,rule_only,rule_only
+PRJEB27622,1,australia:1,Brazil,brazil,fully_disjoint,llm,llm_preferred,consistent
+PRJDB13464,1,pacific ocean:1,NotCountry:Southern Mariana Trough,notcountry,notcountry_kept,llm,llm_preferred,consistent
+PRJNA874508,1,svalbard:1,Norway:Kongsfjorden,norway,fully_disjoint,llm,llm_preferred,conflict
+PRJNA715592,1,viet nam:1,Vietnam:Cuc Phuong,vietnam,fully_disjoint,llm,llm_preferred,consistent
+PRJNA805391,1,mexico:1,NotCountry:Guaymas Basin (Gulf of California),notcountry,notcountry_kept,llm,llm_preferred,conflict
+PRJNA864620,1,russia:1,NotCountry:coastal lake location not stated,notcountry,notcountry_kept,llm,llm_preferred,llm_only
+PRJDB16160,1,,United States,united states,other,rule_demonym,rule_only,rule_only
+PRJNA1064698,1,egypt:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA870273,1,georgia:1,Italy,italy,fully_disjoint,llm,llm_preferred,consistent
+PRJEB52452,1,indian ocean:1,global,global,fully_disjoint,rule,rule_only,rule_only
+PRJNA1241753,1,poland:3;singapore:1,Poland,poland,incomplete_subset,rule_place,rule_only,rule_only
